@@ -176,8 +176,6 @@ def test(args, test_loader, model):
     data_list = []
     with torch.no_grad():
         for i, batch in enumerate(test_loader):
-            if i >= 100:
-                break
 
             if args.dataset == 'voc' or args.dataset == 'udd':
                 input, label = batch
@@ -308,9 +306,8 @@ def test_model(args):
         total_params = sum(p.numel() for p in model.parameters())
         print(f"total_params: {total_params}")
         print("start model fusing")
-        # fuse_model(model, inplace=True)
         print("start model quantizing")
-        model_q = quantize_model(model, k=4, quant=True, activation_quant=False, quant_start_layer=1)
+        model_q = quantize_model(model, k=4, quant=True, activation_quant=True, quant_start_layer=1, activation_quant_mode='per_channel')
         # print_model(model_q)
         # if args.checkpoint_q:
         #     if args.checkpoint_q.endswith('.pth'):

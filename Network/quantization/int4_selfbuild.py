@@ -66,7 +66,7 @@ class QLayer(nn.Module):
     """
     量化层类，整合输入和参数的量化逻辑
     """
-    def __init__(self, original_layer, name, k=4, quant=True, activation_quant=True):
+    def __init__(self, original_layer, name, k=4, quant=True, activation_quant=True, activation_quant_mode='per_tensor'):
         super(QLayer, self).__init__()
         self.name = name
         self.k = k
@@ -74,10 +74,46 @@ class QLayer(nn.Module):
         self.quant_range = 2**(k-1)  # 有符号量化范围
         self.quant = quant
         self.activation_quant = activation_quant
+        self.activation_quant_mode = self._normalize_activation_quant_mode(activation_quant_mode)
         self.scale_m_static = None
         self.hardware_computing = False
         self.T = 8
         
+
+    @staticmethod
+    def _normalize_activation_quant_mode(mode):
+        mode = mode.replace('-', '_')
+        valid_modes = {'per_tensor', 'per_image', 'per_channel'}
+        if mode not in valid_modes:
+            raise ValueError(f"activation_quant_mode must be one of {sorted(valid_modes)}, got {mode}")
+        return mode
+
+    def _get_activation_scale(self, x):
+        if self.activation_quant_mode == 'per_tensor':
+            scale_x = torch.max(torch.abs(x.detach())).item() / self.quant_range
+            return max(1e-5, scale_x)
+
+        if self.activation_quant_mode == 'per_image':
+            if x.dim() == 4:
+                reduce_dims = (1, 2, 3)
+                keepdim = True
+            elif x.dim() == 2:
+                reduce_dims = 1
+                keepdim = True
+            else:
+                raise ValueError(f"per_image activation quantization expects 2D or 4D input, got {x.dim()}D")
+        elif self.activation_quant_mode == 'per_channel':
+            if x.dim() == 4:
+                reduce_dims = (0, 2, 3)
+                keepdim = True
+            elif x.dim() == 2:
+                reduce_dims = 0
+                keepdim = True
+            else:
+                raise ValueError(f"per_channel activation quantization expects 2D or 4D input, got {x.dim()}D")
+
+        scale_x = torch.amax(torch.abs(x.detach()), dim=reduce_dims, keepdim=keepdim) / self.quant_range
+        return torch.clamp(scale_x, min=1e-5)
 
     def quantize_weight(self):
         if self.quant:
@@ -108,9 +144,7 @@ class QLayer(nn.Module):
                 scale_x = 1
             else:
                 with torch.no_grad():
-                    # scale_x = np.max(np.abs(x.data.cpu().numpy()))
-                    scale_x = torch.max(torch.abs(x.detach())).item() / self.quant_range
-                    scale_x = max(1e-5, scale_x)
+                    scale_x = self._get_activation_scale(x)
                 x_q = torch.clip(torch.round(x.detach() / scale_x), min=-1*self.quant_range, max=self.quant_range-1)
                 x_q = x_q * scale_x
                 x_q = (x_q - x).detach() + x # Straight-Through Estimator
@@ -218,7 +252,7 @@ class SimpleSNN(nn.Module):
 
 
 
-def quantize_model(model, k=4, inplace=False, quant=True, activation_quant=True, quant_start_layer=0):
+def quantize_model(model, k=4, inplace=False, quant=True, activation_quant=True, quant_start_layer=0, activation_quant_mode='per_tensor'):
     """
     将全精度网络转换为量化网络
     
@@ -229,6 +263,7 @@ def quantize_model(model, k=4, inplace=False, quant=True, activation_quant=True,
         quant: 是否量化权重
         activation_quant: 是否量化激活值
         quant_start_layer: 从第几个可量化层开始量化，0-based 编号
+        activation_quant_mode: 激活量化方式，支持 per_tensor / per_image / per_channel
 
     Returns:
         量化后的模型
@@ -258,6 +293,7 @@ def quantize_model(model, k=4, inplace=False, quant=True, activation_quant=True,
                         f"layer_idx={layer_idx} name={layer_name} "
                         f"weight_quant={enable_weight_quant} "
                         f"activation_quant={enable_activation_quant} "
+                        f"activation_quant_mode={activation_quant_mode} "
                         f"bias={child.bias is not None}"
                     )
                 setattr(
@@ -269,6 +305,7 @@ def quantize_model(model, k=4, inplace=False, quant=True, activation_quant=True,
                         k=k,
                         quant=enable_weight_quant,
                         activation_quant=enable_activation_quant,
+                        activation_quant_mode=activation_quant_mode,
                     ),
                 )
                 layer_idx += 1
@@ -281,7 +318,7 @@ def quantize_model(model, k=4, inplace=False, quant=True, activation_quant=True,
 
 if __name__ == '__main__':
     simple_cnn = SimpleSNN()
-    simple_cnn_quantized = quantize_model(simple_cnn, k=4, inplace=False, quant=True, activation_quant=True, quant_start_layer=1)
+    simple_cnn_quantized = quantize_model(simple_cnn, k=4, inplace=False, quant=True, activation_quant=True, quant_start_layer=1, activation_quant_mode='per_tensor')
     random_input = torch.randn(1, 1, 3, 32, 32)
     output_q = simple_cnn_quantized(random_input)
     output_f = simple_cnn(random_input)
