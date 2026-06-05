@@ -1,0 +1,97 @@
+# Python bytecode and caches
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*$py.class
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+
+# Virtual environments and local Python config
+.python-version
+.venv/
+venv/
+env/
+ENV/
+
+# Build and packaging outputs
+build/
+dist/
+*.egg-info/
+
+# Jupyter
+.ipynb_checkpoints/
+
+# Editor and OS metadata
+.git.backup/
+.codex
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# Secrets and machine-local config
+.env
+.env.*
+!.env.example
+
+# Logs and temporary runtime files
+*.log
+error_log*.txt
+tmp/
+temp/
+*.tmp
+
+# Model checkpoints, weights, and generated tensors
+checkpoint/
+checkpoints/
+QAT_checkpoint/
+*.ckpt
+*.pt
+*.pth
+*.onnx
+*.npy
+*.npz
+
+# Generated reports, summaries, and analysis outputs
+model_summary.txt
+model_structure*.txt
+params_distribution.txt
+Network/size_stream.txt
+mid_outputs_plots/
+scale_x_distributions/
+udd_visualization/
+*_visualization.png
+tmp_hist.png
+udd_legend.png
+
+# Generated images and exported figures
+*.png
+*.jpg
+*.jpeg
+*.bmp
+*.gif
+*.webp
+*.tif
+*.tiff
+*.svg
+*.pdf
+
+# Packaged or generated hardware artifacts
+FPGA_test_package/
+FPGA_test_package.zip
+hardware_sample/
+*.zip
+*.tar
+*.tar.gz
+*.tgz
+*.rar
+
+# Large local datasets. Keep source code and small dataset manifests tracked.
+data/
+datasets/
+Dataset/
+Datasets/
