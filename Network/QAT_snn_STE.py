@@ -24,6 +24,8 @@ from utils.losses.loss import LovaszSoftmax, CrossEntropyLoss2d, CrossEntropyLos
 from utils.optim import RAdam, Ranger, AdamW
 from utils.scheduler.lr_scheduler import WarmupPolyLR
 from spikingjelly.activation_based import neuron, layer, functional
+# quantization function
+from quantization.int4_selfbuild import QLayer, quantize_model, plot_scale_x
 
 
 torch_ver = torch.__version__[:3]
@@ -51,8 +53,8 @@ def parse_args():
     parser.add_argument('--random_mirror', type=bool, default=True, help="input image random mirror")
     parser.add_argument('--random_scale', type=bool, default=True, help="input image resize 0.5 to 2")
     parser.add_argument('--lr', type=float, default=1e-3, help="initial learning rate")
-    parser.add_argument('--batch_size', type=int, default=64, help="the batch size is set to 16 for 2 GPUs")
-    parser.add_argument('--optim',type=str.lower,default='adam',choices=['sgd','adam','radam','ranger'],help="select optimizer")
+    parser.add_argument('--batch_size', type=int, default=32, help="the batch size is set to 16 for 2 GPUs")
+    parser.add_argument('--optim',type=str.lower,default='adam',choices=['sgd','adam','radam','ranger','adamw'],help="select optimizer")
     parser.add_argument('--lr_schedule', type=str, default='poly', help='name of lr schedule: poly')
     parser.add_argument('--num_cycles', type=int, default=1, help='Cosine Annealing Cyclic LR')
     parser.add_argument('--poly_exp', type=float, default=0.9,help='polynomial LR exponent')
@@ -62,22 +64,79 @@ def parse_args():
     parser.add_argument('--use_ohem', action='store_true', default=False, help='OhemCrossEntropy2d Loss for cityscapes dataset')
     parser.add_argument('--use_lovaszsoftmax', action='store_true', default=False, help='LovaszSoftmax Loss for cityscapes dataset')
     parser.add_argument('--use_focal', action='store_true', default=False,help=' FocalLoss2d for cityscapes dataset')
+    parser.add_argument('--quant_bits', type=int, default=4, help='bit width for QAT weight/activation quantization')
+    parser.add_argument('--activation_quant', type=bool, default=True, help='enable activation quantization')
+    parser.add_argument('--activation_quant_mode', type=str, default='per_tensor',
+                        choices=['per_tensor', 'per_image', 'per_channel'],
+                        help='activation quantization granularity')
+    parser.add_argument('--quant_start_layer', type=int, default=0, help='first layer index to quantize')
+    parser.add_argument('--kd_weight', type=float, default=0.1, help='weight of intermediate feature distillation loss')
+    parser.add_argument('--max_train_iters_per_epoch', type=int, default=0,
+                        help='limit train iterations per epoch; 0 means use all batches')
+    parser.add_argument('--max_val_iters', type=int, default=0,
+                        help='limit validation iterations; 0 means use all batches')
     # cuda setting
     parser.add_argument('--cuda', type=bool, default=True, help="running on CPU or GPU")
     parser.add_argument('--gpus', type=str, default="0", help="default GPU devices (0,1)")
     # checkpoint and log
     parser.add_argument('--resume', type=str, default="",
                         help="use this file to load last checkpoint for continuing training")
-    parser.add_argument('--savedir', default="./checkpoint/", help="directory to save the model snapshot")
+    parser.add_argument('--savedir', default="./QAT_checkpoint/", help="directory to save the model snapshot")
     parser.add_argument('--logFile', default="log.txt", help="storing the training and validation logs")
     parser.add_argument('--only_save_best', default=True, action='store_true', help="Only save best model")
     parser.add_argument('--T', default=1, type=int, help="timesteps")
     parser.add_argument('--config', default="Network/configs/SpikingLETNet_shallow/1.3M.yaml", type=str, help="model config")
-
+    parser.add_argument('--checkpoint', type=str, default="checkpoint/udd/SpikingLETNet_shallow_maxbs64gpu1_trainval20260606-171257/model_best.pth")
     args = parser.parse_args()
 
     return args
 
+
+def freeze_model(model):
+    for param in model.parameters():
+        param.requires_grad = False
+    model.eval()
+
+
+def temporal_average(tensor):
+    if tensor.dim() in (3, 5):
+        return tensor.mean(0)
+    return tensor
+
+
+def export_fp_state_dict_from_qmodel(model_q):
+    """Export trainable full-precision weights from QLayer wrappers with original model keys."""
+    qlayer_prefixes = []
+    fp_state_dict = {}
+
+    for name, module in model_q.named_modules():
+        if isinstance(module, QLayer):
+            qlayer_prefixes.append(name)
+            for key, value in module.layer.state_dict().items():
+                fp_state_dict[f"{name}.{key}"] = value.detach().cpu()
+
+    for key, value in model_q.state_dict().items():
+        if any(key.startswith(f"{prefix}.layer.") for prefix in qlayer_prefixes):
+            continue
+        fp_state_dict[key] = value.detach().cpu()
+
+    return fp_state_dict
+
+
+def build_optimizer(args, model):
+    trainable_params = filter(lambda p: p.requires_grad, model.parameters())
+    if args.optim == 'sgd':
+        return torch.optim.SGD(trainable_params, lr=args.lr, momentum=0.9, weight_decay=1e-4)
+    elif args.optim == 'adam':
+        return torch.optim.Adam(trainable_params, lr=args.lr, betas=(0.9, 0.999), eps=1e-08, weight_decay=1e-4)
+    elif args.optim == 'radam':
+        return RAdam(trainable_params, lr=args.lr, betas=(0.90, 0.999), eps=1e-08, weight_decay=1e-4)
+    elif args.optim == 'ranger':
+        return Ranger(trainable_params, lr=args.lr, betas=(0.95, 0.999), eps=1e-08, weight_decay=1e-4)
+    elif args.optim == 'adamw':
+        return AdamW(trainable_params, lr=args.lr, betas=(0.9, 0.999), eps=1e-08, weight_decay=1e-4)
+    else:
+        raise NotImplementedError(f"Unsupported optimizer: {args.optim}")
 
 
 def train_model(args):
@@ -91,11 +150,14 @@ def train_model(args):
 
     print(args)
 
+    args.gpu_nums = 0
     if args.cuda:
         print("=====> use gpu id: '{}'".format(args.gpus))
         os.environ["CUDA_VISIBLE_DEVICES"] = args.gpus
         if not torch.cuda.is_available():
             raise Exception("No GPU found or Wrong gpu id, please run without --cuda")
+        torch.cuda.set_device(0)
+        args.gpu_nums = len(args.gpus.split(','))
 
 
     # set the seed
@@ -111,10 +173,26 @@ def train_model(args):
                 nn.BatchNorm2d, 1e-3, 0.1,
                 mode='fan_in')
     functional.set_step_mode(model, step_mode='m')
+    if args.checkpoint is not None:
+        checkpoint = torch.load(args.checkpoint, map_location='cpu')
+        model.load_state_dict(checkpoint['model'])
 
     print("=====> computing network parameters and FLOPs")
     total_paramters = netParams(model)
     print("the number of parameters: %d ==> %.2f M" % (total_paramters, (total_paramters / 1e6)))
+
+    print("=====> building quantized student model")
+    model_q = quantize_model(
+        model,
+        k=args.quant_bits,
+        inplace=False,
+        quant=True,
+        activation_quant=args.activation_quant,
+        quant_start_layer=args.quant_start_layer,
+        activation_quant_mode=args.activation_quant_mode,
+    )
+    functional.set_step_mode(model_q, step_mode='m')
+    freeze_model(model)
 
     # load data and data augmentation
     datas, trainLoader, valLoader = build_dataset_train(args.dataset, input_size, args.batch_size, args.train_type,
@@ -150,18 +228,15 @@ def train_model(args):
         criteria = CrossEntropyLoss2d()
 
     if args.cuda:
-        print("=====> use gpu id: '{}'".format(args.gpus))
-        torch.cuda.set_device(int(args.gpus))
-        os.environ["CUDA_VISIBLE_DEVICES"] = args.gpus
-        if not torch.cuda.is_available():
-            raise Exception("No GPU found or Wrong gpu id, please run without --cuda")
-        
-        args.gpu_nums = 1
+        criteria = criteria.cuda()
+        print("single GPU for training")
+        model = model.cuda()
+        model_q = model_q.cuda()
 
     args.savedir = (args.savedir + args.dataset + '/' + args.model + 'bs'
                     + str(args.batch_size) + 'gpu' + str(args.gpu_nums) + "_" + str(args.train_type) + datetime.now().strftime("%Y%m%d-%H%M%S") + '/')
 
-    print(f"savedir: {args.savedir}")
+
     if not os.path.exists(args.savedir):
         os.makedirs(args.savedir)
 
@@ -170,18 +245,31 @@ def train_model(args):
     # continue training 如果训练中断，恢复训练
     if args.resume:
         if os.path.isfile(args.resume):
-            checkpoint = torch.load(args.resume)
+            checkpoint = torch.load(args.resume, map_location='cpu')
             start_epoch = checkpoint['epoch']
-            model.load_state_dict(checkpoint['model'])
-            # model.load_state_dict(convert_state_dict(checkpoint['model']))
+            try:
+                model_q.load_state_dict(checkpoint['model'])
+            except RuntimeError:
+                model.load_state_dict(checkpoint['model'])
+                model_q = quantize_model(
+                    model,
+                    k=args.quant_bits,
+                    inplace=False,
+                    quant=True,
+                    activation_quant=args.activation_quant,
+                    quant_start_layer=args.quant_start_layer,
+                    activation_quant_mode=args.activation_quant_mode,
+                )
+                functional.set_step_mode(model_q, step_mode='m')
+                freeze_model(model)
+                if args.cuda:
+                    model = model.cuda()
+                    model_q = model_q.cuda()
             print("=====> loaded checkpoint '{}' (epoch {})".format(args.resume, checkpoint['epoch']))
         else:
             print("=====> no checkpoint found at '{}'".format(args.resume))
 
-    model.train()
-    if args.cuda:
-        model = model.cuda()
-
+    model_q.train()
     cudnn.benchmark = True
     # cudnn.deterministic = True ## my add
 
@@ -202,39 +290,24 @@ def train_model(args):
             yaml.safe_dump(config, f)
 
 
-    # define optimization strategy
-    if args.optim == 'sgd':
-        optimizer = torch.optim.SGD(
-            filter(lambda p: p.requires_grad, model.parameters()), lr=args.lr, momentum=0.9, weight_decay=1e-4)
-    elif args.optim == 'adam':
-        optimizer = torch.optim.Adam(
-            filter(lambda p: p.requires_grad, model.parameters()), lr=args.lr, betas=(0.9, 0.999), eps=1e-08, weight_decay=1e-4)
-    elif args.optim == 'radam':
-        optimizer = RAdam(
-            filter(lambda p: p.requires_grad, model.parameters()), lr=args.lr, betas=(0.90, 0.999), eps=1e-08, weight_decay=1e-4)
-    elif args.optim == 'ranger':
-        optimizer = Ranger(
-            filter(lambda p: p.requires_grad, model.parameters()), lr=args.lr, betas=(0.95, 0.999), eps=1e-08, weight_decay=1e-4)
-    elif args.optim == 'adamw':
-        optimizer = AdamW(
-            filter(lambda p: p.requires_grad, model.parameters()), lr=args.lr, betas=(0.9, 0.999), eps=1e-08, weight_decay=1e-4)
+    # define optimization strategy: update the full-precision weights inside QLayer via STE.
+    optimizer = build_optimizer(args, model_q)
 
 
     lossTr_list = []
     epoches = []
     mIOU_val_list = []
 
+
     print('=====> beginning training')
     for epoch in range(start_epoch, args.max_epochs):
-        # training
-
-        lossTr, lr = train(args, trainLoader, model, criteria, optimizer, epoch)
+        lossTr, lr = train_qat(args, trainLoader, model, model_q, criteria, optimizer, epoch)
         lossTr_list.append(lossTr)
 
         # validation写入log.txt
         if epoch % 1 == 0 or epoch == (args.max_epochs - 1):#50的整数倍以及最大max_epoch-1 记录mIou在.txt文件中
             epoches.append(epoch)
-            mIOU_val, per_class_iu = val(args, valLoader, model)
+            mIOU_val, per_class_iu = val(args, valLoader, model_q)
             mIOU_val_list.append(mIOU_val)
             # record train information
             logger.write("\n%d\t\t%.4f\t\t%.4f\t\t%.7f" % (epoch, lossTr, mIOU_val, lr))
@@ -252,12 +325,16 @@ def train_model(args):
 
         # save the model #保存模型
         model_file_name = args.savedir + '/model_' + str(epoch + 1) + '.pth'#1，101，201，301，401，
-        state = {"epoch": epoch + 1, "model": model.state_dict()}
+        state = {"epoch": epoch + 1, "model": export_fp_state_dict_from_qmodel(model_q)}
+        state_q = {"epoch": epoch + 1, "model": model_q.state_dict()}
 
         if args.only_save_best:
-            if mIOU_val >= max(mIOU_val_list):
-                torch.save(state, f'{args.savedir}/model_best.pth')
-                print("=====> best model and latest model have been saved")
+            if epoch % 1 == 0 or epoch == (args.max_epochs - 1):
+                if mIOU_val >= max(mIOU_val_list):
+                    torch.save(state, f'{args.savedir}/model_best.pth')
+                    torch.save(state_q, f'{args.savedir}/model_q_best.pth')
+                    torch.save(model_q, f'{args.savedir}/model_q_best_complete.pt')
+                    print("=====> best model and latest model have been saved")
         else:
             # Individual Setting for save model !!!保存模型，camvid所有.pth都保存，
             if args.dataset == 'camvid':
@@ -299,25 +376,20 @@ def train_model(args):
     logger.close()
 
 
-def train(args, train_loader, model, criterion, optimizer, epoch):
-    """
-    args:
-       train_loader: loaded for training dataset
-       model: model
-       criterion: loss function
-       optimizer: optimization algorithm, such as ADAM or SGD
-       epoch: epoch number
-    return: average loss, per class IoU, and mean IoU
-    """
+def train_qat(args, train_loader, model, model_q, criterion, optimizer, epoch):
+    """Train the quantized student with STE and full-precision feature distillation."""
 
-    model.train()
+    model.eval()
+    model_q.train()
     epoch_loss = []
+    kd_criterion = nn.MSELoss()
 
     total_batches = len(train_loader)
     print("=====> the number of iterations per epoch: ", total_batches)
     st = time.time()
     for iteration, batch in enumerate(train_loader, 0):
-
+        if args.max_train_iters_per_epoch > 0 and iteration >= args.max_train_iters_per_epoch:
+            break
 
         args.per_iter = total_batches
         args.max_iter = args.max_epochs * args.per_iter
@@ -329,8 +401,8 @@ def train(args, train_loader, model, criterion, optimizer, epoch):
         elif args.lr_schedule == 'warmpoly':
             scheduler = WarmupPolyLR(optimizer, T_max=args.max_iter, cur_iter=args.cur_iter, warmup_factor=1.0 / 3,
                                  warmup_iters=args.warmup_iters, power=0.9)
-
-
+        else:
+            scheduler = None
 
         lr = optimizer.param_groups[0]['lr']
 
@@ -341,28 +413,45 @@ def train(args, train_loader, model, criterion, optimizer, epoch):
             images, labels, _, _ = batch
 
         if torch_ver == '0.3':
-            images = Variable(images).cuda()
-            labels = Variable(labels.long()).cuda()
+            images = Variable(images)
+            labels = Variable(labels.long())
         else:
-            images = images.cuda()
-            labels = labels.long().cuda()
+            labels = labels.long()
+
+        if args.cuda:
+            images = images.cuda(non_blocking=True)
+            labels = labels.cuda(non_blocking=True)
 
         images = images.repeat(args.T, 1, 1, 1, 1)  # shape: [T, B, C, H, W]
-        output = model(images)
-        output = output.mean(0)  # average on time steps
-        loss = criterion(output, labels)
+
+        with torch.no_grad():
+            output_teacher, mid_outputs_teacher = model.forward_qat(images)
+            output_teacher = temporal_average(output_teacher)
+            mid_outputs_teacher = [temporal_average(feature) for feature in mid_outputs_teacher]
+
+        output_q, mid_outputs_q = model_q.forward_qat(images)
+        output_q = temporal_average(output_q)
+        mid_outputs_q = [temporal_average(feature) for feature in mid_outputs_q]
+
+        kd_loss = output_q.new_tensor(0.0)
+        for teacher_feature, student_feature in zip(mid_outputs_teacher, mid_outputs_q):
+            kd_loss = kd_loss + kd_criterion(student_feature, teacher_feature.detach())
+
+        task_loss = criterion(output_q, labels)
+        loss = task_loss + kd_loss * args.kd_weight
         optimizer.zero_grad()
         loss.backward()
         optimizer.step()
-        scheduler.step() # In pytorch 1.1.0 and later, should call 'optimizer.step()' before 'lr_scheduler.step()'
+        if scheduler is not None:
+            scheduler.step() # In pytorch 1.1.0 and later, should call 'optimizer.step()' before 'lr_scheduler.step()'
         epoch_loss.append(loss.item())
         time_taken = time.time() - start_time
         functional.reset_net(model)
+        functional.reset_net(model_q)
 
-
-        print('=====> epoch[%d/%d] iter: (%d/%d) \tcur_lr: %.6f loss: %.3f time:%.2f' % (epoch + 1, args.max_epochs,
+        print('=====> epoch[%d/%d] iter: (%d/%d) \tcur_lr: %.6f loss: %.3f task_loss: %.3f kd_loss: %.3f time:%.2f' % (epoch + 1, args.max_epochs,
                                                                                          iteration + 1, total_batches,
-                                                                                         lr, loss.item(), time_taken))
+                                                                                         lr, loss.item(), task_loss.item(), kd_loss.item(), time_taken))
 
     time_taken_epoch = time.time() - st
     remain_time = time_taken_epoch * (args.max_epochs - 1 - epoch)
@@ -391,17 +480,23 @@ def val(args, val_loader, model):
         confm = ConfusionMatrix(args.classes)
         data_list = []
         for i, batch in enumerate(val_loader):
+            if args.max_val_iters > 0 and i >= args.max_val_iters:
+                break
+
             if args.dataset in ['voc', 'udd']:
                 input, label = batch
             else:
                 input, label, _, _ = batch
             start_time = time.time()
             # input_var = Variable(input).cuda()
-            input_var, label = input.cuda(), label.cuda()
+            input_var, label = input, label
+            if args.cuda:
+                input_var = input_var.cuda(non_blocking=True)
+                label = label.cuda(non_blocking=True)
             output = 0
             input_var = input_var.repeat(args.T, 1, 1, 1, 1)  # shape: [T, B, C, H, W]
             output = model(input_var)
-            output = output.mean(0)  # average on time steps
+            output = temporal_average(output)  # average on time steps
             confm.update(label.flatten(), output.argmax(1).flatten())
             time_taken = time.time() - start_time
             print("[%d/%d]  time: %.2f" % (i + 1, total_batches, time_taken))

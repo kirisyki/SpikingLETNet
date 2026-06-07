@@ -23,12 +23,12 @@ from quantization.switch_computing_mode import set_computing_mode, set_T_step
 
 def parse_args():
     parser = ArgumentParser(description='Efficient semantic segmentation')
-    parser.add_argument('--model', default="SpikingLETNet_shallow_middle", help="model name: (default SpikingLETNet_shallow)")
+    parser.add_argument('--model', default="SpikingLETNet_shallow_max", help="model name: (default SpikingLETNet_shallow)")
     parser.add_argument('--dataset', default="udd", help="dataset: cityscapes or camvid")
     parser.add_argument('--num_workers', type=int, default=6, help="the number of parallel threads")
     parser.add_argument('--batch_size', type=int, default=1,
                         help=" the batch_size is set to 1 when evaluating or testing")
-    parser.add_argument('--checkpoint', type=str,default="QAT_checkpoint/udd/SpikingLETNet_shallow_middlebs32gpu1_trainval20260104-185754/model_best.pth",
+    parser.add_argument('--checkpoint', type=str,default="QAT_checkpoint/udd/SpikingLETNet_shallow_maxbs64gpu1_trainval20260607-000352/model_best.pth",
                         help="use the file to load the checkpoint for evaluating or testing ")
     parser.add_argument('--checkpoint_q', type=str,default="QAT_checkpoint/udd/SpikingLETNet_shallow_middlebs32gpu1_trainval20260104-185754/model_q_best_complete.pt",
                         help="use the file to load the quantized checkpoint for evaluating or testing ")
@@ -307,7 +307,7 @@ def test_model(args):
         print(f"total_params: {total_params}")
         print("start model fusing")
         print("start model quantizing")
-        model_q = quantize_model(model, k=4, quant=True, activation_quant=True, quant_start_layer=1, activation_quant_mode='per_channel')
+        model_q = quantize_model(model, k=4, inplace=False, quant=True, activation_quant=True, quant_start_layer=0, activation_quant_mode='per_channel')
         # print_model(model_q)
         # if args.checkpoint_q:
         #     if args.checkpoint_q.endswith('.pth'):

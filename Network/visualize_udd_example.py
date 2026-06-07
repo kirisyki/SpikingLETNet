@@ -28,7 +28,7 @@ def main():
     cmd = [
         "python", "visualize_udd.py",
         "--checkpoint", checkpoint_path,
-        "--model", "SpikingLETNet_shallow",
+        "--model", "SpikingLETNet_shallow_max",
         "--dataset", "udd",
         "--num_samples", "5",
         "--save_dir", "./udd_visualization_results",
@@ -48,15 +48,15 @@ def main():
             print(result.stderr)
         
         if result.returncode == 0:
-            print("\n✅ 可视化完成！")
+            print("\n 可视化完成！")
             print("结果保存在: ./udd_visualization_results/visualizations/")
             print("图例保存在: udd_legend.png")
         else:
-            print(f"\n❌ 可视化失败，返回码: {result.returncode}")
+            print(f"\n 可视化失败，返回码: {result.returncode}")
             
     except Exception as e:
         print(f"运行可视化脚本时出错: {e}")
-        print("\n您也可以直接运行:")
+        print("\n也可以直接运行:")
         print(f"python visualize_udd.py --checkpoint {checkpoint_path} --num_samples 5")
 
 if __name__ == "__main__":

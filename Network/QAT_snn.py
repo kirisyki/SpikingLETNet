@@ -66,7 +66,7 @@ def parse_args():
     parser.add_argument('--use_focal', action='store_true', default=False,help=' FocalLoss2d for cityscapes dataset')
     # cuda setting
     parser.add_argument('--cuda', type=bool, default=True, help="running on CPU or GPU")
-    parser.add_argument('--gpus', type=str, default="3", help="default GPU devices (0,1)")
+    parser.add_argument('--gpus', type=str, default="0", help="default GPU devices (0,1)")
     # checkpoint and log
     parser.add_argument('--resume', type=str, default="",
                         help="use this file to load last checkpoint for continuing training")

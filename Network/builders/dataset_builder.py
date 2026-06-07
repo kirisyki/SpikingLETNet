@@ -128,7 +128,7 @@ def build_dataset_train(dataset, input_size, batch_size, train_type, random_scal
         return None, trainLoader, valLoader
 
 
-def build_dataset_test(dataset, num_workers, none_gt=False, batch_size=32):#if test on validation set, set none_gt to False
+def build_dataset_test(dataset, num_workers, none_gt=False, batch_size=8):#if test on validation set, set none_gt to False
     data_dir = os.path.join('./dataset/', dataset)
     dataset_list = dataset + '_trainval_list.txt'
     test_data_list = os.path.join(data_dir, dataset + '_test' + '_list.txt')
