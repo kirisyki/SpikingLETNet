@@ -37,7 +37,7 @@ GLOBAL_SEED = 1234
 def parse_args():
     parser = ArgumentParser(description='Efficient semantic segmentation')
     # model and dataset
-    parser.add_argument('--model', type=str, default="SpikingLETNet_shallow_max", help="model name: (default ENet)")
+    parser.add_argument('--model', type=str, default="SpikingLETNet_shallow_middle", help="model name: (default ENet)")
     parser.add_argument('--dataset', type=str, default="udd", help="dataset: cityscapes or camvid")
     parser.add_argument('--input_size', type=str, default="400,400", help="input size of model")
     parser.add_argument('--num_workers', type=int, default=6, help=" the number of parallel threads")

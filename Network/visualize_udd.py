@@ -198,31 +198,27 @@ def predict_and_visualize(args, model, test_loader, num_samples=5):
             # 充值神经元状态
             functional.reset_net(model)
 
-            batch_size = predictions.shape[0]
-            for batch_idx in range(batch_size):
-                if samples_processed >= num_samples:
-                    break
+            batch_idx = 0
+            prediction = predictions[batch_idx]
 
-                prediction = predictions[batch_idx]
+            # 获取原始图像（反标准化）
+            image = input_tensor[batch_idx].cpu().numpy()
+            image = image.transpose(1, 2, 0)
+            image = image * np.array([0.229, 0.224, 0.225]) + np.array([0.485, 0.456, 0.406])
+            image = np.clip(image, 0, 1)
+            
+            # 获取真实标签
+            ground_truth = label_tensor[batch_idx].cpu().numpy() if label_tensor is not None else None
 
-                # 获取原始图像（反标准化）
-                image = input_tensor[batch_idx].cpu().numpy()
-                image = image.transpose(1, 2, 0)
-                image = image * np.array([0.229, 0.224, 0.225]) + np.array([0.485, 0.456, 0.406])
-                image = np.clip(image, 0, 1)
-                
-                # 获取真实标签
-                ground_truth = label_tensor[batch_idx].cpu().numpy() if label_tensor is not None else None
-
-                if ground_truth is not None:
-                    update_iou_stats(prediction, ground_truth, intersections, unions)
-                
-                # 可视化
-                save_path = os.path.join(save_dir, f'figure_{samples_processed}_visualization.png')
-                visualize_prediction(image, prediction, ground_truth, save_path=save_path, show=False)
-                
-                # print(f"Processed sample {samples_processed + 1}: {name[0]}")
-                samples_processed += 1
+            if ground_truth is not None:
+                update_iou_stats(prediction, ground_truth, intersections, unions)
+            
+            # 可视化
+            save_path = os.path.join(save_dir, f'figure_{samples_processed}_visualization.png')
+            visualize_prediction(image, prediction, ground_truth, save_path=save_path, show=False)
+            
+            # print(f"Processed sample {samples_processed + 1}: {name[0]}")
+            samples_processed += 1
     
     print(f"Visualized {samples_processed} samples. Results saved to {save_dir}")
     print_miou(intersections, unions, samples_processed)
