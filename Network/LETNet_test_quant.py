@@ -307,7 +307,7 @@ def test_model(args):
         print(f"total_params: {total_params}")
         print("start model fusing")
         print("start model quantizing")
-        model_q = quantize_model(model, k=4, inplace=False, quant=True, activation_quant=True, quant_start_layer=0, activation_quant_mode='per_channel')
+        model_q = quantize_model(model, k=4, inplace=False, quant=True, activation_quant=True, quant_start_layer=1, activation_quant_mode='per_channel')
         # print_model(model_q)
         # if args.checkpoint_q:
         #     if args.checkpoint_q.endswith('.pth'):

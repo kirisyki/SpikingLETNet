@@ -70,20 +70,20 @@ class DABModule(nn.Module):
         super().__init__()
 
         # self.bn_relu_1 = BNPReLU(nIn)
-        self.conv1x1_in = Conv(nIn, nIn // 2, 1, 1, padding=0, bn_acti=False)
+        self.conv1x1_in = Conv(nIn, nIn // 2, 1, 1, padding=0, bn_acti=True)
         self.conv3x1 = Conv(nIn // 2, nIn // 2, (kSize, 1), 1, padding=(1, 0), bn_acti=True)
         self.conv1x3 = Conv(nIn // 2, nIn // 2, (1, kSize), 1, padding=(0, 1), bn_acti=True)
 
         self.dconv3x1 = Conv(nIn // 2, nIn // 2, (dkSize, 1), 1, padding=(1, 0), groups=nIn // 2, bn_acti=True)
-        self.dconv1x3 = Conv(nIn // 2, nIn // 2, (1, dkSize), 1, padding=(0, 1), groups=nIn // 2, bn_acti=False)
+        self.dconv1x3 = Conv(nIn // 2, nIn // 2, (1, dkSize), 1, padding=(0, 1), groups=nIn // 2, bn_acti=True)
         self.ca11 = eca_layer(nIn // 2)
         
         self.ddconv3x1 = Conv(nIn // 2, nIn // 2, (dkSize, 1), 1, padding=(1 * d, 0), dilation=(d, 1), groups=nIn // 2, bn_acti=True)
-        self.ddconv1x3 = Conv(nIn // 2, nIn // 2, (1, dkSize), 1, padding=(0, 1 * d), dilation=(1, d), groups=nIn // 2, bn_acti=False)
+        self.ddconv1x3 = Conv(nIn // 2, nIn // 2, (1, dkSize), 1, padding=(0, 1 * d), dilation=(1, d), groups=nIn // 2, bn_acti=True)
         self.ca22 = eca_layer(nIn // 2)
 
         # self.bn_relu_2 = BNPReLU(nIn // 2)
-        self.conv1x1 = Conv(nIn // 2, nIn, 1, 1, padding=0, bn_acti=False)
+        self.conv1x1 = Conv(nIn // 2, nIn, 1, 1, padding=0, bn_acti=True)
         self.shuffle = ShuffleBlock(nIn // 2)
         self.bn_relu = BNPReLU(nIn)
         
@@ -136,7 +136,7 @@ class DownSamplingBlock(nn.Module):
         else:
             nConv = nOut
 
-        self.conv3x3 = Conv(nIn, nConv, kSize=3, stride=2, padding=1, bn_acti=False)
+        self.conv3x3 = Conv(nIn, nConv, kSize=3, stride=2, padding=1, bn_acti=True)
         self.conv = layer.Conv2d(nIn, nIn, kernel_size=3, padding=1)
         self.avg_pool = layer.MaxPool2d(2, stride=2)
         self.bn_prelu = BNPReLU(nOut)

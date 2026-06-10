@@ -269,7 +269,7 @@ def main():
         model = model.cuda()
         cudnn.benchmark = True
 
-    model_q = quantize_model(model, k=4, inplace=False, quant=True, activation_quant=True, quant_start_layer=1, activation_quant_mode='per_channel')
+    model_q = quantize_model(model, k=4, inplace=False, quant=False, activation_quant=True, quant_start_layer=1, activation_quant_mode='per_channel')
 
     # 切换计算模式
     set_computing_mode(model_q, mode='pytorch')
