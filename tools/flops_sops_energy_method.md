@@ -287,3 +287,24 @@ python tools/estimate_spikingletnet_energy.py \
 ```
 
 若已有目标硬件的操作能耗，应复制 `tools/energy_params.example.yaml` 并替换其中的 `fp.mac`、`fp.ac`、`int4.mac`、`int4.ac`。只有在存储访问模型明确时，才建议启用 `--include-extended` 并设置 memory/neuron 相关参数。
+
+## 11. Spike sparsity 统计
+
+对于 `QIFNode` 输出的整数激活 `k`，本文将其解释为在 `T` 个二值时间槽中发放了 `k` 个 spike。因此 spike sparsity 使用时间展开后的定义：
+
+```text
+expanded_firing_rate = sum(k) / (T * numel(k))
+expanded_spike_sparsity = 1 - expanded_firing_rate
+```
+
+这个指标不同于 `count(k == 0) / numel(k)`。后者只表示聚合整数激活为 0 的比例，不能区分 `k=1` 和 `k=7` 对时间展开后脉冲密度的影响。因此，进行 SOPs 和事件驱动硬件分析时，应优先使用 `expanded_spike_sparsity`。
+
+基于 UDD6 validation 前 20 张图像、`T=8`、输入尺寸 `400x400` 的 FP/INT4 统计结果已经写入：
+
+```text
+energy_estimates_mac_sop_20b/spike_sparsity_summary.md
+energy_estimates_mac_sop_20b/spike_sparsity_summary.csv
+```
+
+这份结果只聚合被混合规则分类为 `spike` 的层，排除了原始图像输入、transformer dense token、Linear 等 dense 路径。
+

@@ -1,0 +1,184 @@
+{
+  "summaries": [
+    {
+      "variant": "max",
+      "checkpoint_kind": "fp",
+      "precision": "fp",
+      "checkpoint": "/root/autodl-tmp/LETNet/checkpoint/udd/SpikingLETNet_shallow_maxbs64gpu1_trainval20260611-003821/model_best.pth",
+      "config": "/root/autodl-tmp/LETNet/Network/configs/SpikingLETNet_shallow/1.3M.yaml",
+      "processed_batches": 20,
+      "batch_size": 1,
+      "timestep": 8,
+      "input_size": [
+        400,
+        400
+      ],
+      "energy_pj": {
+        "mac": 1.0,
+        "ac": 1.0,
+        "mem_read": 0.0,
+        "mem_write": 0.0,
+        "neuron_update": 0.0
+      },
+      "mean_spikes_per_input": 0.2576651976491673,
+      "dense_macs_total": 1101427200000.0,
+      "dense_macs_charged": 73612800000.0,
+      "sop_total": 254351235640.0,
+      "ac_charged": 254351235640.0,
+      "core_energy_pj": 327964035640.0,
+      "mem_energy_pj": 0.0,
+      "neuron_energy_pj": 0.0,
+      "total_energy_pj": 327964035640.0
+    },
+    {
+      "variant": "middle",
+      "checkpoint_kind": "fp",
+      "precision": "fp",
+      "checkpoint": "/root/autodl-tmp/LETNet/checkpoint/udd/SpikingLETNet_shallow_middlebs64gpu1_trainval20260611-222604/model_best.pth",
+      "config": "/root/autodl-tmp/LETNet/Network/configs/SpikingLETNet_shallow/1.3M.yaml",
+      "processed_batches": 20,
+      "batch_size": 1,
+      "timestep": 8,
+      "input_size": [
+        400,
+        400
+      ],
+      "energy_pj": {
+        "mac": 1.0,
+        "ac": 1.0,
+        "mem_read": 0.0,
+        "mem_write": 0.0,
+        "neuron_update": 0.0
+      },
+      "mean_spikes_per_input": 0.2854471967319507,
+      "dense_macs_total": 1372931200000.0,
+      "dense_macs_charged": 118194560000.0,
+      "sop_total": 397855050008.0,
+      "ac_charged": 397855050008.0,
+      "core_energy_pj": 516049610008.0,
+      "mem_energy_pj": 0.0,
+      "neuron_energy_pj": 0.0,
+      "total_energy_pj": 516049610008.0
+    },
+    {
+      "variant": "small",
+      "checkpoint_kind": "fp",
+      "precision": "fp",
+      "checkpoint": "/root/autodl-tmp/LETNet/checkpoint/udd/SpikingLETNet_shallow_smallbs64gpu1_trainval20260611-234750/model_best.pth",
+      "config": "/root/autodl-tmp/LETNet/Network/configs/SpikingLETNet_shallow/1.3M.yaml",
+      "processed_batches": 20,
+      "batch_size": 1,
+      "timestep": 8,
+      "input_size": [
+        400,
+        400
+      ],
+      "energy_pj": {
+        "mac": 1.0,
+        "ac": 1.0,
+        "mem_read": 0.0,
+        "mem_write": 0.0,
+        "neuron_update": 0.0
+      },
+      "mean_spikes_per_input": 0.3627126491584259,
+      "dense_macs_total": 1424908800000.0,
+      "dense_macs_charged": 252311040000.0,
+      "sop_total": 482888763712.0,
+      "ac_charged": 482888763712.0,
+      "core_energy_pj": 735199803712.0,
+      "mem_energy_pj": 0.0,
+      "neuron_energy_pj": 0.0,
+      "total_energy_pj": 735199803712.0
+    },
+    {
+      "variant": "max",
+      "checkpoint_kind": "qat",
+      "precision": "int4",
+      "checkpoint": "/root/autodl-tmp/LETNet/QAT_checkpoint/udd/SpikingLETNet_shallow_maxbs64gpu1_trainval20260613-170955/model_q_best_complete.pt",
+      "config": "/root/autodl-tmp/LETNet/Network/configs/SpikingLETNet_shallow/1.3M.yaml",
+      "processed_batches": 20,
+      "batch_size": 1,
+      "timestep": 8,
+      "input_size": [
+        400,
+        400
+      ],
+      "energy_pj": {
+        "mac": 1.0,
+        "ac": 1.0,
+        "mem_read": 0.0,
+        "mem_write": 0.0,
+        "neuron_update": 0.0
+      },
+      "mean_spikes_per_input": 0.29568378939044365,
+      "dense_macs_total": 1101427200000.0,
+      "dense_macs_charged": 81047040000.0,
+      "sop_total": 291765220760.0,
+      "ac_charged": 291765220760.0,
+      "core_energy_pj": 372812260760.0,
+      "mem_energy_pj": 0.0,
+      "neuron_energy_pj": 0.0,
+      "total_energy_pj": 372812260760.0
+    },
+    {
+      "variant": "middle",
+      "checkpoint_kind": "qat",
+      "precision": "int4",
+      "checkpoint": "/root/autodl-tmp/LETNet/QAT_checkpoint/udd/SpikingLETNet_shallow_middlebs96gpu1_trainval20260613-155726/model_q_best_complete.pt",
+      "config": "/root/autodl-tmp/LETNet/Network/configs/SpikingLETNet_shallow/1.3M.yaml",
+      "processed_batches": 20,
+      "batch_size": 1,
+      "timestep": 8,
+      "input_size": [
+        400,
+        400
+      ],
+      "energy_pj": {
+        "mac": 1.0,
+        "ac": 1.0,
+        "mem_read": 0.0,
+        "mem_write": 0.0,
+        "neuron_update": 0.0
+      },
+      "mean_spikes_per_input": 0.29745948897765284,
+      "dense_macs_total": 1372931200000.0,
+      "dense_macs_charged": 130241920000.0,
+      "sop_total": 359390981264.0,
+      "ac_charged": 359390981264.0,
+      "core_energy_pj": 489632901264.0,
+      "mem_energy_pj": 0.0,
+      "neuron_energy_pj": 0.0,
+      "total_energy_pj": 489632901264.0
+    },
+    {
+      "variant": "small",
+      "checkpoint_kind": "qat",
+      "precision": "int4",
+      "checkpoint": "/root/autodl-tmp/LETNet/QAT_checkpoint/udd/SpikingLETNet_shallow_smallbs64gpu1_trainval20260613-200147/model_q_best_complete.pt",
+      "config": "/root/autodl-tmp/LETNet/Network/configs/SpikingLETNet_shallow/1.3M.yaml",
+      "processed_batches": 20,
+      "batch_size": 1,
+      "timestep": 8,
+      "input_size": [
+        400,
+        400
+      ],
+      "energy_pj": {
+        "mac": 1.0,
+        "ac": 1.0,
+        "mem_read": 0.0,
+        "mem_write": 0.0,
+        "neuron_update": 0.0
+      },
+      "mean_spikes_per_input": 0.34134485501257816,
+      "dense_macs_total": 1424908800000.0,
+      "dense_macs_charged": 274357760000.0,
+      "sop_total": 387281604984.0,
+      "ac_charged": 387281604984.0,
+      "core_energy_pj": 661639364984.0,
+      "mem_energy_pj": 0.0,
+      "neuron_energy_pj": 0.0,
+      "total_energy_pj": 661639364984.0
+    }
+  ]
+}
