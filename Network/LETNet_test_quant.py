@@ -41,6 +41,7 @@ def parse_args():
     parser.add_argument('--cuda', default=True, help="run on CPU or GPU")
     parser.add_argument("--gpus", default="0", type=str, help="gpu ids (default: 0)")
     parser.add_argument('--T', default=1, type=int, help="timesteps")
+    parser.add_argument('--activation_quant', action='store_true', default=False, help="Quantize activation during inference")
     args = parser.parse_args()
 
     return args
@@ -288,8 +289,16 @@ def test_model(args):
             if os.path.isfile(args.checkpoint):
                 print("=====> loading checkpoint '{}'".format(args.checkpoint))
                 checkpoint = torch.load(args.checkpoint, map_location=f'cuda:{args.gpus}')
-                model.load_state_dict(checkpoint['model'])
-                # model.load_state_dict(convert_state_dict(checkpoint['model']))
+                missing, unexpected = model.load_state_dict(checkpoint['model'], strict=False)
+                non_bn_missing = [k for k in missing if '.bn_prelu.bn.' not in k]
+                if non_bn_missing or unexpected:
+                    raise RuntimeError(
+                        f"Unexpected checkpoint mismatch:\n"
+                        f"missing non-BN keys: {non_bn_missing}\n"
+                        f"unexpected keys: {unexpected}"
+                    )
+                print(f"Loaded checkpoint with newly initialized BN keys: {len(missing)}")
+
             else:
                 print("=====> no checkpoint found at '{}'".format(args.checkpoint))
                 raise FileNotFoundError("no checkpoint found at '{}'".format(args.checkpoint))
@@ -307,7 +316,7 @@ def test_model(args):
         print(f"total_params: {total_params}")
         print("start model fusing")
         print("start model quantizing")
-        model_q = quantize_model(model, k=4, inplace=False, quant=True, activation_quant=True, quant_start_layer=1, activation_quant_mode='per_channel')
+        model_q = quantize_model(model, k=4, inplace=False, quant=True, activation_quant=args.activation_quant, quant_start_layer=1, activation_quant_mode='per_channel')
         # print_model(model_q)
         # if args.checkpoint_q:
         #     if args.checkpoint_q.endswith('.pth'):

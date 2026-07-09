@@ -137,9 +137,11 @@ class QLayer(nn.Module):
         if self.quant and self.activation_quant:
             self.input_already_quantized = (torch.all(x==torch.round(x)) 
                                             and torch.all(x>=-1*self.quant_range) 
-                                            and torch.all(x<self.quant_range))
+                                            and torch.all(x<=self.quant_range))
             
             if self.input_already_quantized:
+                if print_info:
+                    print(f"layer_{self.name}'s input is integer based.")
                 x_q = x
                 scale_x = 1
             else:
@@ -288,14 +290,14 @@ def quantize_model(model, k=4, inplace=False, quant=True, activation_quant=True,
             if isinstance(child, quantizable_layers):
                 enable_weight_quant = quant and layer_idx >= quant_start_layer
                 enable_activation_quant = activation_quant and layer_idx >= quant_start_layer
-                if print_info:
-                    print(
-                        f"layer_idx={layer_idx} name={layer_name} "
-                        f"weight_quant={enable_weight_quant} "
-                        f"activation_quant={enable_activation_quant} "
-                        f"activation_quant_mode={activation_quant_mode} "
-                        f"bias={child.bias is not None}"
-                    )
+                # if print_info:
+                #     print(
+                #         f"layer_idx={layer_idx} name={layer_name} "
+                #         f"weight_quant={enable_weight_quant} "
+                #         f"activation_quant={enable_activation_quant} "
+                #         f"activation_quant_mode={activation_quant_mode} "
+                #         f"bias={child.bias is not None}"
+                #     )
                 setattr(
                     module,
                     name,

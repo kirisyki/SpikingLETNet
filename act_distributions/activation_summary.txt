@@ -1,57 +1,57 @@
-checkpoint: /root/autodl-tmp/LETNet/checkpoint/udd/SpikingLETNet_shallow_maxbs64gpu1_trainval20260606-171257/model_best.pth
+checkpoint: /root/autodl-tmp/LETNet/checkpoint/udd/SpikingLETNet_shallow_maxbs64gpu1_trainval20260611-003821/model_best.pth
 model: SpikingLETNet_shallow_max
 dataset: udd
 scope: qlayer
 hook_target: input
-processed_batches: 1
+processed_batches: 10
 
 [global]
-count: 310030000
-mean: 0.1859666469658622
-variance: 0.8411295810927246
-std: 0.9171311689680623
-min: -19.286867141723633
-max: 53.99003219604492
-zero_ratio: 0.6539862303648034
-sample_count: 20000
+count: 3100300000
+mean: 0.22231668287253106
+variance: 0.7723879346701101
+std: 0.8788560375113265
+min: -14.972501754760742
+max: 62.989410400390625
+zero_ratio: 0.6591501316001678
+sample_count: 200000
 
 [layer mean and variance]
-init_conv.0.conv: mean=1.0780479949288206, variance=0.8550355953401925
-init_conv.1.conv: mean=0.3890859375, variance=0.6791160394897462
-init_conv.2.conv: mean=0.2594453125, variance=0.28267602044677737
-downsample_1.conv3x3.conv: mean=0.186171484375, variance=0.2357202565306091
-DAB_Block_1.DAB_Module_1_0.conv1x1_in.conv: mean=0.1630796875, variance=0.20570345302490237
-DAB_Block_1.DAB_Module_1_0.conv3x1.conv: mean=0.029188692760467528, variance=0.1362505621114991
-DAB_Block_1.DAB_Module_1_0.conv1x3.conv: mean=0.1899671875, variance=0.18081403017333986
-DAB_Block_1.DAB_Module_1_0.dconv3x1.conv: mean=0.2844953125, variance=0.2854952296655273
-DAB_Block_1.DAB_Module_1_0.dconv1x3.conv: mean=0.2835046875, variance=0.6079547796655274
-DAB_Block_1.DAB_Module_1_0.ddconv3x1.conv: mean=0.2844953125, variance=0.2854952296655273
-DAB_Block_1.DAB_Module_1_0.ddconv1x3.conv: mean=0.21546875, variance=0.4386107177734375
-DAB_Block_1.DAB_Module_1_0.conv1x1.conv: mean=0.7023671875, variance=1.6143412714233398
-downsample_2.conv3x3.conv: mean=0.16140625, variance=0.17071989746093752
-DAB_Block_2.DAB_Module_2_0.conv1x1_in.conv: mean=0.101315625, variance=0.10898201913085938
-DAB_Block_2.DAB_Module_2_0.conv3x1.conv: mean=0.010106468963623046, variance=0.0414515306497598
-DAB_Block_2.DAB_Module_2_0.conv1x3.conv: mean=0.12420625, variance=0.1347165574609375
-DAB_Block_2.DAB_Module_2_0.dconv3x1.conv: mean=0.1083, variance=0.12798361
-DAB_Block_2.DAB_Module_2_0.dconv1x3.conv: mean=0.03139375, variance=0.0476331824609375
-DAB_Block_2.DAB_Module_2_0.ddconv3x1.conv: mean=0.1083, variance=0.12798361
-DAB_Block_2.DAB_Module_2_0.ddconv1x3.conv: mean=0.06971875, variance=0.1368955458984375
-DAB_Block_2.DAB_Module_2_0.conv1x1.conv: mean=0.15923125, variance=0.2951266590234375
-downsample_3.conv3x3.conv: mean=0.10689375, variance=0.1287237262109375
-DAB_Block_3.DAB_Module_3_0.conv1x1_in.conv: mean=0.164125, variance=0.174587984375
-DAB_Block_3.DAB_Module_3_0.conv3x1.conv: mean=-0.0034809554498642682, variance=0.04533718413694951
-DAB_Block_3.DAB_Module_3_0.conv1x3.conv: mean=0.19505, variance=0.1871054975
-DAB_Block_3.DAB_Module_3_0.dconv3x1.conv: mean=0.18335, variance=0.1851327775
-DAB_Block_3.DAB_Module_3_0.dconv1x3.conv: mean=0.0669, variance=0.09952438999999999
-DAB_Block_3.DAB_Module_3_0.ddconv3x1.conv: mean=0.18335, variance=0.1851327775
-DAB_Block_3.DAB_Module_3_0.ddconv1x3.conv: mean=0.04885, variance=0.07166367750000001
-DAB_Block_3.DAB_Module_3_0.conv1x1.conv: mean=0.27525, variance=0.3374874375
-transformer1.atten.reduce: mean=0.022014985162130043, variance=0.062196666442357995
-transformer1.atten.qkv: mean=-0.0026896305097025065, variance=0.22799839673933556
-transformer1.atten.proj: mean=0.005021783837753193, variance=0.3777871182923856
-transformer1.mlp.fc1: mean=1.5698505166470616e-42, variance=5.219432560148858e-81
-transformer1.mlp.fc2: mean=0.00041752740168504997, variance=2.249143255874514e-06
-DAB_Block_4.DAB_Module_4_0.conv1x1_in.conv: mean=0.9207285987782329, variance=32.33766946045145
+init_conv.0.conv: mean=0.203722435371598, variance=1.206103969102933
+init_conv.1.conv: mean=0.37422818359375, variance=0.6536630908228726
+init_conv.2.conv: mean=0.22583966796875, variance=0.23597941312176476
+downsample_1.conv3x3.conv: mean=0.1931564453125, variance=0.23523890794673918
+DAB_Block_1.DAB_Module_1_0.conv1x1_in.conv: mean=0.1885334375, variance=0.23501498669443355
+DAB_Block_1.DAB_Module_1_0.conv3x1.conv: mean=0.33602453125, variance=0.3810254831482178
+DAB_Block_1.DAB_Module_1_0.conv1x3.conv: mean=0.19165671875, variance=0.18915660840798337
+DAB_Block_1.DAB_Module_1_0.dconv3x1.conv: mean=0.27747078125, variance=0.26287074680251465
+DAB_Block_1.DAB_Module_1_0.dconv1x3.conv: mean=0.1481553125, variance=0.18433594087802732
+DAB_Block_1.DAB_Module_1_0.ddconv3x1.conv: mean=0.27747078125, variance=0.26287074680251465
+DAB_Block_1.DAB_Module_1_0.ddconv1x3.conv: mean=0.0994253125, variance=0.13483241973427734
+DAB_Block_1.DAB_Module_1_0.conv1x1.conv: mean=0.510328125, variance=0.5964145798339844
+downsample_2.conv3x3.conv: mean=0.240454375, variance=0.2503224747933594
+DAB_Block_2.DAB_Module_2_0.conv1x1_in.conv: mean=0.1344459375, variance=0.16098647738974609
+DAB_Block_2.DAB_Module_2_0.conv3x1.conv: mean=0.2470375, variance=0.26618497359375004
+DAB_Block_2.DAB_Module_2_0.conv1x3.conv: mean=0.129965625, variance=0.13893331131835937
+DAB_Block_2.DAB_Module_2_0.dconv3x1.conv: mean=0.103254375, variance=0.11007790904335937
+DAB_Block_2.DAB_Module_2_0.dconv1x3.conv: mean=0.019565625, variance=0.024364061318359376
+DAB_Block_2.DAB_Module_2_0.ddconv3x1.conv: mean=0.103254375, variance=0.11007790904335937
+DAB_Block_2.DAB_Module_2_0.ddconv1x3.conv: mean=0.03011875, variance=0.031609110898437494
+DAB_Block_2.DAB_Module_2_0.conv1x1.conv: mean=0.140268125, variance=0.19649797810898437
+downsample_3.conv3x3.conv: mean=0.1467203125, variance=0.16487596239990232
+DAB_Block_3.DAB_Module_3_0.conv1x1_in.conv: mean=0.1901025, variance=0.20002853949375
+DAB_Block_3.DAB_Module_3_0.conv3x1.conv: mean=0.36149, variance=0.37878497990000004
+DAB_Block_3.DAB_Module_3_0.conv1x3.conv: mean=0.234505, variance=0.24088240497500002
+DAB_Block_3.DAB_Module_3_0.dconv3x1.conv: mean=0.21738, variance=0.2206559356
+DAB_Block_3.DAB_Module_3_0.dconv1x3.conv: mean=0.053205, variance=0.064834227975
+DAB_Block_3.DAB_Module_3_0.ddconv3x1.conv: mean=0.21738, variance=0.2206559356
+DAB_Block_3.DAB_Module_3_0.ddconv1x3.conv: mean=0.0387, variance=0.05119231
+DAB_Block_3.DAB_Module_3_0.conv1x1.conv: mean=0.330585, variance=0.48872855777499996
+transformer1.atten.reduce: mean=0.019604924762451112, variance=0.0474416478371222
+transformer1.atten.qkv: mean=-0.0016549646337641686, variance=0.1586682732558889
+transformer1.atten.proj: mean=-0.007259564984631795, variance=0.21272317047956954
+transformer1.mlp.fc1: mean=1.5721243024602324e-42, variance=5.295524309910323e-81
+transformer1.mlp.fc2: mean=7.9391247923155e-05, variance=5.883725779667343e-07
+DAB_Block_4.DAB_Module_4_0.conv1x1_in.conv: mean=1.928329073099349, variance=31.498350868689887
 DAB_Block_4.DAB_Module_4_0.conv3x1.conv: mean=0.0, variance=0.0
 DAB_Block_4.DAB_Module_4_0.conv1x3.conv: mean=0.0, variance=0.0
 DAB_Block_4.DAB_Module_4_0.dconv3x1.conv: mean=0.0, variance=0.0
@@ -59,31 +59,31 @@ DAB_Block_4.DAB_Module_4_0.dconv1x3.conv: mean=0.0, variance=0.0
 DAB_Block_4.DAB_Module_4_0.ddconv3x1.conv: mean=0.0, variance=0.0
 DAB_Block_4.DAB_Module_4_0.ddconv1x3.conv: mean=0.0, variance=0.0
 DAB_Block_4.DAB_Module_4_0.conv1x1.conv: mean=0.0, variance=0.0
-upsample_1.conv: mean=0.3047, variance=0.34905790999999997
-DAB_Block_5.DAB_Module_5_0.conv1x1_in.conv: mean=0.2985125, variance=0.28795278734375
-DAB_Block_5.DAB_Module_5_0.conv3x1.conv: mean=-0.06801295827254653, variance=0.06934848812259718
-DAB_Block_5.DAB_Module_5_0.conv1x3.conv: mean=0.2557, variance=0.24191751000000003
-DAB_Block_5.DAB_Module_5_0.dconv3x1.conv: mean=0.158625, variance=0.21391310937500002
+upsample_1.conv: mean=0.3374175, variance=0.36687693069375
+DAB_Block_5.DAB_Module_5_0.conv1x1_in.conv: mean=0.3257675, variance=0.35839303594375005
+DAB_Block_5.DAB_Module_5_0.conv3x1.conv: mean=0.4457175, variance=0.57791341019375
+DAB_Block_5.DAB_Module_5_0.conv1x3.conv: mean=0.3052575, variance=0.35192535869374997
+DAB_Block_5.DAB_Module_5_0.dconv3x1.conv: mean=0.1602725, variance=0.21369522574375
 DAB_Block_5.DAB_Module_5_0.dconv1x3.conv: mean=0.0, variance=0.0
-DAB_Block_5.DAB_Module_5_0.ddconv3x1.conv: mean=0.158625, variance=0.21391310937500002
-DAB_Block_5.DAB_Module_5_0.ddconv1x3.conv: mean=0.23195, variance=0.48234919750000005
-DAB_Block_5.DAB_Module_5_0.conv1x1.conv: mean=0.5127, variance=1.73538871
-upsample_2.conv: mean=0.498025, variance=0.563021099375
-DAB_Block_6.DAB_Module_6_0.conv1x1_in.conv: mean=0.297346875, variance=0.27916296092773435
-DAB_Block_6.DAB_Module_6_0.conv3x1.conv: mean=-0.0025954966488294304, variance=0.16212324643987083
-DAB_Block_6.DAB_Module_6_0.conv1x3.conv: mean=0.29520625, variance=0.28059701996093744
-DAB_Block_6.DAB_Module_6_0.dconv3x1.conv: mean=0.3679125, variance=0.35962789234375003
-DAB_Block_6.DAB_Module_6_0.dconv1x3.conv: mean=0.5796125, variance=1.26457434984375
-DAB_Block_6.DAB_Module_6_0.ddconv3x1.conv: mean=0.3679125, variance=0.35962789234375003
-DAB_Block_6.DAB_Module_6_0.ddconv1x3.conv: mean=0.2422875, variance=0.48153426734375004
-DAB_Block_6.DAB_Module_6_0.conv1x1.conv: mean=0.98811875, variance=3.6348150858984374
-upsample_3.conv: mean=0.81296875, variance=0.9980630615234376
+DAB_Block_5.DAB_Module_5_0.ddconv3x1.conv: mean=0.1602725, variance=0.21369522574375
+DAB_Block_5.DAB_Module_5_0.ddconv1x3.conv: mean=0.16851, variance=0.3033143799
+DAB_Block_5.DAB_Module_5_0.conv1x1.conv: mean=0.3923175, variance=1.05455947919375
+upsample_2.conv: mean=0.608295, variance=0.797142192975
+DAB_Block_6.DAB_Module_6_0.conv1x1_in.conv: mean=0.3504415625, variance=0.46060289877255856
+DAB_Block_6.DAB_Module_6_0.conv3x1.conv: mean=0.370821875, variance=0.40561051202148435
+DAB_Block_6.DAB_Module_6_0.conv1x3.conv: mean=0.337715, variance=0.343994828775
+DAB_Block_6.DAB_Module_6_0.dconv3x1.conv: mean=0.435590625, variance=0.36187518241210936
+DAB_Block_6.DAB_Module_6_0.dconv1x3.conv: mean=0.41787375, variance=0.7790602790609376
+DAB_Block_6.DAB_Module_6_0.ddconv3x1.conv: mean=0.435590625, variance=0.36187518241210936
+DAB_Block_6.DAB_Module_6_0.ddconv1x3.conv: mean=0.1479575, variance=0.20302232819375
+DAB_Block_6.DAB_Module_6_0.conv1x1.conv: mean=0.685975, variance=0.991062049375
+upsample_3.conv: mean=0.8664403125, variance=1.1947064973749024
 PA3.conv: mean=nan, variance=nan
-LC1.dconv3x1: mean=0.16140625, variance=0.17071989746093752
-LC1.dconv1x3: mean=-0.038318989203700235, variance=0.1939940701826811
-LC2.dconv3x1: mean=0.10689375, variance=0.1287237262109375
-LC2.dconv1x3: mean=0.017859447417997262, variance=0.08973299672120666
-LC3.dconv3x1: mean=0.196975, variance=0.226725849375
-LC3.dconv1x3: mean=0.008008220899268054, variance=0.1793127941501263
-final_conv: mean=0.320959375, variance=0.3825538295996094
-classifier.0.conv: mean=-0.3747630306982524, variance=3.0232206523986123
+LC1.dconv3x1: mean=0.240454375, variance=0.2503224747933594
+LC1.dconv1x3: mean=0.019257100310382375, variance=0.25583448220958027
+LC2.dconv3x1: mean=0.1467203125, variance=0.16487596239990232
+LC2.dconv1x3: mean=0.0087165619921601, variance=0.12699631115633916
+LC3.dconv3x1: mean=0.277975, variance=0.291444899375
+LC3.dconv1x3: mean=-0.06430085839732914, variance=0.2681905269260047
+final_conv: mean=0.3614246875, variance=0.4920250077655274
+classifier.0.conv: mean=-0.017349831611683436, variance=3.145731419334885

@@ -172,7 +172,15 @@ def train_model(args):
         if os.path.isfile(args.resume):
             checkpoint = torch.load(args.resume)
             start_epoch = checkpoint['epoch']
-            model.load_state_dict(checkpoint['model'])
+            missing, unexpected = model.load_state_dict(checkpoint['model'], strict=False)
+            non_bn_missing = [k for k in missing if '.bn_prelu.bn.' not in k]
+            if non_bn_missing or unexpected:
+                raise RuntimeError(
+                    f"Unexpected checkpoint mismatch:\n"
+                    f"missing non-BN keys: {non_bn_missing}\n"
+                    f"unexpected keys: {unexpected}"
+                )
+            print(f"Loaded checkpoint with newly initialized BN keys: {len(missing)}")
             # model.load_state_dict(convert_state_dict(checkpoint['model']))
             print("=====> loaded checkpoint '{}' (epoch {})".format(args.resume, checkpoint['epoch']))
         else:
