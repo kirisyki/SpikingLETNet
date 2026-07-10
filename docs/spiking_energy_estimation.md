@@ -26,11 +26,10 @@ activation = k  等价于  k 个时间步脉冲事件
 
 ```text
 mean_spikes_per_input = sum(input_activation) / numel(input_activation)
-SOP_layer ~= dense_MAC_layer * mean_spikes_per_input
+SOP_layer ~= (dense_MAC_layer / actual_timesteps) * mean_spikes_per_input
 ```
 
-这个公式用 dense MAC 的真实输出形状、kernel、groups、time/batch 维度作为基准，再乘以输入脉冲均值。它比简单的
-`sum(input_spikes) * kernel_size * out_channels` 更稳，因为 stride、groups、输出尺寸已经体现在 dense MAC 中。
+这个公式用 dense MAC 的真实输出形状、kernel、groups、time/batch 维度作为基准；由于 dense MAC 已包含时间维，而 QIF 整数激活已经是跨时间累计 spike 数，因此先除以实际时间步数，再乘以输入脉冲均值。
 
 ## 混合层分类
 

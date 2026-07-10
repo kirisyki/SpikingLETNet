@@ -1,0 +1,13 @@
+energy_pj:
+  fp:
+    mac: 4.6
+    ac: 0.9
+    mem_read: 0.0
+    mem_write: 0.0
+    neuron_update: 0.0
+  int4:
+    mac: 0.23
+    ac: 0.03
+    mem_read: 0.0
+    mem_write: 0.0
+    neuron_update: 0.0

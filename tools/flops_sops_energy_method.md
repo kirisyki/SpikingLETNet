@@ -100,10 +100,10 @@ mean_spikes_per_input = input_spike_sum / numel(input_activation)
 对于被判定为脉冲路径的卷积或反卷积层，SOPs 由 dense MACs 按输入平均脉冲数缩放得到：
 
 ```text
-SOP_layer = dense_MAC_layer * mean_spikes_per_input
+SOP_layer = (dense_MAC_layer / actual_timesteps) * mean_spikes_per_input
 ```
 
-这个表达式可以理解为：dense MAC 假设每个输入元素在每个连接上都参与一次乘加；而 SNN 中只有输入脉冲事件触发突触累加。若平均每个输入位置发放 `r` 个脉冲，则该层突触操作数约为 dense 连接数乘以 `r`。
+这个表达式可以理解为：`dense_MAC_layer` 在多步 SNN 张量中已经包含时间维，因此需要先除以实际时间步数得到单步连接规模；而 QIF 整数激活 `k` 已经表示跨时间累计 spike 数。若平均每个输入位置累计发放 `r` 个脉冲，则该层突触操作数约为单步 dense 连接数乘以 `r`。
 
 脚本同时记录两个诊断指标：
 

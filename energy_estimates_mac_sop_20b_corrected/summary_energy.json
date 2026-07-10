@@ -23,12 +23,12 @@
       "mean_spikes_per_input": 0.2576651976491673,
       "dense_macs_total": 1101427200000.0,
       "dense_macs_charged": 73612800000.0,
-      "sop_total": 254351235640.0,
-      "ac_charged": 254351235640.0,
-      "core_energy_pj": 327964035640.0,
+      "sop_total": 31809068723.0,
+      "ac_charged": 31809068723.0,
+      "core_energy_pj": 105421868723.0,
       "mem_energy_pj": 0.0,
       "neuron_energy_pj": 0.0,
-      "total_energy_pj": 327964035640.0
+      "total_energy_pj": 105421868723.0
     },
     {
       "variant": "middle",
@@ -53,12 +53,12 @@
       "mean_spikes_per_input": 0.2854471967319507,
       "dense_macs_total": 1372931200000.0,
       "dense_macs_charged": 118194560000.0,
-      "sop_total": 397855050008.0,
-      "ac_charged": 397855050008.0,
-      "core_energy_pj": 516049610008.0,
+      "sop_total": 49736944099.0,
+      "ac_charged": 49736944099.0,
+      "core_energy_pj": 167931504099.0,
       "mem_energy_pj": 0.0,
       "neuron_energy_pj": 0.0,
-      "total_energy_pj": 516049610008.0
+      "total_energy_pj": 167931504099.0
     },
     {
       "variant": "small",
@@ -83,12 +83,12 @@
       "mean_spikes_per_input": 0.3627126491584259,
       "dense_macs_total": 1424908800000.0,
       "dense_macs_charged": 252311040000.0,
-      "sop_total": 482888763712.0,
-      "ac_charged": 482888763712.0,
-      "core_energy_pj": 735199803712.0,
+      "sop_total": 60383449502.0,
+      "ac_charged": 60383449502.0,
+      "core_energy_pj": 312694489502.0,
       "mem_energy_pj": 0.0,
       "neuron_energy_pj": 0.0,
-      "total_energy_pj": 735199803712.0
+      "total_energy_pj": 312694489502.0
     },
     {
       "variant": "max",
@@ -113,12 +113,12 @@
       "mean_spikes_per_input": 0.29568378939044365,
       "dense_macs_total": 1101427200000.0,
       "dense_macs_charged": 81047040000.0,
-      "sop_total": 291765220760.0,
-      "ac_charged": 291765220760.0,
-      "core_energy_pj": 372812260760.0,
+      "sop_total": 36481857523.0,
+      "ac_charged": 36481857523.0,
+      "core_energy_pj": 117528897523.0,
       "mem_energy_pj": 0.0,
       "neuron_energy_pj": 0.0,
-      "total_energy_pj": 372812260760.0
+      "total_energy_pj": 117528897523.0
     },
     {
       "variant": "middle",
@@ -143,12 +143,12 @@
       "mean_spikes_per_input": 0.29745948897765284,
       "dense_macs_total": 1372931200000.0,
       "dense_macs_charged": 130241920000.0,
-      "sop_total": 359390981264.0,
-      "ac_charged": 359390981264.0,
-      "core_energy_pj": 489632901264.0,
+      "sop_total": 44927841364.0,
+      "ac_charged": 44927841364.0,
+      "core_energy_pj": 175169761364.0,
       "mem_energy_pj": 0.0,
       "neuron_energy_pj": 0.0,
-      "total_energy_pj": 489632901264.0
+      "total_energy_pj": 175169761364.0
     },
     {
       "variant": "small",
@@ -173,12 +173,12 @@
       "mean_spikes_per_input": 0.34134485501257816,
       "dense_macs_total": 1424908800000.0,
       "dense_macs_charged": 274357760000.0,
-      "sop_total": 387281604984.0,
-      "ac_charged": 387281604984.0,
-      "core_energy_pj": 661639364984.0,
+      "sop_total": 48429519069.0,
+      "ac_charged": 48429519069.0,
+      "core_energy_pj": 322787279069.0,
       "mem_energy_pj": 0.0,
       "neuron_energy_pj": 0.0,
-      "total_energy_pj": 661639364984.0
+      "total_energy_pj": 322787279069.0
     }
   ]
 }

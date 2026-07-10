@@ -1,0 +1,10 @@
+mode       , network               , variant, macs_per_image, mac_energy_pj, compute_energy_uJ_per_image, note
+ANN_all_MAC, FP32                  , small  ,   9320640000.0,          4.6 ,                  42874.944 , FP32 MAC = FP32 multiply + FP32 add
+ANN_all_MAC, FP32                  , middle ,   8684560000.0,          4.6 ,                  39948.976 , FP32 MAC = FP32 multiply + FP32 add
+ANN_all_MAC, FP32                  , max    ,   7298880000.0,          4.6 ,                  33574.848 , FP32 MAC = FP32 multiply + FP32 add
+ANN_all_MAC, INT4_SetA_conservative, small  ,   9320640000.0,          0.23,                   2143.7472, INT8-proxy conservative INT4 MAC
+ANN_all_MAC, INT4_SetA_conservative, middle ,   8684560000.0,          0.23,                   1997.4488, INT8-proxy conservative INT4 MAC
+ANN_all_MAC, INT4_SetA_conservative, max    ,   7298880000.0,          0.23,                   1678.7424, INT8-proxy conservative INT4 MAC
+ANN_all_MAC, INT4_SetB_custom      , small  ,   9320640000.0,          0.08,                    745.6512, custom narrow INT4 datapath sensitivity
+ANN_all_MAC, INT4_SetB_custom      , middle ,   8684560000.0,          0.08,                    694.7648, custom narrow INT4 datapath sensitivity
+ANN_all_MAC, INT4_SetB_custom      , max    ,   7298880000.0,          0.08,                    583.9104, custom narrow INT4 datapath sensitivity

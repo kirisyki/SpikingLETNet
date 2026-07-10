@@ -390,7 +390,11 @@ class EnergyHookCollector:
             precision_energy = self.energy[self.precision]
             if classification == "spike":
                 mean_spikes = input_sum / input_elems if input_elems else 0.0
-                sop = dense_macs * mean_spikes
+                # dense_macs already includes the leading time dimension for SNN tensors.
+                # QIF integer activations encode cumulative spikes across time, so divide
+                # by the actual time length before scaling by mean_spikes.
+                actual_timesteps = input_tensor.shape[0] if input_tensor.dim() in (3, 5) else 1
+                sop = (dense_macs / max(int(actual_timesteps), 1)) * mean_spikes
                 stats.sop_total += sop
                 stats.ac_charged += sop
                 stats.core_energy_pj += sop * precision_energy.get("ac", 0.0)

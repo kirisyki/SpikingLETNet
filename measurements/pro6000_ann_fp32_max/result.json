@@ -1,0 +1,58 @@
+{
+  "measurement": "pro6000_ann_fp32_max",
+  "model": "SpikingLETNet_shallow_max",
+  "mode": "ANN dense FP32 forward",
+  "checkpoint": "/root/autodl-tmp/LETNet/checkpoint/udd/SpikingLETNet_shallow_maxbs64gpu1_trainval20260611-003821/model_best.pth",
+  "config": "/root/autodl-tmp/LETNet/Network/configs/SpikingLETNet_shallow/1.3M.yaml",
+  "split_file": "/root/autodl-tmp/UDD/UDD6/preprocessed/val_patches.txt",
+  "input_size": [
+    400,
+    400
+  ],
+  "warmup_images": 50,
+  "measure_images": 500,
+  "sample_interval_ms": 20.0,
+  "gpu_before": {
+    "name": "NVIDIA RTX PRO 6000 Blackwell Server Edition",
+    "driver": "595.58.03",
+    "power_limit_w": 600.0,
+    "temperature_c": 30,
+    "sm_clock_mhz": 180,
+    "mem_clock_mhz": 405
+  },
+  "gpu_after": {
+    "name": "NVIDIA RTX PRO 6000 Blackwell Server Edition",
+    "driver": "595.58.03",
+    "power_limit_w": 600.0,
+    "temperature_c": 34,
+    "sm_clock_mhz": 2332,
+    "mem_clock_mhz": 12481
+  },
+  "active_elapsed_s": 5.885849580168724,
+  "idle_elapsed_s": 5.886066170409322,
+  "active_energy_j": 751.7209011240449,
+  "idle_energy_j_same_duration": 536.8952959550272,
+  "gross_j_per_image": 1.5034418022480898,
+  "net_j_per_image": 0.42965121033803527,
+  "images_per_second": 84.9495035830778,
+  "active_power": {
+    "mean_w": 127.72509589041097,
+    "median_w": 128.851,
+    "min_w": 107.338,
+    "max_w": 130.924
+  },
+  "idle_power": {
+    "mean_w": 91.2888566552901,
+    "median_w": 87.321,
+    "min_w": 86.198,
+    "max_w": 129.836
+  },
+  "active_sample_count": 292,
+  "idle_sample_count": 293,
+  "notes": [
+    "Data loading and preprocessing are excluded.",
+    "Images are preloaded to GPU before timing and power sampling.",
+    "Net energy subtracts an equal-duration idle GPU baseline.",
+    "No GPU global settings such as clocks or power limits were changed."
+  ]
+}
