@@ -1,0 +1,14 @@
+| run | variant | checkpoint_kind | timestep | mean_spike_count_per_input | configured_firing_rate | sop_density_per_executed_mac | zero_ratio |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| qif_t1 | max | fp | 1 | None | None | None | None |
+| qif_t1 | max | qat | 1 | None | None | None | None |
+| qif_t1 | middle | fp | 1 | None | None | None | None |
+| qif_t1 | middle | qat | 1 | None | None | None | None |
+| qif_t1 | small | fp | 1 | None | None | None | None |
+| qif_t1 | small | qat | 1 | None | None | None | None |
+| snn_t8 | max | fp | 8 | 0.22248631 | 0.027810789 | 0.027841483 | 0.81749675 |
+| snn_t8 | max | qat | 8 | 0.2650661 | 0.033133263 | 0.033155942 | 0.80814438 |
+| snn_t8 | middle | fp | 8 | 0.29277541 | 0.036596926 | 0.036619362 | 0.77758246 |
+| snn_t8 | middle | qat | 8 | 0.26956516 | 0.033695645 | 0.033713232 | 0.80402076 |
+| snn_t8 | small | fp | 8 | 0.36393723 | 0.045492154 | 0.045555859 | 0.72206233 |
+| snn_t8 | small | qat | 8 | 0.32720666 | 0.040900832 | 0.040955886 | 0.76041686 |

@@ -1,0 +1,55 @@
+{
+  "schema_version": 2,
+  "runs": [
+    {
+      "label": "qif_t1",
+      "path": "energy/theoretical/v2/qif_t1_dense_20_images"
+    },
+    {
+      "label": "snn_t8",
+      "path": "energy/theoretical/v2/snn_t8_20_images"
+    }
+  ],
+  "baseline_run": "qif_t1",
+  "energy_sets": [
+    {
+      "label": "set_a",
+      "path": "/root/autodl-tmp/LETNet/tools/energy_params_set_a_fp32_int4_conservative.yaml",
+      "sha256": "142166155cc913997e2a15472ecec4589d949fee87a89d8fb0d88bab5db5e837",
+      "energy_pj": {
+        "fp": {
+          "mac": 4.6,
+          "ac": 0.9
+        },
+        "int4": {
+          "mac": 0.23,
+          "ac": 0.03
+        }
+      }
+    },
+    {
+      "label": "set_b",
+      "path": "/root/autodl-tmp/LETNet/tools/energy_params_set_b_fp32_int4_custom.yaml",
+      "sha256": "3d5dd2fd6e1b21886b00f752f8637c4d4e7693ba34cbcf24e52d55a5ec1af0be",
+      "energy_pj": {
+        "fp": {
+          "mac": 4.6,
+          "ac": 0.9
+        },
+        "int4": {
+          "mac": 0.08,
+          "ac": 0.03
+        }
+      }
+    }
+  ],
+  "outputs": [
+    "inference_energy.csv",
+    "mac_sop_summary.csv",
+    "spike_sparsity_summary.csv",
+    "energy_comparison.csv",
+    "inference_energy.md",
+    "mac_sop_summary.md",
+    "spike_sparsity_summary.md"
+  ]
+}

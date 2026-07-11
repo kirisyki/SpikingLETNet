@@ -1,0 +1,33 @@
+{
+  "schema_version": 2,
+  "generated_at_utc": "2026-07-10T09:32:27.772808+00:00",
+  "command": [
+    "tools/measure_pro6000_ann_energy_v2.py",
+    "--warmup-images",
+    "200",
+    "--measure-images",
+    "5000",
+    "--trials",
+    "5",
+    "--idle-seconds",
+    "10",
+    "--sample-interval-ms",
+    "100",
+    "--tf32",
+    "off",
+    "--output-dir",
+    "measurements/pro6000_qif_t1_dense_v2",
+    "--run-id",
+    "formal_20260710"
+  ],
+  "git_commit": "109413d8eb1d49cc16a14ec4324e25afaabffc2f",
+  "software": {
+    "python": "3.12.3",
+    "torch": "2.7.0+cu128",
+    "torch_cuda": "12.8",
+    "cudnn": 90701,
+    "numpy": "2.2.6",
+    "pynvml": null
+  },
+  "result_status": "ready"
+}

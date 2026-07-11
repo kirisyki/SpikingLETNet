@@ -1,0 +1,25 @@
+phase       , variant, checkpoint_kind, energy_set, metric                        , legacy              , v2                 , v2_over_legacy    , percent_change
+t1_qif_dense, max    , fp             , set_a     , total_core_energy_mj_per_image, 33.574847999999996  , 33.8327794944      , 1.0076822833092203, 0.7682283309220272
+t1_qif_dense, max    , fp             , set_b     , total_core_energy_mj_per_image, 33.574847999999996  , 33.8327794944      , 1.0076822833092203, 0.7682283309220272
+t1_qif_dense, max    , qat            , set_a     , total_core_energy_mj_per_image,  1.6787424000000002 ,  1.9366738944000002, 1.1536456661844008, 15.36456661844008
+t1_qif_dense, max    , qat            , set_b     , total_core_energy_mj_per_image,  0.5839103999999999 ,  0.8418418944      , 1.4417312902801527, 44.17312902801527
+t1_qif_dense, middle , fp             , set_a     , total_core_energy_mj_per_image, 39.948976           , 40.077943072       , 1.0032282948128632, 0.32282948128632416
+t1_qif_dense, middle , fp             , set_b     , total_core_energy_mj_per_image, 39.948976           , 40.077943072       , 1.0032282948128632, 0.32282948128632416
+t1_qif_dense, middle , qat            , set_a     , total_core_energy_mj_per_image,  1.9974488          ,  2.126415872       , 1.0645658962572657, 6.456589625726572
+t1_qif_dense, middle , qat            , set_b     , total_core_energy_mj_per_image,  0.6947648000000001 ,  0.823731872       , 1.185626951739639 , 18.562695173963895
+t1_qif_dense, small  , fp             , set_a     , total_core_energy_mj_per_image, 42.874944000000006  , 44.94494753279999  , 1.0482800288392211, 4.828002883922111
+t1_qif_dense, small  , fp             , set_b     , total_core_energy_mj_per_image, 42.874944000000006  , 44.94494753279999  , 1.0482800288392211, 4.828002883922111
+t1_qif_dense, small  , qat            , set_a     , total_core_energy_mj_per_image,  2.1437472          ,  4.2137507328      , 1.9656005767844271, 96.56005767844272
+t1_qif_dense, small  , qat            , set_b     , total_core_energy_mj_per_image,  0.7456512000000001 ,  2.8156547328      , 3.776101658255227 , 277.6101658255227
+t8_snn      , max    , fp             , set_a     , total_core_energy_mj_per_image, 18.362352092534998  , 13.051399391095    , 0.7107694768798652, -28.923052312013475
+t8_snn      , max    , fp             , set_b     , total_core_energy_mj_per_image, 18.362352092534998  , 13.051399391095    , 0.7107694768798652, -28.923052312013475
+t8_snn      , max    , qat            , set_a     , total_core_energy_mj_per_image,  0.9867637462845    ,  0.8808514857245   , 0.8926670533257879, -10.733294667421212
+t8_snn      , max    , qat            , set_b     , total_core_energy_mj_per_image,  0.37891094628449995,  0.5138434857245   , 1.3561062058594842, 35.61062058594842
+t8_snn      , middle , fp             , set_a     , total_core_energy_mj_per_image, 29.422911284454997  , 26.359335137575002 , 0.8958778715925853, -10.412212840741475
+t8_snn      , middle , fp             , set_b     , total_core_energy_mj_per_image, 29.422911284454997  , 26.359335137575002 , 0.8958778715925853, -10.412212840741475
+t8_snn      , middle , qat            , set_a     , total_core_energy_mj_per_image,  1.565173842046     ,  1.3985123228299998, 0.8935188445277492, -10.648115547225078
+t8_snn      , middle , qat            , set_b     , total_core_energy_mj_per_image,  0.5883594420459999 ,  0.61786432283     , 1.05014771358372  , 5.0147713583720055
+t8_snn      , small  , fp             , set_a     , total_core_energy_mj_per_image, 60.74879442758999   , 48.00493680534999  , 0.7902204028521069, -20.977959714789307
+t8_snn      , small  , fp             , set_b     , total_core_energy_mj_per_image, 60.74879442758999   , 48.00493680534999  , 0.7902204028521069, -20.977959714789307
+t8_snn      , small  , qat            , set_a     , total_core_energy_mj_per_image,  3.2277585186035    ,  4.3064637725555   , 1.3341963928635856, 33.41963928635856
+t8_snn      , small  , qat            , set_b     , total_core_energy_mj_per_image,  1.1700753186035    ,  2.9072637725554995, 2.4846808802234683, 148.46808802234682

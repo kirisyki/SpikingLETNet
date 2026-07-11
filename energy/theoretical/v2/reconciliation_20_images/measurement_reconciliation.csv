@@ -1,0 +1,4 @@
+legacy_driver,v2_driver,legacy_trials,v2_trials,legacy_energy_source,v2_energy_source,comparison_scope,metric,legacy,v2,v2_over_legacy,percent_change
+595.58.03,580.95.05,1,5,trapezoidal_power_integration,nvml_total_energy_counter,protocol_and_environment_combined_difference,gross_j_per_image,1.5654533114610718,1.3291274000167848,0.8490367552234956,-15.096324477650436
+595.58.03,580.95.05,1,5,trapezoidal_power_integration,nvml_total_energy_counter,protocol_and_environment_combined_difference,net_j_per_image,0.5140255285302235,0.5438920347853002,1.0581031575230813,5.810315752308126
+595.58.03,580.95.05,1,5,trapezoidal_power_integration,nvml_total_energy_counter,protocol_and_environment_combined_difference,images_per_second,84.39060608172348,106.44074512115508,1.2612866533755942,26.12866533755942

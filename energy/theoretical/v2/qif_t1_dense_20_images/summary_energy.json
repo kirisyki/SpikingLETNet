@@ -1,0 +1,2131 @@
+{
+  "schema_version": 2,
+  "summaries": [
+    {
+      "schema_version": 2,
+      "variant": "max",
+      "checkpoint_kind": "fp",
+      "precision": "fp",
+      "checkpoint": "/root/autodl-tmp/LETNet/checkpoint/udd/SpikingLETNet_shallow_maxbs64gpu1_trainval20260611-003821/model_best.pth",
+      "checkpoint_sha256": "2729d27dad82b9ec5124cc6474bcaad5bb3813de30b1875cd39765be1f46c3fb",
+      "config": "/root/autodl-tmp/LETNet/Network/configs/SpikingLETNet_shallow/1.3M.yaml",
+      "config_sha256": "ab1008283b7f2f539d17654ae30861c5a794145ac3aaa1d4b5f02fc1589becb8",
+      "split_file": "/root/autodl-tmp/UDD/UDD6/preprocessed/val_patches.txt",
+      "split_sha256": "e535815642b56f6f4d11c3d0ce0ec35914e0861975157d7a3357aa1495261169",
+      "synthetic": false,
+      "processed_batches": 20,
+      "processed_images": 20,
+      "batch_size": 1,
+      "timestep": 1,
+      "input_size": [
+        400,
+        400
+      ],
+      "accounting_mode": "all-dense",
+      "classification_mode": "semantic-policy",
+      "sop_method": "qif_cumulative_spike_count_times_one_step_dense_macs_v2",
+      "spike_value_semantics": "qif_cumulative_count_0_to_T",
+      "layer_policy_version": 2,
+      "layer_policy_sha256": "c6a4d3e3d9b18a496f455fad53db28b7570279c817505a32fadd0958972edc8a",
+      "count_convention": "standard_dense_kernel_ops_including_padding_convention",
+      "energy_pj": {
+        "fp": {
+          "mac": 1.0,
+          "ac": 1.0,
+          "mem_read": 0.0,
+          "mem_write": 0.0,
+          "neuron_update": 0.0
+        },
+        "int4": {
+          "mac": 1.0,
+          "ac": 1.0,
+          "mem_read": 0.0,
+          "mem_write": 0.0,
+          "neuron_update": 0.0
+        }
+      },
+      "precision_layer_counts": {
+        "fp": 83
+      },
+      "quantization_inventory": [],
+      "sample_ids": [
+        "9ff10cb75ea26f82",
+        "4f3e590e309295ca",
+        "4c6d7797d0b0aaae",
+        "9156b1c236cc4554",
+        "ce9f8292291d92b4",
+        "92e88eb7cdc4b0c9",
+        "4b1dda3d62806c25",
+        "45c98f970bb6e5fd",
+        "dc871ef1924b669f",
+        "f0c7f9558329a58f",
+        "91d3969d025c40f2",
+        "7301b0325cd0be88",
+        "52fbfa4d66ae212e",
+        "a57aba58a9cdfab0",
+        "d3c3608c9fa385d8",
+        "b222fbbcb6cbaf71",
+        "097218ed338c595f",
+        "d843a1055b074b0c",
+        "00b3f31e1bdd8382",
+        "eaa8b353bb90390f"
+      ],
+      "mean_spike_count_per_input_across_spike_layers": null,
+      "configured_firing_rate_across_spike_layers": null,
+      "sop_density_per_executed_mac_across_spike_layers": null,
+      "excluded_ops": [
+        "bias",
+        "batch_norm",
+        "layer_norm",
+        "softmax",
+        "pooling",
+        "qif_update_reset",
+        "shuffle_concat_reshape_repeat",
+        "bilinear_interpolation"
+      ],
+      "dense_macs_total": 147099041280.0,
+      "dense_macs_charged": 147099041280.0,
+      "sop_total": 0.0,
+      "ac_charged": 0.0,
+      "core_energy_pj": 147099041280.0,
+      "mem_energy_pj": 0.0,
+      "neuron_energy_pj": 0.0,
+      "total_energy_pj": 147099041280.0,
+      "dense_macs_total_per_image": 7354952064.0,
+      "dense_macs_charged_per_image": 7354952064.0,
+      "sop_total_per_image": 0.0,
+      "ac_charged_per_image": 0.0,
+      "core_energy_pj_per_image": 7354952064.0,
+      "mem_energy_pj_per_image": 0.0,
+      "neuron_energy_pj_per_image": 0.0,
+      "total_energy_pj_per_image": 7354952064.0
+    },
+    {
+      "schema_version": 2,
+      "variant": "middle",
+      "checkpoint_kind": "fp",
+      "precision": "fp",
+      "checkpoint": "/root/autodl-tmp/LETNet/checkpoint/udd/SpikingLETNet_shallow_middlebs64gpu1_trainval20260611-222604/model_best.pth",
+      "checkpoint_sha256": "240cce2e4f5c53b21830fe4bb95b96f9b3cc3a0d8360a15562ab617644c44a76",
+      "config": "/root/autodl-tmp/LETNet/Network/configs/SpikingLETNet_shallow/1.3M.yaml",
+      "config_sha256": "ab1008283b7f2f539d17654ae30861c5a794145ac3aaa1d4b5f02fc1589becb8",
+      "split_file": "/root/autodl-tmp/UDD/UDD6/preprocessed/val_patches.txt",
+      "split_sha256": "e535815642b56f6f4d11c3d0ce0ec35914e0861975157d7a3357aa1495261169",
+      "synthetic": false,
+      "processed_batches": 20,
+      "processed_images": 20,
+      "batch_size": 1,
+      "timestep": 1,
+      "input_size": [
+        400,
+        400
+      ],
+      "accounting_mode": "all-dense",
+      "classification_mode": "semantic-policy",
+      "sop_method": "qif_cumulative_spike_count_times_one_step_dense_macs_v2",
+      "spike_value_semantics": "qif_cumulative_count_0_to_T",
+      "layer_policy_version": 2,
+      "layer_policy_sha256": "c6a4d3e3d9b18a496f455fad53db28b7570279c817505a32fadd0958972edc8a",
+      "count_convention": "standard_dense_kernel_ops_including_padding_convention",
+      "energy_pj": {
+        "fp": {
+          "mac": 1.0,
+          "ac": 1.0,
+          "mem_read": 0.0,
+          "mem_write": 0.0,
+          "neuron_update": 0.0
+        },
+        "int4": {
+          "mac": 1.0,
+          "ac": 1.0,
+          "mem_read": 0.0,
+          "mem_write": 0.0,
+          "neuron_update": 0.0
+        }
+      },
+      "precision_layer_counts": {
+        "fp": 86
+      },
+      "quantization_inventory": [],
+      "sample_ids": [
+        "9ff10cb75ea26f82",
+        "4f3e590e309295ca",
+        "4c6d7797d0b0aaae",
+        "9156b1c236cc4554",
+        "ce9f8292291d92b4",
+        "92e88eb7cdc4b0c9",
+        "4b1dda3d62806c25",
+        "45c98f970bb6e5fd",
+        "dc871ef1924b669f",
+        "f0c7f9558329a58f",
+        "91d3969d025c40f2",
+        "7301b0325cd0be88",
+        "52fbfa4d66ae212e",
+        "a57aba58a9cdfab0",
+        "d3c3608c9fa385d8",
+        "b222fbbcb6cbaf71",
+        "097218ed338c595f",
+        "d843a1055b074b0c",
+        "00b3f31e1bdd8382",
+        "eaa8b353bb90390f"
+      ],
+      "mean_spike_count_per_input_across_spike_layers": null,
+      "configured_firing_rate_across_spike_layers": null,
+      "sop_density_per_executed_mac_across_spike_layers": null,
+      "excluded_ops": [
+        "bias",
+        "batch_norm",
+        "layer_norm",
+        "softmax",
+        "pooling",
+        "qif_update_reset",
+        "shuffle_concat_reshape_repeat",
+        "bilinear_interpolation"
+      ],
+      "dense_macs_total": 174251926400.0,
+      "dense_macs_charged": 174251926400.0,
+      "sop_total": 0.0,
+      "ac_charged": 0.0,
+      "core_energy_pj": 174251926400.0,
+      "mem_energy_pj": 0.0,
+      "neuron_energy_pj": 0.0,
+      "total_energy_pj": 174251926400.0,
+      "dense_macs_total_per_image": 8712596320.0,
+      "dense_macs_charged_per_image": 8712596320.0,
+      "sop_total_per_image": 0.0,
+      "ac_charged_per_image": 0.0,
+      "core_energy_pj_per_image": 8712596320.0,
+      "mem_energy_pj_per_image": 0.0,
+      "neuron_energy_pj_per_image": 0.0,
+      "total_energy_pj_per_image": 8712596320.0
+    },
+    {
+      "schema_version": 2,
+      "variant": "small",
+      "checkpoint_kind": "fp",
+      "precision": "fp",
+      "checkpoint": "/root/autodl-tmp/LETNet/checkpoint/udd/SpikingLETNet_shallow_smallbs64gpu1_trainval20260611-234750/model_best.pth",
+      "checkpoint_sha256": "10e1733c47cf942efa2f1602fd07332ca5404724d4666425078179fb5328e582",
+      "config": "/root/autodl-tmp/LETNet/Network/configs/SpikingLETNet_shallow/1.3M.yaml",
+      "config_sha256": "ab1008283b7f2f539d17654ae30861c5a794145ac3aaa1d4b5f02fc1589becb8",
+      "split_file": "/root/autodl-tmp/UDD/UDD6/preprocessed/val_patches.txt",
+      "split_sha256": "e535815642b56f6f4d11c3d0ce0ec35914e0861975157d7a3357aa1495261169",
+      "synthetic": false,
+      "processed_batches": 20,
+      "processed_images": 20,
+      "batch_size": 1,
+      "timestep": 1,
+      "input_size": [
+        400,
+        400
+      ],
+      "accounting_mode": "all-dense",
+      "classification_mode": "semantic-policy",
+      "sop_method": "qif_cumulative_spike_count_times_one_step_dense_macs_v2",
+      "spike_value_semantics": "qif_cumulative_count_0_to_T",
+      "layer_policy_version": 2,
+      "layer_policy_sha256": "c6a4d3e3d9b18a496f455fad53db28b7570279c817505a32fadd0958972edc8a",
+      "count_convention": "standard_dense_kernel_ops_including_padding_convention",
+      "energy_pj": {
+        "fp": {
+          "mac": 1.0,
+          "ac": 1.0,
+          "mem_read": 0.0,
+          "mem_write": 0.0,
+          "neuron_update": 0.0
+        },
+        "int4": {
+          "mac": 1.0,
+          "ac": 1.0,
+          "mem_read": 0.0,
+          "mem_write": 0.0,
+          "neuron_update": 0.0
+        }
+      },
+      "precision_layer_counts": {
+        "fp": 85
+      },
+      "quantization_inventory": [],
+      "sample_ids": [
+        "9ff10cb75ea26f82",
+        "4f3e590e309295ca",
+        "4c6d7797d0b0aaae",
+        "9156b1c236cc4554",
+        "ce9f8292291d92b4",
+        "92e88eb7cdc4b0c9",
+        "4b1dda3d62806c25",
+        "45c98f970bb6e5fd",
+        "dc871ef1924b669f",
+        "f0c7f9558329a58f",
+        "91d3969d025c40f2",
+        "7301b0325cd0be88",
+        "52fbfa4d66ae212e",
+        "a57aba58a9cdfab0",
+        "d3c3608c9fa385d8",
+        "b222fbbcb6cbaf71",
+        "097218ed338c595f",
+        "d843a1055b074b0c",
+        "00b3f31e1bdd8382",
+        "eaa8b353bb90390f"
+      ],
+      "mean_spike_count_per_input_across_spike_layers": null,
+      "configured_firing_rate_across_spike_layers": null,
+      "sop_density_per_executed_mac_across_spike_layers": null,
+      "excluded_ops": [
+        "bias",
+        "batch_norm",
+        "layer_norm",
+        "softmax",
+        "pooling",
+        "qif_update_reset",
+        "shuffle_concat_reshape_repeat",
+        "bilinear_interpolation"
+      ],
+      "dense_macs_total": 195412815360.0,
+      "dense_macs_charged": 195412815360.0,
+      "sop_total": 0.0,
+      "ac_charged": 0.0,
+      "core_energy_pj": 195412815360.0,
+      "mem_energy_pj": 0.0,
+      "neuron_energy_pj": 0.0,
+      "total_energy_pj": 195412815360.0,
+      "dense_macs_total_per_image": 9770640768.0,
+      "dense_macs_charged_per_image": 9770640768.0,
+      "sop_total_per_image": 0.0,
+      "ac_charged_per_image": 0.0,
+      "core_energy_pj_per_image": 9770640768.0,
+      "mem_energy_pj_per_image": 0.0,
+      "neuron_energy_pj_per_image": 0.0,
+      "total_energy_pj_per_image": 9770640768.0
+    },
+    {
+      "schema_version": 2,
+      "variant": "max",
+      "checkpoint_kind": "qat",
+      "precision": "mixed_fp_int4",
+      "checkpoint": "/root/autodl-tmp/LETNet/QAT_checkpoint/udd/SpikingLETNet_shallow_maxbs64gpu1_trainval20260613-170955/model_q_best_complete.pt",
+      "checkpoint_sha256": "2cdb4e346c8936535788182d0007c8b9133ab13e97e1f30320b9c32726600897",
+      "config": "/root/autodl-tmp/LETNet/Network/configs/SpikingLETNet_shallow/1.3M.yaml",
+      "config_sha256": "ab1008283b7f2f539d17654ae30861c5a794145ac3aaa1d4b5f02fc1589becb8",
+      "split_file": "/root/autodl-tmp/UDD/UDD6/preprocessed/val_patches.txt",
+      "split_sha256": "e535815642b56f6f4d11c3d0ce0ec35914e0861975157d7a3357aa1495261169",
+      "synthetic": false,
+      "processed_batches": 20,
+      "processed_images": 20,
+      "batch_size": 1,
+      "timestep": 1,
+      "input_size": [
+        400,
+        400
+      ],
+      "accounting_mode": "all-dense",
+      "classification_mode": "semantic-policy",
+      "sop_method": "qif_cumulative_spike_count_times_one_step_dense_macs_v2",
+      "spike_value_semantics": "qif_cumulative_count_0_to_T",
+      "layer_policy_version": 2,
+      "layer_policy_sha256": "c6a4d3e3d9b18a496f455fad53db28b7570279c817505a32fadd0958972edc8a",
+      "count_convention": "standard_dense_kernel_ops_including_padding_convention",
+      "energy_pj": {
+        "fp": {
+          "mac": 1.0,
+          "ac": 1.0,
+          "mem_read": 0.0,
+          "mem_write": 0.0,
+          "neuron_update": 0.0
+        },
+        "int4": {
+          "mac": 1.0,
+          "ac": 1.0,
+          "mem_read": 0.0,
+          "mem_write": 0.0,
+          "neuron_update": 0.0
+        }
+      },
+      "precision_layer_counts": {
+        "int4": 70,
+        "fp": 13
+      },
+      "quantization_inventory": [
+        {
+          "layer": "init_conv.0.conv",
+          "bits": 4,
+          "weight_quant": true,
+          "activation_quant": true,
+          "activation_quant_mode": "per_tensor"
+        },
+        {
+          "layer": "init_conv.1.conv",
+          "bits": 4,
+          "weight_quant": true,
+          "activation_quant": true,
+          "activation_quant_mode": "per_tensor"
+        },
+        {
+          "layer": "init_conv.2.conv",
+          "bits": 4,
+          "weight_quant": true,
+          "activation_quant": true,
+          "activation_quant_mode": "per_tensor"
+        },
+        {
+          "layer": "downsample_1.conv3x3.conv",
+          "bits": 4,
+          "weight_quant": true,
+          "activation_quant": true,
+          "activation_quant_mode": "per_tensor"
+        },
+        {
+          "layer": "DAB_Block_1.DAB_Module_1_0.conv1x1_in.conv",
+          "bits": 4,
+          "weight_quant": true,
+          "activation_quant": true,
+          "activation_quant_mode": "per_tensor"
+        },
+        {
+          "layer": "DAB_Block_1.DAB_Module_1_0.conv3x1.conv",
+          "bits": 4,
+          "weight_quant": true,
+          "activation_quant": true,
+          "activation_quant_mode": "per_tensor"
+        },
+        {
+          "layer": "DAB_Block_1.DAB_Module_1_0.conv1x3.conv",
+          "bits": 4,
+          "weight_quant": true,
+          "activation_quant": true,
+          "activation_quant_mode": "per_tensor"
+        },
+        {
+          "layer": "DAB_Block_1.DAB_Module_1_0.dconv3x1.conv",
+          "bits": 4,
+          "weight_quant": true,
+          "activation_quant": true,
+          "activation_quant_mode": "per_tensor"
+        },
+        {
+          "layer": "DAB_Block_1.DAB_Module_1_0.dconv1x3.conv",
+          "bits": 4,
+          "weight_quant": true,
+          "activation_quant": true,
+          "activation_quant_mode": "per_tensor"
+        },
+        {
+          "layer": "DAB_Block_1.DAB_Module_1_0.ddconv3x1.conv",
+          "bits": 4,
+          "weight_quant": true,
+          "activation_quant": true,
+          "activation_quant_mode": "per_tensor"
+        },
+        {
+          "layer": "DAB_Block_1.DAB_Module_1_0.ddconv1x3.conv",
+          "bits": 4,
+          "weight_quant": true,
+          "activation_quant": true,
+          "activation_quant_mode": "per_tensor"
+        },
+        {
+          "layer": "DAB_Block_1.DAB_Module_1_0.conv1x1.conv",
+          "bits": 4,
+          "weight_quant": true,
+          "activation_quant": true,
+          "activation_quant_mode": "per_tensor"
+        },
+        {
+          "layer": "downsample_2.conv3x3.conv",
+          "bits": 4,
+          "weight_quant": true,
+          "activation_quant": true,
+          "activation_quant_mode": "per_tensor"
+        },
+        {
+          "layer": "DAB_Block_2.DAB_Module_2_0.conv1x1_in.conv",
+          "bits": 4,
+          "weight_quant": true,
+          "activation_quant": true,
+          "activation_quant_mode": "per_tensor"
+        },
+        {
+          "layer": "DAB_Block_2.DAB_Module_2_0.conv3x1.conv",
+          "bits": 4,
+          "weight_quant": true,
+          "activation_quant": true,
+          "activation_quant_mode": "per_tensor"
+        },
+        {
+          "layer": "DAB_Block_2.DAB_Module_2_0.conv1x3.conv",
+          "bits": 4,
+          "weight_quant": true,
+          "activation_quant": true,
+          "activation_quant_mode": "per_tensor"
+        },
+        {
+          "layer": "DAB_Block_2.DAB_Module_2_0.dconv3x1.conv",
+          "bits": 4,
+          "weight_quant": true,
+          "activation_quant": true,
+          "activation_quant_mode": "per_tensor"
+        },
+        {
+          "layer": "DAB_Block_2.DAB_Module_2_0.dconv1x3.conv",
+          "bits": 4,
+          "weight_quant": true,
+          "activation_quant": true,
+          "activation_quant_mode": "per_tensor"
+        },
+        {
+          "layer": "DAB_Block_2.DAB_Module_2_0.ddconv3x1.conv",
+          "bits": 4,
+          "weight_quant": true,
+          "activation_quant": true,
+          "activation_quant_mode": "per_tensor"
+        },
+        {
+          "layer": "DAB_Block_2.DAB_Module_2_0.ddconv1x3.conv",
+          "bits": 4,
+          "weight_quant": true,
+          "activation_quant": true,
+          "activation_quant_mode": "per_tensor"
+        },
+        {
+          "layer": "DAB_Block_2.DAB_Module_2_0.conv1x1.conv",
+          "bits": 4,
+          "weight_quant": true,
+          "activation_quant": true,
+          "activation_quant_mode": "per_tensor"
+        },
+        {
+          "layer": "downsample_3.conv3x3.conv",
+          "bits": 4,
+          "weight_quant": true,
+          "activation_quant": true,
+          "activation_quant_mode": "per_tensor"
+        },
+        {
+          "layer": "DAB_Block_3.DAB_Module_3_0.conv1x1_in.conv",
+          "bits": 4,
+          "weight_quant": true,
+          "activation_quant": true,
+          "activation_quant_mode": "per_tensor"
+        },
+        {
+          "layer": "DAB_Block_3.DAB_Module_3_0.conv3x1.conv",
+          "bits": 4,
+          "weight_quant": true,
+          "activation_quant": true,
+          "activation_quant_mode": "per_tensor"
+        },
+        {
+          "layer": "DAB_Block_3.DAB_Module_3_0.conv1x3.conv",
+          "bits": 4,
+          "weight_quant": true,
+          "activation_quant": true,
+          "activation_quant_mode": "per_tensor"
+        },
+        {
+          "layer": "DAB_Block_3.DAB_Module_3_0.dconv3x1.conv",
+          "bits": 4,
+          "weight_quant": true,
+          "activation_quant": true,
+          "activation_quant_mode": "per_tensor"
+        },
+        {
+          "layer": "DAB_Block_3.DAB_Module_3_0.dconv1x3.conv",
+          "bits": 4,
+          "weight_quant": true,
+          "activation_quant": true,
+          "activation_quant_mode": "per_tensor"
+        },
+        {
+          "layer": "DAB_Block_3.DAB_Module_3_0.ddconv3x1.conv",
+          "bits": 4,
+          "weight_quant": true,
+          "activation_quant": true,
+          "activation_quant_mode": "per_tensor"
+        },
+        {
+          "layer": "DAB_Block_3.DAB_Module_3_0.ddconv1x3.conv",
+          "bits": 4,
+          "weight_quant": true,
+          "activation_quant": true,
+          "activation_quant_mode": "per_tensor"
+        },
+        {
+          "layer": "DAB_Block_3.DAB_Module_3_0.conv1x1.conv",
+          "bits": 4,
+          "weight_quant": true,
+          "activation_quant": true,
+          "activation_quant_mode": "per_tensor"
+        },
+        {
+          "layer": "transformer1.atten.reduce",
+          "bits": 4,
+          "weight_quant": true,
+          "activation_quant": true,
+          "activation_quant_mode": "per_tensor"
+        },
+        {
+          "layer": "transformer1.atten.qkv",
+          "bits": 4,
+          "weight_quant": true,
+          "activation_quant": true,
+          "activation_quant_mode": "per_tensor"
+        },
+        {
+          "layer": "transformer1.atten.proj",
+          "bits": 4,
+          "weight_quant": true,
+          "activation_quant": true,
+          "activation_quant_mode": "per_tensor"
+        },
+        {
+          "layer": "transformer1.mlp.fc1",
+          "bits": 4,
+          "weight_quant": true,
+          "activation_quant": true,
+          "activation_quant_mode": "per_tensor"
+        },
+        {
+          "layer": "transformer1.mlp.fc2",
+          "bits": 4,
+          "weight_quant": true,
+          "activation_quant": true,
+          "activation_quant_mode": "per_tensor"
+        },
+        {
+          "layer": "DAB_Block_4.DAB_Module_4_0.conv1x1_in.conv",
+          "bits": 4,
+          "weight_quant": true,
+          "activation_quant": true,
+          "activation_quant_mode": "per_tensor"
+        },
+        {
+          "layer": "DAB_Block_4.DAB_Module_4_0.conv3x1.conv",
+          "bits": 4,
+          "weight_quant": true,
+          "activation_quant": true,
+          "activation_quant_mode": "per_tensor"
+        },
+        {
+          "layer": "DAB_Block_4.DAB_Module_4_0.conv1x3.conv",
+          "bits": 4,
+          "weight_quant": true,
+          "activation_quant": true,
+          "activation_quant_mode": "per_tensor"
+        },
+        {
+          "layer": "DAB_Block_4.DAB_Module_4_0.dconv3x1.conv",
+          "bits": 4,
+          "weight_quant": true,
+          "activation_quant": true,
+          "activation_quant_mode": "per_tensor"
+        },
+        {
+          "layer": "DAB_Block_4.DAB_Module_4_0.dconv1x3.conv",
+          "bits": 4,
+          "weight_quant": true,
+          "activation_quant": true,
+          "activation_quant_mode": "per_tensor"
+        },
+        {
+          "layer": "DAB_Block_4.DAB_Module_4_0.ddconv3x1.conv",
+          "bits": 4,
+          "weight_quant": true,
+          "activation_quant": true,
+          "activation_quant_mode": "per_tensor"
+        },
+        {
+          "layer": "DAB_Block_4.DAB_Module_4_0.ddconv1x3.conv",
+          "bits": 4,
+          "weight_quant": true,
+          "activation_quant": true,
+          "activation_quant_mode": "per_tensor"
+        },
+        {
+          "layer": "DAB_Block_4.DAB_Module_4_0.conv1x1.conv",
+          "bits": 4,
+          "weight_quant": true,
+          "activation_quant": true,
+          "activation_quant_mode": "per_tensor"
+        },
+        {
+          "layer": "upsample_1.conv",
+          "bits": 4,
+          "weight_quant": true,
+          "activation_quant": true,
+          "activation_quant_mode": "per_tensor"
+        },
+        {
+          "layer": "DAB_Block_5.DAB_Module_5_0.conv1x1_in.conv",
+          "bits": 4,
+          "weight_quant": true,
+          "activation_quant": true,
+          "activation_quant_mode": "per_tensor"
+        },
+        {
+          "layer": "DAB_Block_5.DAB_Module_5_0.conv3x1.conv",
+          "bits": 4,
+          "weight_quant": true,
+          "activation_quant": true,
+          "activation_quant_mode": "per_tensor"
+        },
+        {
+          "layer": "DAB_Block_5.DAB_Module_5_0.conv1x3.conv",
+          "bits": 4,
+          "weight_quant": true,
+          "activation_quant": true,
+          "activation_quant_mode": "per_tensor"
+        },
+        {
+          "layer": "DAB_Block_5.DAB_Module_5_0.dconv3x1.conv",
+          "bits": 4,
+          "weight_quant": true,
+          "activation_quant": true,
+          "activation_quant_mode": "per_tensor"
+        },
+        {
+          "layer": "DAB_Block_5.DAB_Module_5_0.dconv1x3.conv",
+          "bits": 4,
+          "weight_quant": true,
+          "activation_quant": true,
+          "activation_quant_mode": "per_tensor"
+        },
+        {
+          "layer": "DAB_Block_5.DAB_Module_5_0.ddconv3x1.conv",
+          "bits": 4,
+          "weight_quant": true,
+          "activation_quant": true,
+          "activation_quant_mode": "per_tensor"
+        },
+        {
+          "layer": "DAB_Block_5.DAB_Module_5_0.ddconv1x3.conv",
+          "bits": 4,
+          "weight_quant": true,
+          "activation_quant": true,
+          "activation_quant_mode": "per_tensor"
+        },
+        {
+          "layer": "DAB_Block_5.DAB_Module_5_0.conv1x1.conv",
+          "bits": 4,
+          "weight_quant": true,
+          "activation_quant": true,
+          "activation_quant_mode": "per_tensor"
+        },
+        {
+          "layer": "upsample_2.conv",
+          "bits": 4,
+          "weight_quant": true,
+          "activation_quant": true,
+          "activation_quant_mode": "per_tensor"
+        },
+        {
+          "layer": "DAB_Block_6.DAB_Module_6_0.conv1x1_in.conv",
+          "bits": 4,
+          "weight_quant": true,
+          "activation_quant": true,
+          "activation_quant_mode": "per_tensor"
+        },
+        {
+          "layer": "DAB_Block_6.DAB_Module_6_0.conv3x1.conv",
+          "bits": 4,
+          "weight_quant": true,
+          "activation_quant": true,
+          "activation_quant_mode": "per_tensor"
+        },
+        {
+          "layer": "DAB_Block_6.DAB_Module_6_0.conv1x3.conv",
+          "bits": 4,
+          "weight_quant": true,
+          "activation_quant": true,
+          "activation_quant_mode": "per_tensor"
+        },
+        {
+          "layer": "DAB_Block_6.DAB_Module_6_0.dconv3x1.conv",
+          "bits": 4,
+          "weight_quant": true,
+          "activation_quant": true,
+          "activation_quant_mode": "per_tensor"
+        },
+        {
+          "layer": "DAB_Block_6.DAB_Module_6_0.dconv1x3.conv",
+          "bits": 4,
+          "weight_quant": true,
+          "activation_quant": true,
+          "activation_quant_mode": "per_tensor"
+        },
+        {
+          "layer": "DAB_Block_6.DAB_Module_6_0.ddconv3x1.conv",
+          "bits": 4,
+          "weight_quant": true,
+          "activation_quant": true,
+          "activation_quant_mode": "per_tensor"
+        },
+        {
+          "layer": "DAB_Block_6.DAB_Module_6_0.ddconv1x3.conv",
+          "bits": 4,
+          "weight_quant": true,
+          "activation_quant": true,
+          "activation_quant_mode": "per_tensor"
+        },
+        {
+          "layer": "DAB_Block_6.DAB_Module_6_0.conv1x1.conv",
+          "bits": 4,
+          "weight_quant": true,
+          "activation_quant": true,
+          "activation_quant_mode": "per_tensor"
+        },
+        {
+          "layer": "upsample_3.conv",
+          "bits": 4,
+          "weight_quant": true,
+          "activation_quant": true,
+          "activation_quant_mode": "per_tensor"
+        },
+        {
+          "layer": "PA3.conv",
+          "bits": 4,
+          "weight_quant": true,
+          "activation_quant": true,
+          "activation_quant_mode": "per_tensor"
+        },
+        {
+          "layer": "LC1.dconv3x1",
+          "bits": 4,
+          "weight_quant": true,
+          "activation_quant": true,
+          "activation_quant_mode": "per_tensor"
+        },
+        {
+          "layer": "LC1.dconv1x3",
+          "bits": 4,
+          "weight_quant": true,
+          "activation_quant": true,
+          "activation_quant_mode": "per_tensor"
+        },
+        {
+          "layer": "LC2.dconv3x1",
+          "bits": 4,
+          "weight_quant": true,
+          "activation_quant": true,
+          "activation_quant_mode": "per_tensor"
+        },
+        {
+          "layer": "LC2.dconv1x3",
+          "bits": 4,
+          "weight_quant": true,
+          "activation_quant": true,
+          "activation_quant_mode": "per_tensor"
+        },
+        {
+          "layer": "LC3.dconv3x1",
+          "bits": 4,
+          "weight_quant": true,
+          "activation_quant": true,
+          "activation_quant_mode": "per_tensor"
+        },
+        {
+          "layer": "LC3.dconv1x3",
+          "bits": 4,
+          "weight_quant": true,
+          "activation_quant": true,
+          "activation_quant_mode": "per_tensor"
+        },
+        {
+          "layer": "final_conv",
+          "bits": 4,
+          "weight_quant": true,
+          "activation_quant": true,
+          "activation_quant_mode": "per_tensor"
+        },
+        {
+          "layer": "classifier.0.conv",
+          "bits": 4,
+          "weight_quant": true,
+          "activation_quant": true,
+          "activation_quant_mode": "per_tensor"
+        }
+      ],
+      "sample_ids": [
+        "9ff10cb75ea26f82",
+        "4f3e590e309295ca",
+        "4c6d7797d0b0aaae",
+        "9156b1c236cc4554",
+        "ce9f8292291d92b4",
+        "92e88eb7cdc4b0c9",
+        "4b1dda3d62806c25",
+        "45c98f970bb6e5fd",
+        "dc871ef1924b669f",
+        "f0c7f9558329a58f",
+        "91d3969d025c40f2",
+        "7301b0325cd0be88",
+        "52fbfa4d66ae212e",
+        "a57aba58a9cdfab0",
+        "d3c3608c9fa385d8",
+        "b222fbbcb6cbaf71",
+        "097218ed338c595f",
+        "d843a1055b074b0c",
+        "00b3f31e1bdd8382",
+        "eaa8b353bb90390f"
+      ],
+      "mean_spike_count_per_input_across_spike_layers": null,
+      "configured_firing_rate_across_spike_layers": null,
+      "sop_density_per_executed_mac_across_spike_layers": null,
+      "excluded_ops": [
+        "bias",
+        "batch_norm",
+        "layer_norm",
+        "softmax",
+        "pooling",
+        "qif_update_reset",
+        "shuffle_concat_reshape_repeat",
+        "bilinear_interpolation"
+      ],
+      "dense_macs_total": 147099041280.0,
+      "dense_macs_charged": 147099041280.0,
+      "sop_total": 0.0,
+      "ac_charged": 0.0,
+      "core_energy_pj": 147099041280.0,
+      "mem_energy_pj": 0.0,
+      "neuron_energy_pj": 0.0,
+      "total_energy_pj": 147099041280.0,
+      "dense_macs_total_per_image": 7354952064.0,
+      "dense_macs_charged_per_image": 7354952064.0,
+      "sop_total_per_image": 0.0,
+      "ac_charged_per_image": 0.0,
+      "core_energy_pj_per_image": 7354952064.0,
+      "mem_energy_pj_per_image": 0.0,
+      "neuron_energy_pj_per_image": 0.0,
+      "total_energy_pj_per_image": 7354952064.0
+    },
+    {
+      "schema_version": 2,
+      "variant": "middle",
+      "checkpoint_kind": "qat",
+      "precision": "mixed_fp_int4",
+      "checkpoint": "/root/autodl-tmp/LETNet/QAT_checkpoint/udd/SpikingLETNet_shallow_middlebs96gpu1_trainval20260613-155726/model_q_best_complete.pt",
+      "checkpoint_sha256": "3d5fadbedd907cd122bb404ca9166be48524370ad4c784ad41d70c4389c9e1a3",
+      "config": "/root/autodl-tmp/LETNet/Network/configs/SpikingLETNet_shallow/1.3M.yaml",
+      "config_sha256": "ab1008283b7f2f539d17654ae30861c5a794145ac3aaa1d4b5f02fc1589becb8",
+      "split_file": "/root/autodl-tmp/UDD/UDD6/preprocessed/val_patches.txt",
+      "split_sha256": "e535815642b56f6f4d11c3d0ce0ec35914e0861975157d7a3357aa1495261169",
+      "synthetic": false,
+      "processed_batches": 20,
+      "processed_images": 20,
+      "batch_size": 1,
+      "timestep": 1,
+      "input_size": [
+        400,
+        400
+      ],
+      "accounting_mode": "all-dense",
+      "classification_mode": "semantic-policy",
+      "sop_method": "qif_cumulative_spike_count_times_one_step_dense_macs_v2",
+      "spike_value_semantics": "qif_cumulative_count_0_to_T",
+      "layer_policy_version": 2,
+      "layer_policy_sha256": "c6a4d3e3d9b18a496f455fad53db28b7570279c817505a32fadd0958972edc8a",
+      "count_convention": "standard_dense_kernel_ops_including_padding_convention",
+      "energy_pj": {
+        "fp": {
+          "mac": 1.0,
+          "ac": 1.0,
+          "mem_read": 0.0,
+          "mem_write": 0.0,
+          "neuron_update": 0.0
+        },
+        "int4": {
+          "mac": 1.0,
+          "ac": 1.0,
+          "mem_read": 0.0,
+          "mem_write": 0.0,
+          "neuron_update": 0.0
+        }
+      },
+      "precision_layer_counts": {
+        "int4": 73,
+        "fp": 13
+      },
+      "quantization_inventory": [
+        {
+          "layer": "init_conv.0.conv",
+          "bits": 4,
+          "weight_quant": true,
+          "activation_quant": true,
+          "activation_quant_mode": "per_tensor"
+        },
+        {
+          "layer": "init_conv.1.conv",
+          "bits": 4,
+          "weight_quant": true,
+          "activation_quant": true,
+          "activation_quant_mode": "per_tensor"
+        },
+        {
+          "layer": "init_conv.2.conv",
+          "bits": 4,
+          "weight_quant": true,
+          "activation_quant": true,
+          "activation_quant_mode": "per_tensor"
+        },
+        {
+          "layer": "downsample_1.conv3x3.conv",
+          "bits": 4,
+          "weight_quant": true,
+          "activation_quant": true,
+          "activation_quant_mode": "per_tensor"
+        },
+        {
+          "layer": "downsample_1.conv",
+          "bits": 4,
+          "weight_quant": true,
+          "activation_quant": true,
+          "activation_quant_mode": "per_tensor"
+        },
+        {
+          "layer": "DAB_Block_1.DAB_Module_1_0.conv1x1_in.conv",
+          "bits": 4,
+          "weight_quant": true,
+          "activation_quant": true,
+          "activation_quant_mode": "per_tensor"
+        },
+        {
+          "layer": "DAB_Block_1.DAB_Module_1_0.conv3x1.conv",
+          "bits": 4,
+          "weight_quant": true,
+          "activation_quant": true,
+          "activation_quant_mode": "per_tensor"
+        },
+        {
+          "layer": "DAB_Block_1.DAB_Module_1_0.conv1x3.conv",
+          "bits": 4,
+          "weight_quant": true,
+          "activation_quant": true,
+          "activation_quant_mode": "per_tensor"
+        },
+        {
+          "layer": "DAB_Block_1.DAB_Module_1_0.dconv3x1.conv",
+          "bits": 4,
+          "weight_quant": true,
+          "activation_quant": true,
+          "activation_quant_mode": "per_tensor"
+        },
+        {
+          "layer": "DAB_Block_1.DAB_Module_1_0.dconv1x3.conv",
+          "bits": 4,
+          "weight_quant": true,
+          "activation_quant": true,
+          "activation_quant_mode": "per_tensor"
+        },
+        {
+          "layer": "DAB_Block_1.DAB_Module_1_0.ddconv3x1.conv",
+          "bits": 4,
+          "weight_quant": true,
+          "activation_quant": true,
+          "activation_quant_mode": "per_tensor"
+        },
+        {
+          "layer": "DAB_Block_1.DAB_Module_1_0.ddconv1x3.conv",
+          "bits": 4,
+          "weight_quant": true,
+          "activation_quant": true,
+          "activation_quant_mode": "per_tensor"
+        },
+        {
+          "layer": "DAB_Block_1.DAB_Module_1_0.conv1x1.conv",
+          "bits": 4,
+          "weight_quant": true,
+          "activation_quant": true,
+          "activation_quant_mode": "per_tensor"
+        },
+        {
+          "layer": "downsample_2.conv3x3.conv",
+          "bits": 4,
+          "weight_quant": true,
+          "activation_quant": true,
+          "activation_quant_mode": "per_tensor"
+        },
+        {
+          "layer": "downsample_2.conv",
+          "bits": 4,
+          "weight_quant": true,
+          "activation_quant": true,
+          "activation_quant_mode": "per_tensor"
+        },
+        {
+          "layer": "DAB_Block_2.DAB_Module_2_0.conv1x1_in.conv",
+          "bits": 4,
+          "weight_quant": true,
+          "activation_quant": true,
+          "activation_quant_mode": "per_tensor"
+        },
+        {
+          "layer": "DAB_Block_2.DAB_Module_2_0.conv3x1.conv",
+          "bits": 4,
+          "weight_quant": true,
+          "activation_quant": true,
+          "activation_quant_mode": "per_tensor"
+        },
+        {
+          "layer": "DAB_Block_2.DAB_Module_2_0.conv1x3.conv",
+          "bits": 4,
+          "weight_quant": true,
+          "activation_quant": true,
+          "activation_quant_mode": "per_tensor"
+        },
+        {
+          "layer": "DAB_Block_2.DAB_Module_2_0.dconv3x1.conv",
+          "bits": 4,
+          "weight_quant": true,
+          "activation_quant": true,
+          "activation_quant_mode": "per_tensor"
+        },
+        {
+          "layer": "DAB_Block_2.DAB_Module_2_0.dconv1x3.conv",
+          "bits": 4,
+          "weight_quant": true,
+          "activation_quant": true,
+          "activation_quant_mode": "per_tensor"
+        },
+        {
+          "layer": "DAB_Block_2.DAB_Module_2_0.ddconv3x1.conv",
+          "bits": 4,
+          "weight_quant": true,
+          "activation_quant": true,
+          "activation_quant_mode": "per_tensor"
+        },
+        {
+          "layer": "DAB_Block_2.DAB_Module_2_0.ddconv1x3.conv",
+          "bits": 4,
+          "weight_quant": true,
+          "activation_quant": true,
+          "activation_quant_mode": "per_tensor"
+        },
+        {
+          "layer": "DAB_Block_2.DAB_Module_2_0.conv1x1.conv",
+          "bits": 4,
+          "weight_quant": true,
+          "activation_quant": true,
+          "activation_quant_mode": "per_tensor"
+        },
+        {
+          "layer": "downsample_3.conv3x3.conv",
+          "bits": 4,
+          "weight_quant": true,
+          "activation_quant": true,
+          "activation_quant_mode": "per_tensor"
+        },
+        {
+          "layer": "downsample_3.conv",
+          "bits": 4,
+          "weight_quant": true,
+          "activation_quant": true,
+          "activation_quant_mode": "per_tensor"
+        },
+        {
+          "layer": "DAB_Block_3.DAB_Module_3_0.conv1x1_in.conv",
+          "bits": 4,
+          "weight_quant": true,
+          "activation_quant": true,
+          "activation_quant_mode": "per_tensor"
+        },
+        {
+          "layer": "DAB_Block_3.DAB_Module_3_0.conv3x1.conv",
+          "bits": 4,
+          "weight_quant": true,
+          "activation_quant": true,
+          "activation_quant_mode": "per_tensor"
+        },
+        {
+          "layer": "DAB_Block_3.DAB_Module_3_0.conv1x3.conv",
+          "bits": 4,
+          "weight_quant": true,
+          "activation_quant": true,
+          "activation_quant_mode": "per_tensor"
+        },
+        {
+          "layer": "DAB_Block_3.DAB_Module_3_0.dconv3x1.conv",
+          "bits": 4,
+          "weight_quant": true,
+          "activation_quant": true,
+          "activation_quant_mode": "per_tensor"
+        },
+        {
+          "layer": "DAB_Block_3.DAB_Module_3_0.dconv1x3.conv",
+          "bits": 4,
+          "weight_quant": true,
+          "activation_quant": true,
+          "activation_quant_mode": "per_tensor"
+        },
+        {
+          "layer": "DAB_Block_3.DAB_Module_3_0.ddconv3x1.conv",
+          "bits": 4,
+          "weight_quant": true,
+          "activation_quant": true,
+          "activation_quant_mode": "per_tensor"
+        },
+        {
+          "layer": "DAB_Block_3.DAB_Module_3_0.ddconv1x3.conv",
+          "bits": 4,
+          "weight_quant": true,
+          "activation_quant": true,
+          "activation_quant_mode": "per_tensor"
+        },
+        {
+          "layer": "DAB_Block_3.DAB_Module_3_0.conv1x1.conv",
+          "bits": 4,
+          "weight_quant": true,
+          "activation_quant": true,
+          "activation_quant_mode": "per_tensor"
+        },
+        {
+          "layer": "transformer1.atten.reduce",
+          "bits": 4,
+          "weight_quant": true,
+          "activation_quant": true,
+          "activation_quant_mode": "per_tensor"
+        },
+        {
+          "layer": "transformer1.atten.qkv",
+          "bits": 4,
+          "weight_quant": true,
+          "activation_quant": true,
+          "activation_quant_mode": "per_tensor"
+        },
+        {
+          "layer": "transformer1.atten.proj",
+          "bits": 4,
+          "weight_quant": true,
+          "activation_quant": true,
+          "activation_quant_mode": "per_tensor"
+        },
+        {
+          "layer": "transformer1.mlp.fc1",
+          "bits": 4,
+          "weight_quant": true,
+          "activation_quant": true,
+          "activation_quant_mode": "per_tensor"
+        },
+        {
+          "layer": "transformer1.mlp.fc2",
+          "bits": 4,
+          "weight_quant": true,
+          "activation_quant": true,
+          "activation_quant_mode": "per_tensor"
+        },
+        {
+          "layer": "DAB_Block_4.DAB_Module_4_0.conv1x1_in.conv",
+          "bits": 4,
+          "weight_quant": true,
+          "activation_quant": true,
+          "activation_quant_mode": "per_tensor"
+        },
+        {
+          "layer": "DAB_Block_4.DAB_Module_4_0.conv3x1.conv",
+          "bits": 4,
+          "weight_quant": true,
+          "activation_quant": true,
+          "activation_quant_mode": "per_tensor"
+        },
+        {
+          "layer": "DAB_Block_4.DAB_Module_4_0.conv1x3.conv",
+          "bits": 4,
+          "weight_quant": true,
+          "activation_quant": true,
+          "activation_quant_mode": "per_tensor"
+        },
+        {
+          "layer": "DAB_Block_4.DAB_Module_4_0.dconv3x1.conv",
+          "bits": 4,
+          "weight_quant": true,
+          "activation_quant": true,
+          "activation_quant_mode": "per_tensor"
+        },
+        {
+          "layer": "DAB_Block_4.DAB_Module_4_0.dconv1x3.conv",
+          "bits": 4,
+          "weight_quant": true,
+          "activation_quant": true,
+          "activation_quant_mode": "per_tensor"
+        },
+        {
+          "layer": "DAB_Block_4.DAB_Module_4_0.ddconv3x1.conv",
+          "bits": 4,
+          "weight_quant": true,
+          "activation_quant": true,
+          "activation_quant_mode": "per_tensor"
+        },
+        {
+          "layer": "DAB_Block_4.DAB_Module_4_0.ddconv1x3.conv",
+          "bits": 4,
+          "weight_quant": true,
+          "activation_quant": true,
+          "activation_quant_mode": "per_tensor"
+        },
+        {
+          "layer": "DAB_Block_4.DAB_Module_4_0.conv1x1.conv",
+          "bits": 4,
+          "weight_quant": true,
+          "activation_quant": true,
+          "activation_quant_mode": "per_tensor"
+        },
+        {
+          "layer": "upsample_1.conv",
+          "bits": 4,
+          "weight_quant": true,
+          "activation_quant": true,
+          "activation_quant_mode": "per_tensor"
+        },
+        {
+          "layer": "DAB_Block_5.DAB_Module_5_0.conv1x1_in.conv",
+          "bits": 4,
+          "weight_quant": true,
+          "activation_quant": true,
+          "activation_quant_mode": "per_tensor"
+        },
+        {
+          "layer": "DAB_Block_5.DAB_Module_5_0.conv3x1.conv",
+          "bits": 4,
+          "weight_quant": true,
+          "activation_quant": true,
+          "activation_quant_mode": "per_tensor"
+        },
+        {
+          "layer": "DAB_Block_5.DAB_Module_5_0.conv1x3.conv",
+          "bits": 4,
+          "weight_quant": true,
+          "activation_quant": true,
+          "activation_quant_mode": "per_tensor"
+        },
+        {
+          "layer": "DAB_Block_5.DAB_Module_5_0.dconv3x1.conv",
+          "bits": 4,
+          "weight_quant": true,
+          "activation_quant": true,
+          "activation_quant_mode": "per_tensor"
+        },
+        {
+          "layer": "DAB_Block_5.DAB_Module_5_0.dconv1x3.conv",
+          "bits": 4,
+          "weight_quant": true,
+          "activation_quant": true,
+          "activation_quant_mode": "per_tensor"
+        },
+        {
+          "layer": "DAB_Block_5.DAB_Module_5_0.ddconv3x1.conv",
+          "bits": 4,
+          "weight_quant": true,
+          "activation_quant": true,
+          "activation_quant_mode": "per_tensor"
+        },
+        {
+          "layer": "DAB_Block_5.DAB_Module_5_0.ddconv1x3.conv",
+          "bits": 4,
+          "weight_quant": true,
+          "activation_quant": true,
+          "activation_quant_mode": "per_tensor"
+        },
+        {
+          "layer": "DAB_Block_5.DAB_Module_5_0.conv1x1.conv",
+          "bits": 4,
+          "weight_quant": true,
+          "activation_quant": true,
+          "activation_quant_mode": "per_tensor"
+        },
+        {
+          "layer": "upsample_2.conv",
+          "bits": 4,
+          "weight_quant": true,
+          "activation_quant": true,
+          "activation_quant_mode": "per_tensor"
+        },
+        {
+          "layer": "DAB_Block_6.DAB_Module_6_0.conv1x1_in.conv",
+          "bits": 4,
+          "weight_quant": true,
+          "activation_quant": true,
+          "activation_quant_mode": "per_tensor"
+        },
+        {
+          "layer": "DAB_Block_6.DAB_Module_6_0.conv3x1.conv",
+          "bits": 4,
+          "weight_quant": true,
+          "activation_quant": true,
+          "activation_quant_mode": "per_tensor"
+        },
+        {
+          "layer": "DAB_Block_6.DAB_Module_6_0.conv1x3.conv",
+          "bits": 4,
+          "weight_quant": true,
+          "activation_quant": true,
+          "activation_quant_mode": "per_tensor"
+        },
+        {
+          "layer": "DAB_Block_6.DAB_Module_6_0.dconv3x1.conv",
+          "bits": 4,
+          "weight_quant": true,
+          "activation_quant": true,
+          "activation_quant_mode": "per_tensor"
+        },
+        {
+          "layer": "DAB_Block_6.DAB_Module_6_0.dconv1x3.conv",
+          "bits": 4,
+          "weight_quant": true,
+          "activation_quant": true,
+          "activation_quant_mode": "per_tensor"
+        },
+        {
+          "layer": "DAB_Block_6.DAB_Module_6_0.ddconv3x1.conv",
+          "bits": 4,
+          "weight_quant": true,
+          "activation_quant": true,
+          "activation_quant_mode": "per_tensor"
+        },
+        {
+          "layer": "DAB_Block_6.DAB_Module_6_0.ddconv1x3.conv",
+          "bits": 4,
+          "weight_quant": true,
+          "activation_quant": true,
+          "activation_quant_mode": "per_tensor"
+        },
+        {
+          "layer": "DAB_Block_6.DAB_Module_6_0.conv1x1.conv",
+          "bits": 4,
+          "weight_quant": true,
+          "activation_quant": true,
+          "activation_quant_mode": "per_tensor"
+        },
+        {
+          "layer": "upsample_3.conv",
+          "bits": 4,
+          "weight_quant": true,
+          "activation_quant": true,
+          "activation_quant_mode": "per_tensor"
+        },
+        {
+          "layer": "PA3.conv",
+          "bits": 4,
+          "weight_quant": true,
+          "activation_quant": true,
+          "activation_quant_mode": "per_tensor"
+        },
+        {
+          "layer": "LC1.dconv3x1",
+          "bits": 4,
+          "weight_quant": true,
+          "activation_quant": true,
+          "activation_quant_mode": "per_tensor"
+        },
+        {
+          "layer": "LC1.dconv1x3",
+          "bits": 4,
+          "weight_quant": true,
+          "activation_quant": true,
+          "activation_quant_mode": "per_tensor"
+        },
+        {
+          "layer": "LC2.dconv3x1",
+          "bits": 4,
+          "weight_quant": true,
+          "activation_quant": true,
+          "activation_quant_mode": "per_tensor"
+        },
+        {
+          "layer": "LC2.dconv1x3",
+          "bits": 4,
+          "weight_quant": true,
+          "activation_quant": true,
+          "activation_quant_mode": "per_tensor"
+        },
+        {
+          "layer": "LC3.dconv3x1",
+          "bits": 4,
+          "weight_quant": true,
+          "activation_quant": true,
+          "activation_quant_mode": "per_tensor"
+        },
+        {
+          "layer": "LC3.dconv1x3",
+          "bits": 4,
+          "weight_quant": true,
+          "activation_quant": true,
+          "activation_quant_mode": "per_tensor"
+        },
+        {
+          "layer": "final_conv",
+          "bits": 4,
+          "weight_quant": true,
+          "activation_quant": true,
+          "activation_quant_mode": "per_tensor"
+        },
+        {
+          "layer": "classifier.0.conv",
+          "bits": 4,
+          "weight_quant": true,
+          "activation_quant": true,
+          "activation_quant_mode": "per_tensor"
+        }
+      ],
+      "sample_ids": [
+        "9ff10cb75ea26f82",
+        "4f3e590e309295ca",
+        "4c6d7797d0b0aaae",
+        "9156b1c236cc4554",
+        "ce9f8292291d92b4",
+        "92e88eb7cdc4b0c9",
+        "4b1dda3d62806c25",
+        "45c98f970bb6e5fd",
+        "dc871ef1924b669f",
+        "f0c7f9558329a58f",
+        "91d3969d025c40f2",
+        "7301b0325cd0be88",
+        "52fbfa4d66ae212e",
+        "a57aba58a9cdfab0",
+        "d3c3608c9fa385d8",
+        "b222fbbcb6cbaf71",
+        "097218ed338c595f",
+        "d843a1055b074b0c",
+        "00b3f31e1bdd8382",
+        "eaa8b353bb90390f"
+      ],
+      "mean_spike_count_per_input_across_spike_layers": null,
+      "configured_firing_rate_across_spike_layers": null,
+      "sop_density_per_executed_mac_across_spike_layers": null,
+      "excluded_ops": [
+        "bias",
+        "batch_norm",
+        "layer_norm",
+        "softmax",
+        "pooling",
+        "qif_update_reset",
+        "shuffle_concat_reshape_repeat",
+        "bilinear_interpolation"
+      ],
+      "dense_macs_total": 174251926400.0,
+      "dense_macs_charged": 174251926400.0,
+      "sop_total": 0.0,
+      "ac_charged": 0.0,
+      "core_energy_pj": 174251926400.0,
+      "mem_energy_pj": 0.0,
+      "neuron_energy_pj": 0.0,
+      "total_energy_pj": 174251926400.0,
+      "dense_macs_total_per_image": 8712596320.0,
+      "dense_macs_charged_per_image": 8712596320.0,
+      "sop_total_per_image": 0.0,
+      "ac_charged_per_image": 0.0,
+      "core_energy_pj_per_image": 8712596320.0,
+      "mem_energy_pj_per_image": 0.0,
+      "neuron_energy_pj_per_image": 0.0,
+      "total_energy_pj_per_image": 8712596320.0
+    },
+    {
+      "schema_version": 2,
+      "variant": "small",
+      "checkpoint_kind": "qat",
+      "precision": "mixed_fp_int4",
+      "checkpoint": "/root/autodl-tmp/LETNet/QAT_checkpoint/udd/SpikingLETNet_shallow_smallbs64gpu1_trainval20260613-200147/model_q_best_complete.pt",
+      "checkpoint_sha256": "1c9d91859ee78ada059fc6a95eb513dfa6c60fed839f911114189db6f704f5ca",
+      "config": "/root/autodl-tmp/LETNet/Network/configs/SpikingLETNet_shallow/1.3M.yaml",
+      "config_sha256": "ab1008283b7f2f539d17654ae30861c5a794145ac3aaa1d4b5f02fc1589becb8",
+      "split_file": "/root/autodl-tmp/UDD/UDD6/preprocessed/val_patches.txt",
+      "split_sha256": "e535815642b56f6f4d11c3d0ce0ec35914e0861975157d7a3357aa1495261169",
+      "synthetic": false,
+      "processed_batches": 20,
+      "processed_images": 20,
+      "batch_size": 1,
+      "timestep": 1,
+      "input_size": [
+        400,
+        400
+      ],
+      "accounting_mode": "all-dense",
+      "classification_mode": "semantic-policy",
+      "sop_method": "qif_cumulative_spike_count_times_one_step_dense_macs_v2",
+      "spike_value_semantics": "qif_cumulative_count_0_to_T",
+      "layer_policy_version": 2,
+      "layer_policy_sha256": "c6a4d3e3d9b18a496f455fad53db28b7570279c817505a32fadd0958972edc8a",
+      "count_convention": "standard_dense_kernel_ops_including_padding_convention",
+      "energy_pj": {
+        "fp": {
+          "mac": 1.0,
+          "ac": 1.0,
+          "mem_read": 0.0,
+          "mem_write": 0.0,
+          "neuron_update": 0.0
+        },
+        "int4": {
+          "mac": 1.0,
+          "ac": 1.0,
+          "mem_read": 0.0,
+          "mem_write": 0.0,
+          "neuron_update": 0.0
+        }
+      },
+      "precision_layer_counts": {
+        "int4": 72,
+        "fp": 13
+      },
+      "quantization_inventory": [
+        {
+          "layer": "init_conv.0.conv",
+          "bits": 4,
+          "weight_quant": true,
+          "activation_quant": true,
+          "activation_quant_mode": "per_tensor"
+        },
+        {
+          "layer": "init_conv.1.conv",
+          "bits": 4,
+          "weight_quant": true,
+          "activation_quant": true,
+          "activation_quant_mode": "per_tensor"
+        },
+        {
+          "layer": "downsample_1.conv3x3.conv",
+          "bits": 4,
+          "weight_quant": true,
+          "activation_quant": true,
+          "activation_quant_mode": "per_tensor"
+        },
+        {
+          "layer": "downsample_1.conv",
+          "bits": 4,
+          "weight_quant": true,
+          "activation_quant": true,
+          "activation_quant_mode": "per_tensor"
+        },
+        {
+          "layer": "DAB_Block_1.DAB_Module_1_0.conv1x1_in.conv",
+          "bits": 4,
+          "weight_quant": true,
+          "activation_quant": true,
+          "activation_quant_mode": "per_tensor"
+        },
+        {
+          "layer": "DAB_Block_1.DAB_Module_1_0.conv3x1.conv",
+          "bits": 4,
+          "weight_quant": true,
+          "activation_quant": true,
+          "activation_quant_mode": "per_tensor"
+        },
+        {
+          "layer": "DAB_Block_1.DAB_Module_1_0.conv1x3.conv",
+          "bits": 4,
+          "weight_quant": true,
+          "activation_quant": true,
+          "activation_quant_mode": "per_tensor"
+        },
+        {
+          "layer": "DAB_Block_1.DAB_Module_1_0.dconv3x1.conv",
+          "bits": 4,
+          "weight_quant": true,
+          "activation_quant": true,
+          "activation_quant_mode": "per_tensor"
+        },
+        {
+          "layer": "DAB_Block_1.DAB_Module_1_0.dconv1x3.conv",
+          "bits": 4,
+          "weight_quant": true,
+          "activation_quant": true,
+          "activation_quant_mode": "per_tensor"
+        },
+        {
+          "layer": "DAB_Block_1.DAB_Module_1_0.ddconv3x1.conv",
+          "bits": 4,
+          "weight_quant": true,
+          "activation_quant": true,
+          "activation_quant_mode": "per_tensor"
+        },
+        {
+          "layer": "DAB_Block_1.DAB_Module_1_0.ddconv1x3.conv",
+          "bits": 4,
+          "weight_quant": true,
+          "activation_quant": true,
+          "activation_quant_mode": "per_tensor"
+        },
+        {
+          "layer": "DAB_Block_1.DAB_Module_1_0.conv1x1.conv",
+          "bits": 4,
+          "weight_quant": true,
+          "activation_quant": true,
+          "activation_quant_mode": "per_tensor"
+        },
+        {
+          "layer": "downsample_2.conv3x3.conv",
+          "bits": 4,
+          "weight_quant": true,
+          "activation_quant": true,
+          "activation_quant_mode": "per_tensor"
+        },
+        {
+          "layer": "downsample_2.conv",
+          "bits": 4,
+          "weight_quant": true,
+          "activation_quant": true,
+          "activation_quant_mode": "per_tensor"
+        },
+        {
+          "layer": "DAB_Block_2.DAB_Module_2_0.conv1x1_in.conv",
+          "bits": 4,
+          "weight_quant": true,
+          "activation_quant": true,
+          "activation_quant_mode": "per_tensor"
+        },
+        {
+          "layer": "DAB_Block_2.DAB_Module_2_0.conv3x1.conv",
+          "bits": 4,
+          "weight_quant": true,
+          "activation_quant": true,
+          "activation_quant_mode": "per_tensor"
+        },
+        {
+          "layer": "DAB_Block_2.DAB_Module_2_0.conv1x3.conv",
+          "bits": 4,
+          "weight_quant": true,
+          "activation_quant": true,
+          "activation_quant_mode": "per_tensor"
+        },
+        {
+          "layer": "DAB_Block_2.DAB_Module_2_0.dconv3x1.conv",
+          "bits": 4,
+          "weight_quant": true,
+          "activation_quant": true,
+          "activation_quant_mode": "per_tensor"
+        },
+        {
+          "layer": "DAB_Block_2.DAB_Module_2_0.dconv1x3.conv",
+          "bits": 4,
+          "weight_quant": true,
+          "activation_quant": true,
+          "activation_quant_mode": "per_tensor"
+        },
+        {
+          "layer": "DAB_Block_2.DAB_Module_2_0.ddconv3x1.conv",
+          "bits": 4,
+          "weight_quant": true,
+          "activation_quant": true,
+          "activation_quant_mode": "per_tensor"
+        },
+        {
+          "layer": "DAB_Block_2.DAB_Module_2_0.ddconv1x3.conv",
+          "bits": 4,
+          "weight_quant": true,
+          "activation_quant": true,
+          "activation_quant_mode": "per_tensor"
+        },
+        {
+          "layer": "DAB_Block_2.DAB_Module_2_0.conv1x1.conv",
+          "bits": 4,
+          "weight_quant": true,
+          "activation_quant": true,
+          "activation_quant_mode": "per_tensor"
+        },
+        {
+          "layer": "downsample_3.conv3x3.conv",
+          "bits": 4,
+          "weight_quant": true,
+          "activation_quant": true,
+          "activation_quant_mode": "per_tensor"
+        },
+        {
+          "layer": "downsample_3.conv",
+          "bits": 4,
+          "weight_quant": true,
+          "activation_quant": true,
+          "activation_quant_mode": "per_tensor"
+        },
+        {
+          "layer": "DAB_Block_3.DAB_Module_3_0.conv1x1_in.conv",
+          "bits": 4,
+          "weight_quant": true,
+          "activation_quant": true,
+          "activation_quant_mode": "per_tensor"
+        },
+        {
+          "layer": "DAB_Block_3.DAB_Module_3_0.conv3x1.conv",
+          "bits": 4,
+          "weight_quant": true,
+          "activation_quant": true,
+          "activation_quant_mode": "per_tensor"
+        },
+        {
+          "layer": "DAB_Block_3.DAB_Module_3_0.conv1x3.conv",
+          "bits": 4,
+          "weight_quant": true,
+          "activation_quant": true,
+          "activation_quant_mode": "per_tensor"
+        },
+        {
+          "layer": "DAB_Block_3.DAB_Module_3_0.dconv3x1.conv",
+          "bits": 4,
+          "weight_quant": true,
+          "activation_quant": true,
+          "activation_quant_mode": "per_tensor"
+        },
+        {
+          "layer": "DAB_Block_3.DAB_Module_3_0.dconv1x3.conv",
+          "bits": 4,
+          "weight_quant": true,
+          "activation_quant": true,
+          "activation_quant_mode": "per_tensor"
+        },
+        {
+          "layer": "DAB_Block_3.DAB_Module_3_0.ddconv3x1.conv",
+          "bits": 4,
+          "weight_quant": true,
+          "activation_quant": true,
+          "activation_quant_mode": "per_tensor"
+        },
+        {
+          "layer": "DAB_Block_3.DAB_Module_3_0.ddconv1x3.conv",
+          "bits": 4,
+          "weight_quant": true,
+          "activation_quant": true,
+          "activation_quant_mode": "per_tensor"
+        },
+        {
+          "layer": "DAB_Block_3.DAB_Module_3_0.conv1x1.conv",
+          "bits": 4,
+          "weight_quant": true,
+          "activation_quant": true,
+          "activation_quant_mode": "per_tensor"
+        },
+        {
+          "layer": "transformer1.atten.reduce",
+          "bits": 4,
+          "weight_quant": true,
+          "activation_quant": true,
+          "activation_quant_mode": "per_tensor"
+        },
+        {
+          "layer": "transformer1.atten.qkv",
+          "bits": 4,
+          "weight_quant": true,
+          "activation_quant": true,
+          "activation_quant_mode": "per_tensor"
+        },
+        {
+          "layer": "transformer1.atten.proj",
+          "bits": 4,
+          "weight_quant": true,
+          "activation_quant": true,
+          "activation_quant_mode": "per_tensor"
+        },
+        {
+          "layer": "transformer1.mlp.fc1",
+          "bits": 4,
+          "weight_quant": true,
+          "activation_quant": true,
+          "activation_quant_mode": "per_tensor"
+        },
+        {
+          "layer": "transformer1.mlp.fc2",
+          "bits": 4,
+          "weight_quant": true,
+          "activation_quant": true,
+          "activation_quant_mode": "per_tensor"
+        },
+        {
+          "layer": "DAB_Block_4.DAB_Module_4_0.conv1x1_in.conv",
+          "bits": 4,
+          "weight_quant": true,
+          "activation_quant": true,
+          "activation_quant_mode": "per_tensor"
+        },
+        {
+          "layer": "DAB_Block_4.DAB_Module_4_0.conv3x1.conv",
+          "bits": 4,
+          "weight_quant": true,
+          "activation_quant": true,
+          "activation_quant_mode": "per_tensor"
+        },
+        {
+          "layer": "DAB_Block_4.DAB_Module_4_0.conv1x3.conv",
+          "bits": 4,
+          "weight_quant": true,
+          "activation_quant": true,
+          "activation_quant_mode": "per_tensor"
+        },
+        {
+          "layer": "DAB_Block_4.DAB_Module_4_0.dconv3x1.conv",
+          "bits": 4,
+          "weight_quant": true,
+          "activation_quant": true,
+          "activation_quant_mode": "per_tensor"
+        },
+        {
+          "layer": "DAB_Block_4.DAB_Module_4_0.dconv1x3.conv",
+          "bits": 4,
+          "weight_quant": true,
+          "activation_quant": true,
+          "activation_quant_mode": "per_tensor"
+        },
+        {
+          "layer": "DAB_Block_4.DAB_Module_4_0.ddconv3x1.conv",
+          "bits": 4,
+          "weight_quant": true,
+          "activation_quant": true,
+          "activation_quant_mode": "per_tensor"
+        },
+        {
+          "layer": "DAB_Block_4.DAB_Module_4_0.ddconv1x3.conv",
+          "bits": 4,
+          "weight_quant": true,
+          "activation_quant": true,
+          "activation_quant_mode": "per_tensor"
+        },
+        {
+          "layer": "DAB_Block_4.DAB_Module_4_0.conv1x1.conv",
+          "bits": 4,
+          "weight_quant": true,
+          "activation_quant": true,
+          "activation_quant_mode": "per_tensor"
+        },
+        {
+          "layer": "upsample_1.conv",
+          "bits": 4,
+          "weight_quant": true,
+          "activation_quant": true,
+          "activation_quant_mode": "per_tensor"
+        },
+        {
+          "layer": "DAB_Block_5.DAB_Module_5_0.conv1x1_in.conv",
+          "bits": 4,
+          "weight_quant": true,
+          "activation_quant": true,
+          "activation_quant_mode": "per_tensor"
+        },
+        {
+          "layer": "DAB_Block_5.DAB_Module_5_0.conv3x1.conv",
+          "bits": 4,
+          "weight_quant": true,
+          "activation_quant": true,
+          "activation_quant_mode": "per_tensor"
+        },
+        {
+          "layer": "DAB_Block_5.DAB_Module_5_0.conv1x3.conv",
+          "bits": 4,
+          "weight_quant": true,
+          "activation_quant": true,
+          "activation_quant_mode": "per_tensor"
+        },
+        {
+          "layer": "DAB_Block_5.DAB_Module_5_0.dconv3x1.conv",
+          "bits": 4,
+          "weight_quant": true,
+          "activation_quant": true,
+          "activation_quant_mode": "per_tensor"
+        },
+        {
+          "layer": "DAB_Block_5.DAB_Module_5_0.dconv1x3.conv",
+          "bits": 4,
+          "weight_quant": true,
+          "activation_quant": true,
+          "activation_quant_mode": "per_tensor"
+        },
+        {
+          "layer": "DAB_Block_5.DAB_Module_5_0.ddconv3x1.conv",
+          "bits": 4,
+          "weight_quant": true,
+          "activation_quant": true,
+          "activation_quant_mode": "per_tensor"
+        },
+        {
+          "layer": "DAB_Block_5.DAB_Module_5_0.ddconv1x3.conv",
+          "bits": 4,
+          "weight_quant": true,
+          "activation_quant": true,
+          "activation_quant_mode": "per_tensor"
+        },
+        {
+          "layer": "DAB_Block_5.DAB_Module_5_0.conv1x1.conv",
+          "bits": 4,
+          "weight_quant": true,
+          "activation_quant": true,
+          "activation_quant_mode": "per_tensor"
+        },
+        {
+          "layer": "upsample_2.conv",
+          "bits": 4,
+          "weight_quant": true,
+          "activation_quant": true,
+          "activation_quant_mode": "per_tensor"
+        },
+        {
+          "layer": "DAB_Block_6.DAB_Module_6_0.conv1x1_in.conv",
+          "bits": 4,
+          "weight_quant": true,
+          "activation_quant": true,
+          "activation_quant_mode": "per_tensor"
+        },
+        {
+          "layer": "DAB_Block_6.DAB_Module_6_0.conv3x1.conv",
+          "bits": 4,
+          "weight_quant": true,
+          "activation_quant": true,
+          "activation_quant_mode": "per_tensor"
+        },
+        {
+          "layer": "DAB_Block_6.DAB_Module_6_0.conv1x3.conv",
+          "bits": 4,
+          "weight_quant": true,
+          "activation_quant": true,
+          "activation_quant_mode": "per_tensor"
+        },
+        {
+          "layer": "DAB_Block_6.DAB_Module_6_0.dconv3x1.conv",
+          "bits": 4,
+          "weight_quant": true,
+          "activation_quant": true,
+          "activation_quant_mode": "per_tensor"
+        },
+        {
+          "layer": "DAB_Block_6.DAB_Module_6_0.dconv1x3.conv",
+          "bits": 4,
+          "weight_quant": true,
+          "activation_quant": true,
+          "activation_quant_mode": "per_tensor"
+        },
+        {
+          "layer": "DAB_Block_6.DAB_Module_6_0.ddconv3x1.conv",
+          "bits": 4,
+          "weight_quant": true,
+          "activation_quant": true,
+          "activation_quant_mode": "per_tensor"
+        },
+        {
+          "layer": "DAB_Block_6.DAB_Module_6_0.ddconv1x3.conv",
+          "bits": 4,
+          "weight_quant": true,
+          "activation_quant": true,
+          "activation_quant_mode": "per_tensor"
+        },
+        {
+          "layer": "DAB_Block_6.DAB_Module_6_0.conv1x1.conv",
+          "bits": 4,
+          "weight_quant": true,
+          "activation_quant": true,
+          "activation_quant_mode": "per_tensor"
+        },
+        {
+          "layer": "upsample_3.conv",
+          "bits": 4,
+          "weight_quant": true,
+          "activation_quant": true,
+          "activation_quant_mode": "per_tensor"
+        },
+        {
+          "layer": "PA3.conv",
+          "bits": 4,
+          "weight_quant": true,
+          "activation_quant": true,
+          "activation_quant_mode": "per_tensor"
+        },
+        {
+          "layer": "LC1.dconv3x1",
+          "bits": 4,
+          "weight_quant": true,
+          "activation_quant": true,
+          "activation_quant_mode": "per_tensor"
+        },
+        {
+          "layer": "LC1.dconv1x3",
+          "bits": 4,
+          "weight_quant": true,
+          "activation_quant": true,
+          "activation_quant_mode": "per_tensor"
+        },
+        {
+          "layer": "LC2.dconv3x1",
+          "bits": 4,
+          "weight_quant": true,
+          "activation_quant": true,
+          "activation_quant_mode": "per_tensor"
+        },
+        {
+          "layer": "LC2.dconv1x3",
+          "bits": 4,
+          "weight_quant": true,
+          "activation_quant": true,
+          "activation_quant_mode": "per_tensor"
+        },
+        {
+          "layer": "LC3.dconv3x1",
+          "bits": 4,
+          "weight_quant": true,
+          "activation_quant": true,
+          "activation_quant_mode": "per_tensor"
+        },
+        {
+          "layer": "LC3.dconv1x3",
+          "bits": 4,
+          "weight_quant": true,
+          "activation_quant": true,
+          "activation_quant_mode": "per_tensor"
+        },
+        {
+          "layer": "final_conv",
+          "bits": 4,
+          "weight_quant": true,
+          "activation_quant": true,
+          "activation_quant_mode": "per_tensor"
+        },
+        {
+          "layer": "classifier.0.conv",
+          "bits": 4,
+          "weight_quant": true,
+          "activation_quant": true,
+          "activation_quant_mode": "per_tensor"
+        }
+      ],
+      "sample_ids": [
+        "9ff10cb75ea26f82",
+        "4f3e590e309295ca",
+        "4c6d7797d0b0aaae",
+        "9156b1c236cc4554",
+        "ce9f8292291d92b4",
+        "92e88eb7cdc4b0c9",
+        "4b1dda3d62806c25",
+        "45c98f970bb6e5fd",
+        "dc871ef1924b669f",
+        "f0c7f9558329a58f",
+        "91d3969d025c40f2",
+        "7301b0325cd0be88",
+        "52fbfa4d66ae212e",
+        "a57aba58a9cdfab0",
+        "d3c3608c9fa385d8",
+        "b222fbbcb6cbaf71",
+        "097218ed338c595f",
+        "d843a1055b074b0c",
+        "00b3f31e1bdd8382",
+        "eaa8b353bb90390f"
+      ],
+      "mean_spike_count_per_input_across_spike_layers": null,
+      "configured_firing_rate_across_spike_layers": null,
+      "sop_density_per_executed_mac_across_spike_layers": null,
+      "excluded_ops": [
+        "bias",
+        "batch_norm",
+        "layer_norm",
+        "softmax",
+        "pooling",
+        "qif_update_reset",
+        "shuffle_concat_reshape_repeat",
+        "bilinear_interpolation"
+      ],
+      "dense_macs_total": 195412815360.0,
+      "dense_macs_charged": 195412815360.0,
+      "sop_total": 0.0,
+      "ac_charged": 0.0,
+      "core_energy_pj": 195412815360.0,
+      "mem_energy_pj": 0.0,
+      "neuron_energy_pj": 0.0,
+      "total_energy_pj": 195412815360.0,
+      "dense_macs_total_per_image": 9770640768.0,
+      "dense_macs_charged_per_image": 9770640768.0,
+      "sop_total_per_image": 0.0,
+      "ac_charged_per_image": 0.0,
+      "core_energy_pj_per_image": 9770640768.0,
+      "mem_energy_pj_per_image": 0.0,
+      "neuron_energy_pj_per_image": 0.0,
+      "total_energy_pj_per_image": 9770640768.0
+    }
+  ]
+}

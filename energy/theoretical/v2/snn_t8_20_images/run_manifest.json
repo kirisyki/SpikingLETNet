@@ -1,0 +1,60 @@
+{
+  "schema_version": 2,
+  "generated_at_utc": "2026-07-11T06:20:09.404805+00:00",
+  "command": [
+    "tools/estimate_spikingletnet_energy_v2.py",
+    "--variants",
+    "small",
+    "middle",
+    "max",
+    "--checkpoint-kinds",
+    "fp",
+    "qat",
+    "--timestep",
+    "8",
+    "--max-batches",
+    "20",
+    "--batch-size",
+    "1",
+    "--device",
+    "cuda:0",
+    "--output-dir",
+    "energy/theoretical/v2/snn_t8_20_images"
+  ],
+  "git_commit": "109413d8eb1d49cc16a14ec4324e25afaabffc2f",
+  "software": {
+    "python": "3.12.3",
+    "torch": "2.7.0+cu128",
+    "torch_cuda": "12.8",
+    "numpy": "2.2.6"
+  },
+  "device": "cuda:0",
+  "accounting_mode": "mixed",
+  "classification_mode": "semantic-policy",
+  "sop_method": "qif_cumulative_spike_count_times_one_step_dense_macs_v2",
+  "spike_value_semantics": "qif_cumulative_count_0_to_T",
+  "layer_policy": {
+    "path": "/root/autodl-tmp/LETNet/tools/energy_layer_policy_v2.yaml",
+    "version": 2,
+    "sha256": "c6a4d3e3d9b18a496f455fad53db28b7570279c817505a32fadd0958972edc8a"
+  },
+  "energy_config": null,
+  "summary_keys": [
+    "max:fp",
+    "middle:fp",
+    "small:fp",
+    "max:qat",
+    "middle:qat",
+    "small:qat"
+  ],
+  "excluded_ops": [
+    "bias",
+    "batch_norm",
+    "layer_norm",
+    "softmax",
+    "pooling",
+    "qif_update_reset",
+    "shuffle_concat_reshape_repeat",
+    "bilinear_interpolation"
+  ]
+}

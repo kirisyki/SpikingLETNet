@@ -1,0 +1,45 @@
+{
+  "schema_version": 2,
+  "inputs": [
+    {
+      "path": "/root/autodl-tmp/LETNet/energy/theoretical/legacy/qif_t1_dense/ann_all_mac_energy.csv",
+      "sha256": "e9e5bf885f41cf37e708db272b93d0d366f3d82c10f7a053236a5df8973eae66"
+    },
+    {
+      "path": "/root/autodl-tmp/LETNet/energy/theoretical/legacy/snn_t8_20_images/mac_sop_summary.csv",
+      "sha256": "a51620226bf8314e2c168136879041213a8828ca1e72741424b8d4ca2d3d2eea"
+    },
+    {
+      "path": "/root/autodl-tmp/LETNet/energy/theoretical/legacy/snn_t8_20_images/inference_energy_set_a_fp32_int4_conservative.csv",
+      "sha256": "f45c8897e01995608b27968c4b51c4b4c5136eecad3ac2d249d0165609945f13"
+    },
+    {
+      "path": "/root/autodl-tmp/LETNet/energy/theoretical/legacy/snn_t8_20_images/inference_energy_set_b_fp32_int4_custom.csv",
+      "sha256": "9225f4545ecff2b507f891cf757c5ff4d295bb209ed13fdbd77e63c65ac46387"
+    },
+    {
+      "path": "/root/autodl-tmp/LETNet/energy/theoretical/v2/derived_20_images/mac_sop_summary.csv",
+      "sha256": "940d4acb9c426908a782ad7d92960f7dd43a86264fd7625564f59615585e88df"
+    },
+    {
+      "path": "/root/autodl-tmp/LETNet/energy/theoretical/v2/derived_20_images/inference_energy.csv",
+      "sha256": "fd772afe201c2b488a26aed379aa480945623ae3d31e7d6b9f5cbf01421cb753"
+    },
+    {
+      "path": "/root/autodl-tmp/LETNet/energy/measurements/legacy/pro6000_qif_t1_dense_fp32_5000_images/result.json",
+      "sha256": "0887fc2deda3f61b313cdcdb5c578d8fbc9263f1e29352fdf632847d544cb206"
+    },
+    {
+      "path": "/root/autodl-tmp/LETNet/energy/measurements/v2/pro6000_qif_t1_dense_fp32_5x5000_images/result.json",
+      "sha256": "407ef84b76bfad526f16598269e93e3675f6b3dfe0bd235d19a78b104f9d46db"
+    }
+  ],
+  "outputs": [
+    "operation_reconciliation.csv",
+    "operation_reconciliation.md",
+    "energy_reconciliation.csv",
+    "energy_reconciliation.md",
+    "measurement_reconciliation.csv",
+    "measurement_reconciliation.md"
+  ]
+}

@@ -1,0 +1,55 @@
+version: 2
+description: Deterministic input-semantics policy for SpikingLETNet shallow energy accounting.
+rules:
+  - id: raw_image_first_conv
+    pattern: '^init_conv\.0\.conv$'
+    mode: dense
+  - id: later_init_convs
+    pattern: '^init_conv\.[1-9][0-9]*\.conv$'
+    mode: spike
+  - id: small_middle_downsample_event_conv
+    pattern: '^downsample_[123]\.conv$'
+    variants: [small, middle]
+    mode: spike
+  - id: small_middle_downsample_continuous_conv
+    pattern: '^downsample_[123]\.conv3x3\.conv$'
+    variants: [small, middle]
+    mode: dense
+  - id: max_downsample_event_conv
+    pattern: '^downsample_[123]\.conv3x3\.conv$'
+    variants: [max]
+    mode: spike
+  - id: encoder_and_late_decoder_dab_convs
+    pattern: '^DAB_Block_[12356]\..*\.(?:conv1x1_in|conv3x1|conv1x3|dconv3x1|dconv1x3|ddconv3x1|ddconv1x3|conv1x1)\.conv$'
+    mode: spike
+  - id: transformer_decoder_entry
+    pattern: '^DAB_Block_4\..*\.conv1x1_in\.conv$'
+    mode: dense
+  - id: transformer_decoder_internal_event_convs
+    pattern: '^DAB_Block_4\..*\.(?:conv3x1|conv1x3|dconv3x1|dconv1x3|ddconv3x1|ddconv1x3|conv1x1)\.conv$'
+    mode: spike
+  - id: eca_conv1d
+    pattern: '^DAB_Block_[1-6]\..*\.ca(?:11|22)\.conv$'
+    mode: dense
+  - id: upsample_event_convs
+    pattern: '^upsample_[123]\.conv$'
+    mode: spike
+  - id: long_connection_event_entry
+    pattern: '^LC[123]\.dconv3x1$'
+    mode: spike
+  - id: long_connection_continuous_second_conv
+    pattern: '^LC[123]\.dconv1x3$'
+    mode: dense
+  - id: final_event_conv
+    pattern: '^final_conv$'
+    mode: spike
+  - id: dense_classifier
+    pattern: '^classifier\.0\.conv$'
+    mode: dense
+  - id: transformer_linears
+    pattern: '^transformer1\..*'
+    op_types: [linear]
+    mode: dense
+  - id: optional_pixel_attention
+    pattern: '^PA[123]\.conv$'
+    mode: dense

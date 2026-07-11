@@ -1,0 +1,14 @@
+| run | variant | checkpoint_kind | timestep | dense_macs_charged_per_image | sops_per_image |
+| --- | --- | --- | --- | --- | --- |
+| qif_t1 | max | fp | 1 | 7,354,952,064 | 0 |
+| qif_t1 | max | qat | 1 | 7,354,952,064 | 0 |
+| qif_t1 | middle | fp | 1 | 8,712,596,320 | 0 |
+| qif_t1 | middle | qat | 1 | 8,712,596,320 | 0 |
+| qif_t1 | small | fp | 1 | 9,770,640,768 | 0 |
+| qif_t1 | small | qat | 1 | 9,770,640,768 | 0 |
+| snn_t8 | max | fp | 8 | 2,502,801,472 | 1,709,458,467 |
+| snn_t8 | max | qat | 8 | 2,502,801,472 | 2,004,370,484 |
+| snn_t8 | middle | fp | 8 | 5,232,363,040 | 2,544,961,282 |
+| snn_t8 | middle | qat | 8 | 5,232,363,040 | 2,417,357,961 |
+| snn_t8 | small | fp | 8 | 9,778,006,144 | 3,362,342,826 |
+| snn_t8 | small | qat | 8 | 9,778,006,144 | 3,033,183,672 |
