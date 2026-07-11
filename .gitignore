@@ -53,6 +53,7 @@ QAT_checkpoint/
 *.pt
 *.pth
 *.onnx
+onnx_models/
 *.npy
 *.npz
 
