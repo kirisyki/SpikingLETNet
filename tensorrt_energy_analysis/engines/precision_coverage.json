@@ -1,0 +1,171 @@
+{
+  "fp32": {
+    "precision": "fp32",
+    "inspector_json": "/root/autodl-tmp/LETNet/tensorrt_energy_analysis/engines/SpikingLETNet_shallow_max_fp32_layer_info.json",
+    "total_engine_layers": 261,
+    "layer_type_counts": {
+      "custom_layer": 2,
+      "signal": 31,
+      "wait": 33,
+      "correlation": 62,
+      "kgen": 111,
+      "maxpool": 1,
+      "avgpool": 4,
+      "gemm": 14,
+      "deconv": 3
+    },
+    "layers_touching_datatype": {
+      "UInt64": 2,
+      "UInt8": 2,
+      "Float": 195
+    },
+    "layers_touching_int8": 0,
+    "layers_touching_int8_ratio": 0.0,
+    "main_compute": {
+      "correlation": {
+        "total": 62,
+        "int8": 0,
+        "int8_ratio": 0.0,
+        "non_int8_layers": [
+          "/model/init_conv/init_conv.0/conv/Conv + /model/init_conv/init_conv.0/bn_prelu/bn/BatchNormalization_myl0_3",
+          "/model/init_conv/init_conv.1/conv/Conv + /model/init_conv/init_conv.1/bn_prelu/bn/BatchNormalization_myl0_5",
+          "/model/init_conv/init_conv.2/conv/Conv + /model/init_conv/init_conv.2/bn_prelu/bn/BatchNormalization_myl0_7",
+          "/model/downsample_1/conv3x3/conv/Conv + /model/downsample_1/conv3x3/bn_prelu/bn/BatchNormalization_myl0_10",
+          "/model/DAB_Block_1/DAB_Module_1_0/conv1x1_in/conv/Conv + /model/DAB_Block_1/DAB_Module_1_0/conv1x1_in/bn_prelu/bn/BatchNormalization_myl0_16",
+          "/model/DAB_Block_1/DAB_Module_1_0/conv3x1/conv/Conv + /model/DAB_Block_1/DAB_Module_1_0/conv3x1/bn_prelu/bn/BatchNormalization_myl0_18",
+          "/model/DAB_Block_1/DAB_Module_1_0/conv1x3/conv/Conv + /model/DAB_Block_1/DAB_Module_1_0/conv1x3/bn_prelu/bn/BatchNormalization_myl0_20",
+          "/model/DAB_Block_1/DAB_Module_1_0/ddconv3x1/conv/Conv + /model/DAB_Block_1/DAB_Module_1_0/ddconv3x1/bn_prelu/bn/BatchNormalization_myl0_23",
+          "/model/DAB_Block_1/DAB_Module_1_0/ddconv1x3/conv/Conv + /model/DAB_Block_1/DAB_Module_1_0/ddconv1x3/bn_prelu/bn/BatchNormalization_myl0_26",
+          "/model/DAB_Block_1/DAB_Module_1_0/dconv3x1/conv/Conv + /model/DAB_Block_1/DAB_Module_1_0/dconv3x1/bn_prelu/bn/BatchNormalization_myl0_32",
+          "/model/DAB_Block_1/DAB_Module_1_0/dconv1x3/conv/Conv + /model/DAB_Block_1/DAB_Module_1_0/dconv1x3/bn_prelu/bn/BatchNormalization_myl0_34",
+          "/model/DAB_Block_1/DAB_Module_1_0/conv1x1/conv/Conv + /model/DAB_Block_1/DAB_Module_1_0/conv1x1/bn_prelu/bn/BatchNormalization_myl0_42",
+          "/model/downsample_2/conv3x3/conv/Conv + /model/downsample_2/conv3x3/bn_prelu/bn/BatchNormalization_myl0_44",
+          "/model/DAB_Block_2/DAB_Module_2_0/conv1x1_in/conv/Conv + /model/DAB_Block_2/DAB_Module_2_0/conv1x1_in/bn_prelu/bn/BatchNormalization_myl0_46",
+          "/model/DAB_Block_2/DAB_Module_2_0/conv3x1/conv/Conv + /model/DAB_Block_2/DAB_Module_2_0/conv3x1/bn_prelu/bn/BatchNormalization_myl0_48",
+          "/model/DAB_Block_2/DAB_Module_2_0/conv1x3/conv/Conv + /model/DAB_Block_2/DAB_Module_2_0/conv1x3/bn_prelu/bn/BatchNormalization_myl0_50",
+          "/model/DAB_Block_2/DAB_Module_2_0/dconv3x1/conv/Conv + /model/DAB_Block_2/DAB_Module_2_0/dconv3x1/bn_prelu/bn/BatchNormalization_myl0_53",
+          "/model/DAB_Block_2/DAB_Module_2_0/dconv1x3/conv/Conv + /model/DAB_Block_2/DAB_Module_2_0/dconv1x3/bn_prelu/bn/BatchNormalization_myl0_56",
+          "/model/DAB_Block_2/DAB_Module_2_0/ddconv3x1/conv/Conv + /model/DAB_Block_2/DAB_Module_2_0/ddconv3x1/bn_prelu/bn/BatchNormalization_myl0_62",
+          "/model/DAB_Block_2/DAB_Module_2_0/ddconv1x3/conv/Conv + /model/DAB_Block_2/DAB_Module_2_0/ddconv1x3/bn_prelu/bn/BatchNormalization_myl0_65",
+          "/model/DAB_Block_2/DAB_Module_2_0/conv1x1/conv/Conv + /model/DAB_Block_2/DAB_Module_2_0/conv1x1/bn_prelu/bn/BatchNormalization_myl0_75",
+          "/model/downsample_3/conv3x3/conv/Conv + /model/downsample_3/conv3x3/bn_prelu/bn/BatchNormalization_myl0_77",
+          "/model/DAB_Block_3/DAB_Module_3_0/conv1x1_in/conv/Conv + /model/DAB_Block_3/DAB_Module_3_0/conv1x1_in/bn_prelu/bn/BatchNormalization_myl0_79",
+          "/model/DAB_Block_3/DAB_Module_3_0/conv3x1/conv/Conv + /model/DAB_Block_3/DAB_Module_3_0/conv3x1/bn_prelu/bn/BatchNormalization_myl0_81",
+          "/model/DAB_Block_3/DAB_Module_3_0/conv1x3/conv/Conv + /model/DAB_Block_3/DAB_Module_3_0/conv1x3/bn_prelu/bn/BatchNormalization_myl0_83",
+          "/model/DAB_Block_3/DAB_Module_3_0/dconv3x1/conv/Conv + /model/DAB_Block_3/DAB_Module_3_0/dconv3x1/bn_prelu/bn/BatchNormalization_myl0_86",
+          "/model/DAB_Block_3/DAB_Module_3_0/dconv1x3/conv/Conv + /model/DAB_Block_3/DAB_Module_3_0/dconv1x3/bn_prelu/bn/BatchNormalization_myl0_88",
+          "/model/DAB_Block_3/DAB_Module_3_0/ddconv3x1/conv/Conv + /model/DAB_Block_3/DAB_Module_3_0/ddconv3x1/bn_prelu/bn/BatchNormalization_myl0_93",
+          "/model/DAB_Block_3/DAB_Module_3_0/ddconv1x3/conv/Conv + /model/DAB_Block_3/DAB_Module_3_0/ddconv1x3/bn_prelu/bn/BatchNormalization_myl0_95",
+          "/model/DAB_Block_3/DAB_Module_3_0/conv1x1/conv/Conv + /model/DAB_Block_3/DAB_Module_3_0/conv1x1/bn_prelu/bn/BatchNormalization_myl0_104",
+          "/model/DAB_Block_4/DAB_Module_4_0/conv1x1_in/conv/Conv + /model/DAB_Block_4/DAB_Module_4_0/conv1x1_in/bn_prelu/bn/BatchNormalization_myl0_144",
+          "/model/DAB_Block_4/DAB_Module_4_0/conv3x1/conv/Conv + /model/DAB_Block_4/DAB_Module_4_0/conv3x1/bn_prelu/bn/BatchNormalization_myl0_146",
+          "/model/DAB_Block_4/DAB_Module_4_0/conv1x3/conv/Conv + /model/DAB_Block_4/DAB_Module_4_0/conv1x3/bn_prelu/bn/BatchNormalization_myl0_148",
+          "/model/DAB_Block_4/DAB_Module_4_0/dconv3x1/conv/Conv + /model/DAB_Block_4/DAB_Module_4_0/dconv3x1/bn_prelu/bn/BatchNormalization_myl0_151",
+          "/model/DAB_Block_4/DAB_Module_4_0/dconv1x3/conv/Conv + /model/DAB_Block_4/DAB_Module_4_0/dconv1x3/bn_prelu/bn/BatchNormalization_myl0_153",
+          "/model/DAB_Block_4/DAB_Module_4_0/ddconv3x1/conv/Conv + /model/DAB_Block_4/DAB_Module_4_0/ddconv3x1/bn_prelu/bn/BatchNormalization_myl0_158",
+          "/model/DAB_Block_4/DAB_Module_4_0/ddconv1x3/conv/Conv + /model/DAB_Block_4/DAB_Module_4_0/ddconv1x3/bn_prelu/bn/BatchNormalization_myl0_160",
+          "/model/DAB_Block_4/DAB_Module_4_0/conv1x1/conv/Conv + /model/DAB_Block_4/DAB_Module_4_0/conv1x1/bn_prelu/bn/BatchNormalization_myl0_169",
+          "/model/LC3/dconv3x1/Conv_myl0_171",
+          "/model/LC3/dconv1x3/Conv + /model/LC3/bn_prelu/bn/BatchNormalization_myl0_172",
+          "/model/DAB_Block_5/DAB_Module_5_0/conv1x1_in/conv/Conv + /model/DAB_Block_5/DAB_Module_5_0/conv1x1_in/bn_prelu/bn/BatchNormalization_myl0_178",
+          "/model/DAB_Block_5/DAB_Module_5_0/conv3x1/conv/Conv + /model/DAB_Block_5/DAB_Module_5_0/conv3x1/bn_prelu/bn/BatchNormalization_myl0_180",
+          "/model/DAB_Block_5/DAB_Module_5_0/conv1x3/conv/Conv + /model/DAB_Block_5/DAB_Module_5_0/conv1x3/bn_prelu/bn/BatchNormalization_myl0_182",
+          "/model/DAB_Block_5/DAB_Module_5_0/dconv3x1/conv/Conv + /model/DAB_Block_5/DAB_Module_5_0/dconv3x1/bn_prelu/bn/BatchNormalization_myl0_185",
+          "/model/DAB_Block_5/DAB_Module_5_0/dconv1x3/conv/Conv + /model/DAB_Block_5/DAB_Module_5_0/dconv1x3/bn_prelu/bn/BatchNormalization_myl0_187",
+          "/model/DAB_Block_5/DAB_Module_5_0/ddconv3x1/conv/Conv + /model/DAB_Block_5/DAB_Module_5_0/ddconv3x1/bn_prelu/bn/BatchNormalization_myl0_193",
+          "/model/DAB_Block_5/DAB_Module_5_0/ddconv1x3/conv/Conv + /model/DAB_Block_5/DAB_Module_5_0/ddconv1x3/bn_prelu/bn/BatchNormalization_myl0_195",
+          "/model/DAB_Block_5/DAB_Module_5_0/conv1x1/conv/Conv + /model/DAB_Block_5/DAB_Module_5_0/conv1x1/bn_prelu/bn/BatchNormalization_myl0_205",
+          "/model/LC2/dconv3x1/Conv_myl0_206",
+          "/model/LC2/dconv1x3/Conv + /model/LC2/bn_prelu/bn/BatchNormalization_myl0_209",
+          "/model/DAB_Block_6/DAB_Module_6_0/conv1x1_in/conv/Conv + /model/DAB_Block_6/DAB_Module_6_0/conv1x1_in/bn_prelu/bn/BatchNormalization_myl0_215",
+          "/model/DAB_Block_6/DAB_Module_6_0/conv3x1/conv/Conv + /model/DAB_Block_6/DAB_Module_6_0/conv3x1/bn_prelu/bn/BatchNormalization_myl0_217",
+          "/model/DAB_Block_6/DAB_Module_6_0/conv1x3/conv/Conv + /model/DAB_Block_6/DAB_Module_6_0/conv1x3/bn_prelu/bn/BatchNormalization_myl0_220",
+          "/model/DAB_Block_6/DAB_Module_6_0/dconv3x1/conv/Conv + /model/DAB_Block_6/DAB_Module_6_0/dconv3x1/bn_prelu/bn/BatchNormalization_myl0_223",
+          "/model/DAB_Block_6/DAB_Module_6_0/dconv1x3/conv/Conv + /model/DAB_Block_6/DAB_Module_6_0/dconv1x3/bn_prelu/bn/BatchNormalization_myl0_226",
+          "/model/DAB_Block_6/DAB_Module_6_0/ddconv3x1/conv/Conv + /model/DAB_Block_6/DAB_Module_6_0/ddconv3x1/bn_prelu/bn/BatchNormalization_myl0_232",
+          "/model/DAB_Block_6/DAB_Module_6_0/ddconv1x3/conv/Conv + /model/DAB_Block_6/DAB_Module_6_0/ddconv1x3/bn_prelu/bn/BatchNormalization_myl0_235",
+          "/model/DAB_Block_6/DAB_Module_6_0/conv1x1/conv/Conv + /model/DAB_Block_6/DAB_Module_6_0/conv1x1/bn_prelu/bn/BatchNormalization_myl0_245",
+          "/model/LC1/dconv3x1/Conv_myl0_246",
+          "/model/LC1/dconv1x3/Conv + /model/LC1/bn_prelu/bn/BatchNormalization_myl0_249",
+          "/model/final_conv/Conv_myl0_255",
+          "/model/classifier/classifier.0/conv/Conv_myl0_257"
+        ]
+      },
+      "deconv": {
+        "total": 3,
+        "int8": 0,
+        "int8_ratio": 0.0,
+        "non_int8_layers": [
+          "/model/upsample_1/conv/ConvTranspose_myl0_176",
+          "/model/upsample_2/conv/ConvTranspose_myl0_213",
+          "/model/upsample_3/conv/ConvTranspose_myl0_253"
+        ]
+      },
+      "gemm": {
+        "total": 14,
+        "int8": 0,
+        "int8_ratio": 0.0,
+        "non_int8_layers": [
+          "/model/transformer1/atten/reduce/MatMul_myl0_110",
+          "/model/transformer1/atten/qkv/MatMul_myl0_111",
+          "/model/transformer1/atten/MatMul_myl0_114",
+          "/model/transformer1/atten/MatMul_1_myl0_116",
+          "/model/transformer1/atten/MatMul_2_myl0_118",
+          "/model/transformer1/atten/MatMul_3_myl0_120",
+          "/model/transformer1/atten/MatMul_4_myl0_123",
+          "/model/transformer1/atten/MatMul_5_myl0_125",
+          "/model/transformer1/atten/MatMul_6_myl0_128",
+          "/model/transformer1/atten/MatMul_7_myl0_130",
+          "/model/transformer1/atten/MatMul_8_myl0_132",
+          "/model/transformer1/atten/proj/MatMul/MatMulAddFusion_myl0_138",
+          "/model/transformer1/mlp/fc1/MatMul/MatMulAddFusion_myl0_140",
+          "/model/transformer1/mlp/fc2/MatMul/MatMulAddFusion_myl0_141"
+        ]
+      }
+    }
+  },
+  "int8": {
+    "precision": "int8",
+    "inspector_json": "/root/autodl-tmp/LETNet/tensorrt_energy_analysis/engines/SpikingLETNet_shallow_max_int8_layer_info.json",
+    "total_engine_layers": 383,
+    "layer_type_counts": {
+      "custom_layer": 2,
+      "signal": 44,
+      "wait": 45,
+      "kgen": 195,
+      "correlation": 74,
+      "maxpool": 1,
+      "avgpool": 4,
+      "gemm": 15,
+      "deconv": 3
+    },
+    "layers_touching_datatype": {
+      "UInt64": 2,
+      "UInt8": 2,
+      "Float": 59,
+      "Int8": 285
+    },
+    "layers_touching_int8": 285,
+    "layers_touching_int8_ratio": 0.7441253263707572,
+    "main_compute": {
+      "correlation": {
+        "total": 74,
+        "int8": 74,
+        "int8_ratio": 1.0,
+        "non_int8_layers": []
+      },
+      "deconv": {
+        "total": 3,
+        "int8": 3,
+        "int8_ratio": 1.0,
+        "non_int8_layers": []
+      },
+      "gemm": {
+        "total": 15,
+        "int8": 15,
+        "int8_ratio": 1.0,
+        "non_int8_layers": []
+      }
+    }
+  }
+}

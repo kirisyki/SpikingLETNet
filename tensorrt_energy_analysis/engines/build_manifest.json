@@ -1,0 +1,102 @@
+{
+  "generated_at_utc": "2026-07-11T18:14:42.879943+00:00",
+  "started_at_utc": "2026-07-11T18:14:06.824795+00:00",
+  "python": "3.12.3",
+  "tensorrt": "11.1.0.106",
+  "gpu": {
+    "name": "NVIDIA RTX PRO 6000 Blackwell Server Edition",
+    "uuid": "GPU-4dacf618-7fd5-e149-1f34-0a5f872b1146",
+    "driver": "580.95.05",
+    "power_limit_w": 600.0
+  },
+  "results": [
+    {
+      "precision": "fp32",
+      "onnx": "/root/autodl-tmp/LETNet/tensorrt_energy_analysis/models/SpikingLETNet_shallow_max_ann_fp32_trt.onnx",
+      "onnx_sha256": "173dd192fd613783b85506c9e4c86bfc164ae90f9bf6195772b157fe35aa340c",
+      "engine": "/root/autodl-tmp/LETNet/tensorrt_energy_analysis/engines/SpikingLETNet_shallow_max_fp32.plan",
+      "engine_sha256": "21e99fba37147a8aac914100b056a7415fa918765834c0dbd379a33ad99dcbf3",
+      "engine_bytes": 7178252,
+      "timing_cache": "/root/autodl-tmp/LETNet/tensorrt_energy_analysis/engines/SpikingLETNet_shallow_max_fp32.timing_cache",
+      "timing_cache_sha256": "fc9bd533141a4674e8bf9ef49b27b4ce3325d7f80ffa3b36f6d1ddc8cdb29fc6",
+      "layer_info": "/root/autodl-tmp/LETNet/tensorrt_energy_analysis/engines/SpikingLETNet_shallow_max_fp32_layer_info.json",
+      "build_log": "/root/autodl-tmp/LETNet/tensorrt_energy_analysis/engines/SpikingLETNet_shallow_max_fp32_build.log",
+      "build_seconds": 12.808389373123646,
+      "strongly_typed": true,
+      "tf32_enabled": false,
+      "workspace_gib": 4.0,
+      "builder_optimization_level": 3,
+      "io_tensors": [
+        {
+          "name": "image",
+          "mode": "TensorIOMode.INPUT",
+          "shape": [
+            1,
+            3,
+            400,
+            400
+          ],
+          "dtype": "DataType.FLOAT",
+          "location": "TensorLocation.DEVICE"
+        },
+        {
+          "name": "logits",
+          "mode": "TensorIOMode.OUTPUT",
+          "shape": [
+            1,
+            6,
+            400,
+            400
+          ],
+          "dtype": "DataType.FLOAT",
+          "location": "TensorLocation.DEVICE"
+        }
+      ],
+      "engine_layers": 261
+    },
+    {
+      "precision": "int8",
+      "onnx": "/root/autodl-tmp/LETNet/tensorrt_energy_analysis/models/SpikingLETNet_shallow_max_ann_int8_qdq_trt.onnx",
+      "onnx_sha256": "412bcd82fa8c3e76b598f61f78272a2115b878359001f1cbc684c26b4db75756",
+      "engine": "/root/autodl-tmp/LETNet/tensorrt_energy_analysis/engines/SpikingLETNet_shallow_max_int8.plan",
+      "engine_sha256": "d68b6730fe6fb0f16673ed34d6bd4e7b239210f64f91240d8ace74aee4ddf998",
+      "engine_bytes": 5048020,
+      "timing_cache": "/root/autodl-tmp/LETNet/tensorrt_energy_analysis/engines/SpikingLETNet_shallow_max_int8.timing_cache",
+      "timing_cache_sha256": "c4c9186a4d15831802a4dea93a03dd41d522fbfe491ff1469509e4c1de4638a7",
+      "layer_info": "/root/autodl-tmp/LETNet/tensorrt_energy_analysis/engines/SpikingLETNet_shallow_max_int8_layer_info.json",
+      "build_log": "/root/autodl-tmp/LETNet/tensorrt_energy_analysis/engines/SpikingLETNet_shallow_max_int8_build.log",
+      "build_seconds": 21.182826494798064,
+      "strongly_typed": true,
+      "tf32_enabled": false,
+      "workspace_gib": 4.0,
+      "builder_optimization_level": 3,
+      "io_tensors": [
+        {
+          "name": "image",
+          "mode": "TensorIOMode.INPUT",
+          "shape": [
+            1,
+            3,
+            400,
+            400
+          ],
+          "dtype": "DataType.FLOAT",
+          "location": "TensorLocation.DEVICE"
+        },
+        {
+          "name": "logits",
+          "mode": "TensorIOMode.OUTPUT",
+          "shape": [
+            1,
+            6,
+            400,
+            400
+          ],
+          "dtype": "DataType.FLOAT",
+          "location": "TensorLocation.DEVICE"
+        }
+      ],
+      "engine_layers": 383
+    }
+  ]
+}

@@ -1,0 +1,28 @@
+{
+  "generated_at_utc": "2026-07-11T18:20:00.621915+00:00",
+  "command": [
+    "/root/autodl-tmp/LETNet/tensorrt_energy_analysis/measure_energy.py",
+    "--warmup-images",
+    "200",
+    "--measure-images",
+    "5000",
+    "--pairs",
+    "5",
+    "--idle-seconds",
+    "10",
+    "--sample-interval-ms",
+    "100",
+    "--run-id",
+    "trt_fp32_int8_5x5000_20260712"
+  ],
+  "git_commit": "0be728318ba603751151588a1ff1e6bc3cc03801",
+  "software": {
+    "python": "3.12.3",
+    "torch": "2.7.0+cu128",
+    "torch_cuda": "12.8",
+    "tensorrt": "11.1.0.106",
+    "numpy": "2.5.1",
+    "pynvml": null
+  },
+  "result_status": "ready"
+}
