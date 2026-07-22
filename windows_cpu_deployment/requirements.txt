@@ -1,0 +1,8 @@
+# Windows x64 / CPython 3.11 deployment lock.
+# onnxruntime-openvino includes CPUExecutionProvider and OpenVINOExecutionProvider.
+numpy==2.3.5
+onnx==1.19.1
+onnxruntime-openvino==1.24.1
+openvino==2025.4.1
+Pillow==11.3.0
+psutil==7.0.0

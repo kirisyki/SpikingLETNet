@@ -1,0 +1,290 @@
+{
+  "onnxruntime": "1.27.0",
+  "tensorrt": "11.1.0.106",
+  "pairs": [
+    {
+      "label": "fp32",
+      "original": "/root/autodl-tmp/LETNet/onnx_models/SpikingLETNet_shallow_max_ann_fp32_preprocessed.onnx",
+      "original_sha256": "20b25301f4b8109f8700a2f2c70cce841ced8069f219920085b7182e76b1d66f",
+      "rewritten": "/root/autodl-tmp/LETNet/tensorrt_energy_analysis/models/SpikingLETNet_shallow_max_ann_fp32_trt.onnx",
+      "rewritten_sha256": "173dd192fd613783b85506c9e4c86bfc164ae90f9bf6195772b157fe35aa340c",
+      "samples": 20,
+      "rtol": 0.0001,
+      "atol": 0.0001,
+      "maximum_absolute_error": 0.0,
+      "maximum_mean_absolute_error": 0.0,
+      "sample_results": [
+        {
+          "index": 1,
+          "image": "/root/autodl-tmp/UDD/UDD6/preprocessed/val_patches/000061_0_0_img.png",
+          "max_abs": 0.0,
+          "mean_abs": 0.0
+        },
+        {
+          "index": 2,
+          "image": "/root/autodl-tmp/UDD/UDD6/preprocessed/val_patches/000061_0_200_img.png",
+          "max_abs": 0.0,
+          "mean_abs": 0.0
+        },
+        {
+          "index": 3,
+          "image": "/root/autodl-tmp/UDD/UDD6/preprocessed/val_patches/000061_0_400_img.png",
+          "max_abs": 0.0,
+          "mean_abs": 0.0
+        },
+        {
+          "index": 4,
+          "image": "/root/autodl-tmp/UDD/UDD6/preprocessed/val_patches/000061_0_600_img.png",
+          "max_abs": 0.0,
+          "mean_abs": 0.0
+        },
+        {
+          "index": 5,
+          "image": "/root/autodl-tmp/UDD/UDD6/preprocessed/val_patches/000061_0_800_img.png",
+          "max_abs": 0.0,
+          "mean_abs": 0.0
+        },
+        {
+          "index": 6,
+          "image": "/root/autodl-tmp/UDD/UDD6/preprocessed/val_patches/000061_0_1000_img.png",
+          "max_abs": 0.0,
+          "mean_abs": 0.0
+        },
+        {
+          "index": 7,
+          "image": "/root/autodl-tmp/UDD/UDD6/preprocessed/val_patches/000061_0_1200_img.png",
+          "max_abs": 0.0,
+          "mean_abs": 0.0
+        },
+        {
+          "index": 8,
+          "image": "/root/autodl-tmp/UDD/UDD6/preprocessed/val_patches/000061_0_1400_img.png",
+          "max_abs": 0.0,
+          "mean_abs": 0.0
+        },
+        {
+          "index": 9,
+          "image": "/root/autodl-tmp/UDD/UDD6/preprocessed/val_patches/000061_0_1600_img.png",
+          "max_abs": 0.0,
+          "mean_abs": 0.0
+        },
+        {
+          "index": 10,
+          "image": "/root/autodl-tmp/UDD/UDD6/preprocessed/val_patches/000061_0_1800_img.png",
+          "max_abs": 0.0,
+          "mean_abs": 0.0
+        },
+        {
+          "index": 11,
+          "image": "/root/autodl-tmp/UDD/UDD6/preprocessed/val_patches/000061_0_2000_img.png",
+          "max_abs": 0.0,
+          "mean_abs": 0.0
+        },
+        {
+          "index": 12,
+          "image": "/root/autodl-tmp/UDD/UDD6/preprocessed/val_patches/000061_0_2200_img.png",
+          "max_abs": 0.0,
+          "mean_abs": 0.0
+        },
+        {
+          "index": 13,
+          "image": "/root/autodl-tmp/UDD/UDD6/preprocessed/val_patches/000061_0_2400_img.png",
+          "max_abs": 0.0,
+          "mean_abs": 0.0
+        },
+        {
+          "index": 14,
+          "image": "/root/autodl-tmp/UDD/UDD6/preprocessed/val_patches/000061_0_2600_img.png",
+          "max_abs": 0.0,
+          "mean_abs": 0.0
+        },
+        {
+          "index": 15,
+          "image": "/root/autodl-tmp/UDD/UDD6/preprocessed/val_patches/000061_0_2800_img.png",
+          "max_abs": 0.0,
+          "mean_abs": 0.0
+        },
+        {
+          "index": 16,
+          "image": "/root/autodl-tmp/UDD/UDD6/preprocessed/val_patches/000061_0_3000_img.png",
+          "max_abs": 0.0,
+          "mean_abs": 0.0
+        },
+        {
+          "index": 17,
+          "image": "/root/autodl-tmp/UDD/UDD6/preprocessed/val_patches/000061_0_3200_img.png",
+          "max_abs": 0.0,
+          "mean_abs": 0.0
+        },
+        {
+          "index": 18,
+          "image": "/root/autodl-tmp/UDD/UDD6/preprocessed/val_patches/000061_0_3400_img.png",
+          "max_abs": 0.0,
+          "mean_abs": 0.0
+        },
+        {
+          "index": 19,
+          "image": "/root/autodl-tmp/UDD/UDD6/preprocessed/val_patches/000061_0_3600_img.png",
+          "max_abs": 0.0,
+          "mean_abs": 0.0
+        },
+        {
+          "index": 20,
+          "image": "/root/autodl-tmp/UDD/UDD6/preprocessed/val_patches/000061_0_3696_img.png",
+          "max_abs": 0.0,
+          "mean_abs": 0.0
+        }
+      ]
+    },
+    {
+      "label": "int8",
+      "original": "/root/autodl-tmp/LETNet/onnx_models/SpikingLETNet_shallow_max_ann_int8_qdq.onnx",
+      "original_sha256": "4e16d91770fbc08848ad07821cbd15c3b839fda57f8ea03cbb6b94be3e462e05",
+      "rewritten": "/root/autodl-tmp/LETNet/tensorrt_energy_analysis/models/SpikingLETNet_shallow_max_ann_int8_qdq_trt.onnx",
+      "rewritten_sha256": "412bcd82fa8c3e76b598f61f78272a2115b878359001f1cbc684c26b4db75756",
+      "samples": 20,
+      "rtol": 0.0001,
+      "atol": 0.0001,
+      "maximum_absolute_error": 0.0,
+      "maximum_mean_absolute_error": 0.0,
+      "sample_results": [
+        {
+          "index": 1,
+          "image": "/root/autodl-tmp/UDD/UDD6/preprocessed/val_patches/000061_0_0_img.png",
+          "max_abs": 0.0,
+          "mean_abs": 0.0
+        },
+        {
+          "index": 2,
+          "image": "/root/autodl-tmp/UDD/UDD6/preprocessed/val_patches/000061_0_200_img.png",
+          "max_abs": 0.0,
+          "mean_abs": 0.0
+        },
+        {
+          "index": 3,
+          "image": "/root/autodl-tmp/UDD/UDD6/preprocessed/val_patches/000061_0_400_img.png",
+          "max_abs": 0.0,
+          "mean_abs": 0.0
+        },
+        {
+          "index": 4,
+          "image": "/root/autodl-tmp/UDD/UDD6/preprocessed/val_patches/000061_0_600_img.png",
+          "max_abs": 0.0,
+          "mean_abs": 0.0
+        },
+        {
+          "index": 5,
+          "image": "/root/autodl-tmp/UDD/UDD6/preprocessed/val_patches/000061_0_800_img.png",
+          "max_abs": 0.0,
+          "mean_abs": 0.0
+        },
+        {
+          "index": 6,
+          "image": "/root/autodl-tmp/UDD/UDD6/preprocessed/val_patches/000061_0_1000_img.png",
+          "max_abs": 0.0,
+          "mean_abs": 0.0
+        },
+        {
+          "index": 7,
+          "image": "/root/autodl-tmp/UDD/UDD6/preprocessed/val_patches/000061_0_1200_img.png",
+          "max_abs": 0.0,
+          "mean_abs": 0.0
+        },
+        {
+          "index": 8,
+          "image": "/root/autodl-tmp/UDD/UDD6/preprocessed/val_patches/000061_0_1400_img.png",
+          "max_abs": 0.0,
+          "mean_abs": 0.0
+        },
+        {
+          "index": 9,
+          "image": "/root/autodl-tmp/UDD/UDD6/preprocessed/val_patches/000061_0_1600_img.png",
+          "max_abs": 0.0,
+          "mean_abs": 0.0
+        },
+        {
+          "index": 10,
+          "image": "/root/autodl-tmp/UDD/UDD6/preprocessed/val_patches/000061_0_1800_img.png",
+          "max_abs": 0.0,
+          "mean_abs": 0.0
+        },
+        {
+          "index": 11,
+          "image": "/root/autodl-tmp/UDD/UDD6/preprocessed/val_patches/000061_0_2000_img.png",
+          "max_abs": 0.0,
+          "mean_abs": 0.0
+        },
+        {
+          "index": 12,
+          "image": "/root/autodl-tmp/UDD/UDD6/preprocessed/val_patches/000061_0_2200_img.png",
+          "max_abs": 0.0,
+          "mean_abs": 0.0
+        },
+        {
+          "index": 13,
+          "image": "/root/autodl-tmp/UDD/UDD6/preprocessed/val_patches/000061_0_2400_img.png",
+          "max_abs": 0.0,
+          "mean_abs": 0.0
+        },
+        {
+          "index": 14,
+          "image": "/root/autodl-tmp/UDD/UDD6/preprocessed/val_patches/000061_0_2600_img.png",
+          "max_abs": 0.0,
+          "mean_abs": 0.0
+        },
+        {
+          "index": 15,
+          "image": "/root/autodl-tmp/UDD/UDD6/preprocessed/val_patches/000061_0_2800_img.png",
+          "max_abs": 0.0,
+          "mean_abs": 0.0
+        },
+        {
+          "index": 16,
+          "image": "/root/autodl-tmp/UDD/UDD6/preprocessed/val_patches/000061_0_3000_img.png",
+          "max_abs": 0.0,
+          "mean_abs": 0.0
+        },
+        {
+          "index": 17,
+          "image": "/root/autodl-tmp/UDD/UDD6/preprocessed/val_patches/000061_0_3200_img.png",
+          "max_abs": 0.0,
+          "mean_abs": 0.0
+        },
+        {
+          "index": 18,
+          "image": "/root/autodl-tmp/UDD/UDD6/preprocessed/val_patches/000061_0_3400_img.png",
+          "max_abs": 0.0,
+          "mean_abs": 0.0
+        },
+        {
+          "index": 19,
+          "image": "/root/autodl-tmp/UDD/UDD6/preprocessed/val_patches/000061_0_3600_img.png",
+          "max_abs": 0.0,
+          "mean_abs": 0.0
+        },
+        {
+          "index": 20,
+          "image": "/root/autodl-tmp/UDD/UDD6/preprocessed/val_patches/000061_0_3696_img.png",
+          "max_abs": 0.0,
+          "mean_abs": 0.0
+        }
+      ]
+    }
+  ],
+  "tensorrt_parse": [
+    {
+      "model": "/root/autodl-tmp/LETNet/tensorrt_energy_analysis/models/SpikingLETNet_shallow_max_ann_fp32_trt.onnx",
+      "sha256": "173dd192fd613783b85506c9e4c86bfc164ae90f9bf6195772b157fe35aa340c",
+      "network_layers": 1709,
+      "inputs": 1,
+      "outputs": 1
+    },
+    {
+      "model": "/root/autodl-tmp/LETNet/tensorrt_energy_analysis/models/SpikingLETNet_shallow_max_ann_int8_qdq_trt.onnx",
+      "sha256": "412bcd82fa8c3e76b598f61f78272a2115b878359001f1cbc684c26b4db75756",
+      "network_layers": 2981,
+      "inputs": 1,
+      "outputs": 1
+    }
+  ]
+}

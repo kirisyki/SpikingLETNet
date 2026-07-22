@@ -1,0 +1,115 @@
+{
+  "generated_at_utc": "2026-07-22T12:08:45.516196+00:00",
+  "model": "SpikingLETNet_shallow_max",
+  "checkpoint": "provenance/model_best.pth",
+  "input": {
+    "name": "image",
+    "dtype": "float32",
+    "shape": [
+      1,
+      3,
+      400,
+      400
+    ]
+  },
+  "output": {
+    "name": "logits",
+    "dtype": "float32",
+    "shape": [
+      1,
+      6,
+      400,
+      400
+    ]
+  },
+  "semantics": "single-step ANN/QIF equivalent; QIF bin=False; fixed batch and resolution",
+  "accuracy_is_acceptance_criterion": false,
+  "default_provider": "CPUExecutionProvider",
+  "optional_provider": "OpenVINOExecutionProvider",
+  "artifacts": [
+    {
+      "file": "SpikingLETNet_shallow_max_fp32_portable.onnx",
+      "bytes": 5865957,
+      "sha256": "20b25301f4b8109f8700a2f2c70cce841ced8069f219920085b7182e76b1d66f",
+      "scene": "SpikingLETNet_shallow_max_ann",
+      "destination": "models/SpikingLETNet_shallow_max_fp32_portable.onnx",
+      "source": "onnx_models/SpikingLETNet_shallow_max_ann_fp32_preprocessed.onnx"
+    },
+    {
+      "file": "SpikingLETNet_shallow_max_w8a8_qdq_portable.onnx",
+      "bytes": 2246435,
+      "sha256": "4e16d91770fbc08848ad07821cbd15c3b839fda57f8ea03cbb6b94be3e462e05",
+      "scene": "SpikingLETNet_shallow_max_ann",
+      "destination": "models/SpikingLETNet_shallow_max_w8a8_qdq_portable.onnx",
+      "source": "onnx_models/SpikingLETNet_shallow_max_ann_int8_qdq.onnx"
+    },
+    {
+      "file": "SpikingLETNet_shallow_max_fp32_openvino_portable.onnx",
+      "bytes": 5875501,
+      "sha256": "173dd192fd613783b85506c9e4c86bfc164ae90f9bf6195772b157fe35aa340c",
+      "scene": "SpikingLETNet_shallow_max_ann",
+      "destination": "models/SpikingLETNet_shallow_max_fp32_openvino_portable.onnx",
+      "source": "tensorrt_energy_analysis/models/SpikingLETNet_shallow_max_ann_fp32_trt.onnx"
+    },
+    {
+      "file": "SpikingLETNet_shallow_max_w8a8_qdq_openvino_portable.onnx",
+      "bytes": 2260250,
+      "sha256": "412bcd82fa8c3e76b598f61f78272a2115b878359001f1cbc684c26b4db75756",
+      "scene": "SpikingLETNet_shallow_max_ann_int8",
+      "destination": "models/SpikingLETNet_shallow_max_w8a8_qdq_openvino_portable.onnx",
+      "source": "tensorrt_energy_analysis/models/SpikingLETNet_shallow_max_ann_int8_qdq_trt.onnx"
+    },
+    {
+      "file": "model_best.pth",
+      "bytes": 5428958,
+      "sha256": "2729d27dad82b9ec5124cc6474bcaad5bb3813de30b1875cd39765be1f46c3fb",
+      "scene": "model_best",
+      "destination": "provenance/model_best.pth",
+      "source": "checkpoint/udd/SpikingLETNet_shallow_maxbs64gpu1_trainval20260611-003821/model_best.pth"
+    },
+    {
+      "file": "1.3M.yaml",
+      "bytes": 106,
+      "sha256": "ab1008283b7f2f539d17654ae30861c5a794145ac3aaa1d4b5f02fc1589becb8",
+      "scene": "1.3M",
+      "destination": "provenance/1.3M.yaml",
+      "source": "Network/configs/SpikingLETNet_shallow/1.3M.yaml"
+    },
+    {
+      "file": "spikingletnet_onnx_pipeline.py",
+      "bytes": 22142,
+      "sha256": "bca69a8757db2b11dd0950818568ef841d67fe5db22c770a768af97298042e25",
+      "scene": "spikingletnet",
+      "destination": "provenance/spikingletnet_onnx_pipeline.py",
+      "source": "tools/spikingletnet_onnx_pipeline.py"
+    },
+    {
+      "file": "rewrite_onnx.py",
+      "bytes": 10438,
+      "sha256": "c45478751b46614a67fbe795905de5d95cc621e77d43ac3c94211b8c4cd2138a",
+      "scene": "rewrite_onnx",
+      "destination": "provenance/rewrite_onnx.py",
+      "source": "tensorrt_energy_analysis/rewrite_onnx.py"
+    },
+    {
+      "file": "rewrite_manifest.json",
+      "bytes": 1416,
+      "sha256": "0e6d22fff056c5e8e7603b2a0683d5279c6620da91fdc9b186effd410334b40c",
+      "scene": "rewrite_manifest",
+      "destination": "provenance/rewrite_manifest.json",
+      "source": "tensorrt_energy_analysis/models/rewrite_manifest.json"
+    },
+    {
+      "file": "rewrite_validation.json",
+      "bytes": 9538,
+      "sha256": "edb2f1396830c8a0b0f851cec9315f0c6728bc578b1531efe9e4852d88be1721",
+      "scene": "validation",
+      "destination": "provenance/rewrite_validation.json",
+      "source": "tensorrt_energy_analysis/models/validation.json"
+    }
+  ],
+  "data": {
+    "calibration_images": 300,
+    "validation_pairs": 100
+  }
+}

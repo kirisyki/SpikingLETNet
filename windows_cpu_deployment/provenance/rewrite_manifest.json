@@ -1,0 +1,34 @@
+[
+  {
+    "input": "/root/autodl-tmp/LETNet/onnx_models/SpikingLETNet_shallow_max_ann_fp32_preprocessed.onnx",
+    "output": "/root/autodl-tmp/LETNet/tensorrt_energy_analysis/models/SpikingLETNet_shallow_max_ann_fp32_trt.onnx",
+    "rewritten_col2im": 1,
+    "folded_int32_bias_dequantizers": [],
+    "nodes": 780,
+    "initializers": 679,
+    "bytes": 5875501
+  },
+  {
+    "input": "/root/autodl-tmp/LETNet/onnx_models/SpikingLETNet_shallow_max_ann_int8_qdq.onnx",
+    "output": "/root/autodl-tmp/LETNet/tensorrt_energy_analysis/models/SpikingLETNet_shallow_max_ann_int8_qdq_trt.onnx",
+    "rewritten_col2im": 1,
+    "folded_int32_bias_dequantizers": [
+      "model.LC1.dconv1x3.bias_DequantizeLinear",
+      "model.LC1.dconv3x1.bias_DequantizeLinear",
+      "model.LC2.dconv1x3.bias_DequantizeLinear",
+      "model.LC2.dconv3x1.bias_DequantizeLinear",
+      "model.LC3.dconv1x3.bias_DequantizeLinear",
+      "model.LC3.dconv3x1.bias_DequantizeLinear",
+      "model.final_conv.bias_DequantizeLinear",
+      "model.transformer1.atten.proj.bias_DequantizeLinear",
+      "model.transformer1.mlp.fc1.bias_DequantizeLinear",
+      "model.transformer1.mlp.fc2.bias_DequantizeLinear",
+      "model.upsample_1.conv.bias_DequantizeLinear",
+      "model.upsample_2.conv.bias_DequantizeLinear",
+      "model.upsample_3.conv.bias_DequantizeLinear"
+    ],
+    "nodes": 1232,
+    "initializers": 1252,
+    "bytes": 2260250
+  }
+]

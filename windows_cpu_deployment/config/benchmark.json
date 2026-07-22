@@ -1,0 +1,21 @@
+{
+  "batch": 1,
+  "input_shape": [1, 3, 400, 400],
+  "default_provider": "cpu",
+  "optional_provider": "openvino",
+  "tune_warmup_seconds": 2.0,
+  "tune_min_iterations": 5,
+  "tune_measure_seconds": 2.0,
+  "formal_warmup_seconds": 30.0,
+  "formal_latency_iterations": 200,
+  "auxiliary_end_to_end_iterations": 20,
+  "energy_duration_seconds": 60.0,
+  "energy_trials": 5,
+  "idle_trials": 3,
+  "maximum_extra_trials": 3,
+  "maximum_cv": 0.05,
+  "minimum_thermal_headroom_c": 2.0,
+  "maximum_background_cpu_percent": 10.0,
+  "measurement_boundary": "session.run only",
+  "energy_domain": "Intel RAPL CPU package via Intel PCM"
+}

@@ -1,0 +1,3951 @@
+{
+  "generated_at_utc": "2026-07-22T12:18:55.393466+00:00",
+  "passed": true,
+  "accuracy_is_acceptance_criterion": false,
+  "environment": {
+    "generated_at_utc": "2026-07-22T12:18:55.393503+00:00",
+    "platform": "Linux-5.15.0-78-generic-x86_64-with-glibc2.35",
+    "python": "3.12.3 | packaged by Anaconda, Inc. | (main, May  6 2024, 19:46:43) [GCC 11.2.0]",
+    "python_executable": "/tmp/letnet_ortov124/bin/python",
+    "onnxruntime": "1.24.1",
+    "available_providers": [
+      "OpenVINOExecutionProvider",
+      "CPUExecutionProvider"
+    ],
+    "numpy": "2.3.5",
+    "pillow": "11.3.0",
+    "psutil": "7.0.0"
+  },
+  "models": {
+    "cpu_fp32": {
+      "path": "models/SpikingLETNet_shallow_max_fp32_portable.onnx",
+      "bytes": 5865957,
+      "sha256": "20b25301f4b8109f8700a2f2c70cce841ced8069f219920085b7182e76b1d66f",
+      "ir_version": 8,
+      "opsets": [
+        {
+          "domain": "ai.onnx",
+          "version": 18
+        },
+        {
+          "domain": "ai.onnx.ml",
+          "version": 5
+        },
+        {
+          "domain": "ai.onnx.training",
+          "version": 1
+        },
+        {
+          "domain": "ai.onnx.preview.training",
+          "version": 1
+        },
+        {
+          "domain": "com.microsoft",
+          "version": 1
+        },
+        {
+          "domain": "com.microsoft.experimental",
+          "version": 1
+        },
+        {
+          "domain": "com.microsoft.nchwc",
+          "version": 1
+        },
+        {
+          "domain": "org.pytorch.aten",
+          "version": 1
+        }
+      ],
+      "inputs": [
+        {
+          "name": "image",
+          "shape": [
+            1,
+            3,
+            400,
+            400
+          ]
+        }
+      ],
+      "outputs": [
+        {
+          "name": "logits",
+          "shape": [
+            1,
+            6,
+            400,
+            400
+          ]
+        }
+      ],
+      "node_count": 736,
+      "node_types": {
+        "Add": 23,
+        "BatchNormalization": 66,
+        "Clip": 78,
+        "Col2Im": 1,
+        "Concat": 2,
+        "Conv": 74,
+        "ConvTranspose": 3,
+        "Expand": 13,
+        "Gather": 5,
+        "Gemm": 3,
+        "GlobalAveragePool": 12,
+        "LayerNormalization": 2,
+        "MatMul": 12,
+        "MaxPool": 1,
+        "Mul": 17,
+        "Pad": 2,
+        "ReduceMean": 1,
+        "Relu": 1,
+        "Reshape": 254,
+        "Resize": 1,
+        "Round": 78,
+        "Sigmoid": 12,
+        "Slice": 15,
+        "Softmax": 5,
+        "Tile": 1,
+        "Transpose": 40,
+        "Unsqueeze": 14
+      },
+      "node_domains": {
+        "ai.onnx": 736
+      },
+      "initializer_types": {
+        "FLOAT": 354,
+        "INT64": 257
+      },
+      "qdq": {
+        "quantize_linear": 0,
+        "dequantize_linear": 0,
+        "eligible_op_coverage": {
+          "partial_or_fp32": 92
+        },
+        "per_op_coverage": {
+          "Conv": {
+            "partial_or_fp32": 74
+          },
+          "ConvTranspose": {
+            "partial_or_fp32": 3
+          },
+          "Gemm": {
+            "partial_or_fp32": 3
+          },
+          "MatMul": {
+            "partial_or_fp32": 12
+          }
+        },
+        "eligible_nodes": [
+          {
+            "index": 2,
+            "name": "/model/init_conv/init_conv.0/conv/Conv",
+            "op_type": "Conv",
+            "activation_has_dq": false,
+            "weight_has_int8_dq": false,
+            "weight_storage_type": null,
+            "output_has_q": false
+          },
+          {
+            "index": 9,
+            "name": "/model/init_conv/init_conv.1/conv/Conv",
+            "op_type": "Conv",
+            "activation_has_dq": false,
+            "weight_has_int8_dq": false,
+            "weight_storage_type": null,
+            "output_has_q": false
+          },
+          {
+            "index": 16,
+            "name": "/model/init_conv/init_conv.2/conv/Conv",
+            "op_type": "Conv",
+            "activation_has_dq": false,
+            "weight_has_int8_dq": false,
+            "weight_storage_type": null,
+            "output_has_q": false
+          },
+          {
+            "index": 25,
+            "name": "/model/downsample_1/conv3x3/conv/Conv",
+            "op_type": "Conv",
+            "activation_has_dq": false,
+            "weight_has_int8_dq": false,
+            "weight_storage_type": null,
+            "output_has_q": false
+          },
+          {
+            "index": 33,
+            "name": "/model/DAB_Block_1/DAB_Module_1_0/conv1x1_in/conv/Conv",
+            "op_type": "Conv",
+            "activation_has_dq": false,
+            "weight_has_int8_dq": false,
+            "weight_storage_type": null,
+            "output_has_q": false
+          },
+          {
+            "index": 40,
+            "name": "/model/DAB_Block_1/DAB_Module_1_0/conv3x1/conv/Conv",
+            "op_type": "Conv",
+            "activation_has_dq": false,
+            "weight_has_int8_dq": false,
+            "weight_storage_type": null,
+            "output_has_q": false
+          },
+          {
+            "index": 47,
+            "name": "/model/DAB_Block_1/DAB_Module_1_0/conv1x3/conv/Conv",
+            "op_type": "Conv",
+            "activation_has_dq": false,
+            "weight_has_int8_dq": false,
+            "weight_storage_type": null,
+            "output_has_q": false
+          },
+          {
+            "index": 54,
+            "name": "/model/DAB_Block_1/DAB_Module_1_0/ddconv3x1/conv/Conv",
+            "op_type": "Conv",
+            "activation_has_dq": false,
+            "weight_has_int8_dq": false,
+            "weight_storage_type": null,
+            "output_has_q": false
+          },
+          {
+            "index": 61,
+            "name": "/model/DAB_Block_1/DAB_Module_1_0/ddconv1x3/conv/Conv",
+            "op_type": "Conv",
+            "activation_has_dq": false,
+            "weight_has_int8_dq": false,
+            "weight_storage_type": null,
+            "output_has_q": false
+          },
+          {
+            "index": 72,
+            "name": "/model/DAB_Block_1/DAB_Module_1_0/ca22/conv/Conv",
+            "op_type": "Conv",
+            "activation_has_dq": false,
+            "weight_has_int8_dq": false,
+            "weight_storage_type": null,
+            "output_has_q": false
+          },
+          {
+            "index": 81,
+            "name": "/model/DAB_Block_1/DAB_Module_1_0/dconv3x1/conv/Conv",
+            "op_type": "Conv",
+            "activation_has_dq": false,
+            "weight_has_int8_dq": false,
+            "weight_storage_type": null,
+            "output_has_q": false
+          },
+          {
+            "index": 88,
+            "name": "/model/DAB_Block_1/DAB_Module_1_0/dconv1x3/conv/Conv",
+            "op_type": "Conv",
+            "activation_has_dq": false,
+            "weight_has_int8_dq": false,
+            "weight_storage_type": null,
+            "output_has_q": false
+          },
+          {
+            "index": 99,
+            "name": "/model/DAB_Block_1/DAB_Module_1_0/ca11/conv/Conv",
+            "op_type": "Conv",
+            "activation_has_dq": false,
+            "weight_has_int8_dq": false,
+            "weight_storage_type": null,
+            "output_has_q": false
+          },
+          {
+            "index": 111,
+            "name": "/model/DAB_Block_1/DAB_Module_1_0/conv1x1/conv/Conv",
+            "op_type": "Conv",
+            "activation_has_dq": false,
+            "weight_has_int8_dq": false,
+            "weight_storage_type": null,
+            "output_has_q": false
+          },
+          {
+            "index": 126,
+            "name": "/model/LC1/dconv3x1/Conv",
+            "op_type": "Conv",
+            "activation_has_dq": false,
+            "weight_has_int8_dq": false,
+            "weight_storage_type": null,
+            "output_has_q": false
+          },
+          {
+            "index": 128,
+            "name": "/model/LC1/dconv1x3/Conv",
+            "op_type": "Conv",
+            "activation_has_dq": false,
+            "weight_has_int8_dq": false,
+            "weight_storage_type": null,
+            "output_has_q": false
+          },
+          {
+            "index": 134,
+            "name": "/model/downsample_2/conv3x3/conv/Conv",
+            "op_type": "Conv",
+            "activation_has_dq": false,
+            "weight_has_int8_dq": false,
+            "weight_storage_type": null,
+            "output_has_q": false
+          },
+          {
+            "index": 141,
+            "name": "/model/DAB_Block_2/DAB_Module_2_0/conv1x1_in/conv/Conv",
+            "op_type": "Conv",
+            "activation_has_dq": false,
+            "weight_has_int8_dq": false,
+            "weight_storage_type": null,
+            "output_has_q": false
+          },
+          {
+            "index": 148,
+            "name": "/model/DAB_Block_2/DAB_Module_2_0/conv3x1/conv/Conv",
+            "op_type": "Conv",
+            "activation_has_dq": false,
+            "weight_has_int8_dq": false,
+            "weight_storage_type": null,
+            "output_has_q": false
+          },
+          {
+            "index": 155,
+            "name": "/model/DAB_Block_2/DAB_Module_2_0/conv1x3/conv/Conv",
+            "op_type": "Conv",
+            "activation_has_dq": false,
+            "weight_has_int8_dq": false,
+            "weight_storage_type": null,
+            "output_has_q": false
+          },
+          {
+            "index": 162,
+            "name": "/model/DAB_Block_2/DAB_Module_2_0/ddconv3x1/conv/Conv",
+            "op_type": "Conv",
+            "activation_has_dq": false,
+            "weight_has_int8_dq": false,
+            "weight_storage_type": null,
+            "output_has_q": false
+          },
+          {
+            "index": 169,
+            "name": "/model/DAB_Block_2/DAB_Module_2_0/ddconv1x3/conv/Conv",
+            "op_type": "Conv",
+            "activation_has_dq": false,
+            "weight_has_int8_dq": false,
+            "weight_storage_type": null,
+            "output_has_q": false
+          },
+          {
+            "index": 180,
+            "name": "/model/DAB_Block_2/DAB_Module_2_0/ca22/conv/Conv",
+            "op_type": "Conv",
+            "activation_has_dq": false,
+            "weight_has_int8_dq": false,
+            "weight_storage_type": null,
+            "output_has_q": false
+          },
+          {
+            "index": 189,
+            "name": "/model/DAB_Block_2/DAB_Module_2_0/dconv3x1/conv/Conv",
+            "op_type": "Conv",
+            "activation_has_dq": false,
+            "weight_has_int8_dq": false,
+            "weight_storage_type": null,
+            "output_has_q": false
+          },
+          {
+            "index": 196,
+            "name": "/model/DAB_Block_2/DAB_Module_2_0/dconv1x3/conv/Conv",
+            "op_type": "Conv",
+            "activation_has_dq": false,
+            "weight_has_int8_dq": false,
+            "weight_storage_type": null,
+            "output_has_q": false
+          },
+          {
+            "index": 207,
+            "name": "/model/DAB_Block_2/DAB_Module_2_0/ca11/conv/Conv",
+            "op_type": "Conv",
+            "activation_has_dq": false,
+            "weight_has_int8_dq": false,
+            "weight_storage_type": null,
+            "output_has_q": false
+          },
+          {
+            "index": 219,
+            "name": "/model/DAB_Block_2/DAB_Module_2_0/conv1x1/conv/Conv",
+            "op_type": "Conv",
+            "activation_has_dq": false,
+            "weight_has_int8_dq": false,
+            "weight_storage_type": null,
+            "output_has_q": false
+          },
+          {
+            "index": 234,
+            "name": "/model/LC2/dconv3x1/Conv",
+            "op_type": "Conv",
+            "activation_has_dq": false,
+            "weight_has_int8_dq": false,
+            "weight_storage_type": null,
+            "output_has_q": false
+          },
+          {
+            "index": 236,
+            "name": "/model/LC2/dconv1x3/Conv",
+            "op_type": "Conv",
+            "activation_has_dq": false,
+            "weight_has_int8_dq": false,
+            "weight_storage_type": null,
+            "output_has_q": false
+          },
+          {
+            "index": 242,
+            "name": "/model/downsample_3/conv3x3/conv/Conv",
+            "op_type": "Conv",
+            "activation_has_dq": false,
+            "weight_has_int8_dq": false,
+            "weight_storage_type": null,
+            "output_has_q": false
+          },
+          {
+            "index": 249,
+            "name": "/model/DAB_Block_3/DAB_Module_3_0/conv1x1_in/conv/Conv",
+            "op_type": "Conv",
+            "activation_has_dq": false,
+            "weight_has_int8_dq": false,
+            "weight_storage_type": null,
+            "output_has_q": false
+          },
+          {
+            "index": 256,
+            "name": "/model/DAB_Block_3/DAB_Module_3_0/conv3x1/conv/Conv",
+            "op_type": "Conv",
+            "activation_has_dq": false,
+            "weight_has_int8_dq": false,
+            "weight_storage_type": null,
+            "output_has_q": false
+          },
+          {
+            "index": 263,
+            "name": "/model/DAB_Block_3/DAB_Module_3_0/conv1x3/conv/Conv",
+            "op_type": "Conv",
+            "activation_has_dq": false,
+            "weight_has_int8_dq": false,
+            "weight_storage_type": null,
+            "output_has_q": false
+          },
+          {
+            "index": 270,
+            "name": "/model/DAB_Block_3/DAB_Module_3_0/ddconv3x1/conv/Conv",
+            "op_type": "Conv",
+            "activation_has_dq": false,
+            "weight_has_int8_dq": false,
+            "weight_storage_type": null,
+            "output_has_q": false
+          },
+          {
+            "index": 277,
+            "name": "/model/DAB_Block_3/DAB_Module_3_0/ddconv1x3/conv/Conv",
+            "op_type": "Conv",
+            "activation_has_dq": false,
+            "weight_has_int8_dq": false,
+            "weight_storage_type": null,
+            "output_has_q": false
+          },
+          {
+            "index": 288,
+            "name": "/model/DAB_Block_3/DAB_Module_3_0/ca22/conv/Conv",
+            "op_type": "Conv",
+            "activation_has_dq": false,
+            "weight_has_int8_dq": false,
+            "weight_storage_type": null,
+            "output_has_q": false
+          },
+          {
+            "index": 297,
+            "name": "/model/DAB_Block_3/DAB_Module_3_0/dconv3x1/conv/Conv",
+            "op_type": "Conv",
+            "activation_has_dq": false,
+            "weight_has_int8_dq": false,
+            "weight_storage_type": null,
+            "output_has_q": false
+          },
+          {
+            "index": 304,
+            "name": "/model/DAB_Block_3/DAB_Module_3_0/dconv1x3/conv/Conv",
+            "op_type": "Conv",
+            "activation_has_dq": false,
+            "weight_has_int8_dq": false,
+            "weight_storage_type": null,
+            "output_has_q": false
+          },
+          {
+            "index": 315,
+            "name": "/model/DAB_Block_3/DAB_Module_3_0/ca11/conv/Conv",
+            "op_type": "Conv",
+            "activation_has_dq": false,
+            "weight_has_int8_dq": false,
+            "weight_storage_type": null,
+            "output_has_q": false
+          },
+          {
+            "index": 327,
+            "name": "/model/DAB_Block_3/DAB_Module_3_0/conv1x1/conv/Conv",
+            "op_type": "Conv",
+            "activation_has_dq": false,
+            "weight_has_int8_dq": false,
+            "weight_storage_type": null,
+            "output_has_q": false
+          },
+          {
+            "index": 344,
+            "name": "/model/LC3/dconv3x1/Conv",
+            "op_type": "Conv",
+            "activation_has_dq": false,
+            "weight_has_int8_dq": false,
+            "weight_storage_type": null,
+            "output_has_q": false
+          },
+          {
+            "index": 346,
+            "name": "/model/LC3/dconv1x3/Conv",
+            "op_type": "Conv",
+            "activation_has_dq": false,
+            "weight_has_int8_dq": false,
+            "weight_storage_type": null,
+            "output_has_q": false
+          },
+          {
+            "index": 360,
+            "name": "/model/transformer1/atten/reduce/MatMul",
+            "op_type": "MatMul",
+            "activation_has_dq": false,
+            "weight_has_int8_dq": false,
+            "weight_storage_type": null,
+            "output_has_q": false
+          },
+          {
+            "index": 361,
+            "name": "/model/transformer1/atten/qkv/MatMul",
+            "op_type": "MatMul",
+            "activation_has_dq": false,
+            "weight_has_int8_dq": false,
+            "weight_storage_type": null,
+            "output_has_q": false
+          },
+          {
+            "index": 369,
+            "name": "/model/transformer1/atten/MatMul_8",
+            "op_type": "MatMul",
+            "activation_has_dq": false,
+            "weight_has_int8_dq": false,
+            "weight_storage_type": null,
+            "output_has_q": false
+          },
+          {
+            "index": 374,
+            "name": "/model/transformer1/atten/MatMul_9",
+            "op_type": "MatMul",
+            "activation_has_dq": false,
+            "weight_has_int8_dq": false,
+            "weight_storage_type": null,
+            "output_has_q": false
+          },
+          {
+            "index": 378,
+            "name": "/model/transformer1/atten/MatMul_6",
+            "op_type": "MatMul",
+            "activation_has_dq": false,
+            "weight_has_int8_dq": false,
+            "weight_storage_type": null,
+            "output_has_q": false
+          },
+          {
+            "index": 382,
+            "name": "/model/transformer1/atten/MatMul_7",
+            "op_type": "MatMul",
+            "activation_has_dq": false,
+            "weight_has_int8_dq": false,
+            "weight_storage_type": null,
+            "output_has_q": false
+          },
+          {
+            "index": 386,
+            "name": "/model/transformer1/atten/MatMul_4",
+            "op_type": "MatMul",
+            "activation_has_dq": false,
+            "weight_has_int8_dq": false,
+            "weight_storage_type": null,
+            "output_has_q": false
+          },
+          {
+            "index": 390,
+            "name": "/model/transformer1/atten/MatMul_5",
+            "op_type": "MatMul",
+            "activation_has_dq": false,
+            "weight_has_int8_dq": false,
+            "weight_storage_type": null,
+            "output_has_q": false
+          },
+          {
+            "index": 394,
+            "name": "/model/transformer1/atten/MatMul_2",
+            "op_type": "MatMul",
+            "activation_has_dq": false,
+            "weight_has_int8_dq": false,
+            "weight_storage_type": null,
+            "output_has_q": false
+          },
+          {
+            "index": 398,
+            "name": "/model/transformer1/atten/MatMul_3",
+            "op_type": "MatMul",
+            "activation_has_dq": false,
+            "weight_has_int8_dq": false,
+            "weight_storage_type": null,
+            "output_has_q": false
+          },
+          {
+            "index": 402,
+            "name": "/model/transformer1/atten/MatMul",
+            "op_type": "MatMul",
+            "activation_has_dq": false,
+            "weight_has_int8_dq": false,
+            "weight_storage_type": null,
+            "output_has_q": false
+          },
+          {
+            "index": 406,
+            "name": "/model/transformer1/atten/MatMul_1",
+            "op_type": "MatMul",
+            "activation_has_dq": false,
+            "weight_has_int8_dq": false,
+            "weight_storage_type": null,
+            "output_has_q": false
+          },
+          {
+            "index": 410,
+            "name": "/model/transformer1/atten/proj/MatMul/MatMulAddFusion",
+            "op_type": "Gemm",
+            "activation_has_dq": false,
+            "weight_has_int8_dq": false,
+            "weight_storage_type": null,
+            "output_has_q": false
+          },
+          {
+            "index": 415,
+            "name": "/model/transformer1/mlp/fc1/MatMul/MatMulAddFusion",
+            "op_type": "Gemm",
+            "activation_has_dq": false,
+            "weight_has_int8_dq": false,
+            "weight_storage_type": null,
+            "output_has_q": false
+          },
+          {
+            "index": 419,
+            "name": "/model/transformer1/mlp/fc2/MatMul/MatMulAddFusion",
+            "op_type": "Gemm",
+            "activation_has_dq": false,
+            "weight_has_int8_dq": false,
+            "weight_storage_type": null,
+            "output_has_q": false
+          },
+          {
+            "index": 427,
+            "name": "/model/DAB_Block_4/DAB_Module_4_0/conv1x1_in/conv/Conv",
+            "op_type": "Conv",
+            "activation_has_dq": false,
+            "weight_has_int8_dq": false,
+            "weight_storage_type": null,
+            "output_has_q": false
+          },
+          {
+            "index": 434,
+            "name": "/model/DAB_Block_4/DAB_Module_4_0/conv3x1/conv/Conv",
+            "op_type": "Conv",
+            "activation_has_dq": false,
+            "weight_has_int8_dq": false,
+            "weight_storage_type": null,
+            "output_has_q": false
+          },
+          {
+            "index": 441,
+            "name": "/model/DAB_Block_4/DAB_Module_4_0/conv1x3/conv/Conv",
+            "op_type": "Conv",
+            "activation_has_dq": false,
+            "weight_has_int8_dq": false,
+            "weight_storage_type": null,
+            "output_has_q": false
+          },
+          {
+            "index": 448,
+            "name": "/model/DAB_Block_4/DAB_Module_4_0/ddconv3x1/conv/Conv",
+            "op_type": "Conv",
+            "activation_has_dq": false,
+            "weight_has_int8_dq": false,
+            "weight_storage_type": null,
+            "output_has_q": false
+          },
+          {
+            "index": 455,
+            "name": "/model/DAB_Block_4/DAB_Module_4_0/ddconv1x3/conv/Conv",
+            "op_type": "Conv",
+            "activation_has_dq": false,
+            "weight_has_int8_dq": false,
+            "weight_storage_type": null,
+            "output_has_q": false
+          },
+          {
+            "index": 466,
+            "name": "/model/DAB_Block_4/DAB_Module_4_0/ca22/conv/Conv",
+            "op_type": "Conv",
+            "activation_has_dq": false,
+            "weight_has_int8_dq": false,
+            "weight_storage_type": null,
+            "output_has_q": false
+          },
+          {
+            "index": 475,
+            "name": "/model/DAB_Block_4/DAB_Module_4_0/dconv3x1/conv/Conv",
+            "op_type": "Conv",
+            "activation_has_dq": false,
+            "weight_has_int8_dq": false,
+            "weight_storage_type": null,
+            "output_has_q": false
+          },
+          {
+            "index": 482,
+            "name": "/model/DAB_Block_4/DAB_Module_4_0/dconv1x3/conv/Conv",
+            "op_type": "Conv",
+            "activation_has_dq": false,
+            "weight_has_int8_dq": false,
+            "weight_storage_type": null,
+            "output_has_q": false
+          },
+          {
+            "index": 493,
+            "name": "/model/DAB_Block_4/DAB_Module_4_0/ca11/conv/Conv",
+            "op_type": "Conv",
+            "activation_has_dq": false,
+            "weight_has_int8_dq": false,
+            "weight_storage_type": null,
+            "output_has_q": false
+          },
+          {
+            "index": 505,
+            "name": "/model/DAB_Block_4/DAB_Module_4_0/conv1x1/conv/Conv",
+            "op_type": "Conv",
+            "activation_has_dq": false,
+            "weight_has_int8_dq": false,
+            "weight_storage_type": null,
+            "output_has_q": false
+          },
+          {
+            "index": 521,
+            "name": "/model/upsample_1/conv/ConvTranspose",
+            "op_type": "ConvTranspose",
+            "activation_has_dq": false,
+            "weight_has_int8_dq": false,
+            "weight_storage_type": null,
+            "output_has_q": false
+          },
+          {
+            "index": 528,
+            "name": "/model/DAB_Block_5/DAB_Module_5_0/conv1x1_in/conv/Conv",
+            "op_type": "Conv",
+            "activation_has_dq": false,
+            "weight_has_int8_dq": false,
+            "weight_storage_type": null,
+            "output_has_q": false
+          },
+          {
+            "index": 535,
+            "name": "/model/DAB_Block_5/DAB_Module_5_0/conv3x1/conv/Conv",
+            "op_type": "Conv",
+            "activation_has_dq": false,
+            "weight_has_int8_dq": false,
+            "weight_storage_type": null,
+            "output_has_q": false
+          },
+          {
+            "index": 542,
+            "name": "/model/DAB_Block_5/DAB_Module_5_0/conv1x3/conv/Conv",
+            "op_type": "Conv",
+            "activation_has_dq": false,
+            "weight_has_int8_dq": false,
+            "weight_storage_type": null,
+            "output_has_q": false
+          },
+          {
+            "index": 549,
+            "name": "/model/DAB_Block_5/DAB_Module_5_0/ddconv3x1/conv/Conv",
+            "op_type": "Conv",
+            "activation_has_dq": false,
+            "weight_has_int8_dq": false,
+            "weight_storage_type": null,
+            "output_has_q": false
+          },
+          {
+            "index": 556,
+            "name": "/model/DAB_Block_5/DAB_Module_5_0/ddconv1x3/conv/Conv",
+            "op_type": "Conv",
+            "activation_has_dq": false,
+            "weight_has_int8_dq": false,
+            "weight_storage_type": null,
+            "output_has_q": false
+          },
+          {
+            "index": 567,
+            "name": "/model/DAB_Block_5/DAB_Module_5_0/ca22/conv/Conv",
+            "op_type": "Conv",
+            "activation_has_dq": false,
+            "weight_has_int8_dq": false,
+            "weight_storage_type": null,
+            "output_has_q": false
+          },
+          {
+            "index": 576,
+            "name": "/model/DAB_Block_5/DAB_Module_5_0/dconv3x1/conv/Conv",
+            "op_type": "Conv",
+            "activation_has_dq": false,
+            "weight_has_int8_dq": false,
+            "weight_storage_type": null,
+            "output_has_q": false
+          },
+          {
+            "index": 583,
+            "name": "/model/DAB_Block_5/DAB_Module_5_0/dconv1x3/conv/Conv",
+            "op_type": "Conv",
+            "activation_has_dq": false,
+            "weight_has_int8_dq": false,
+            "weight_storage_type": null,
+            "output_has_q": false
+          },
+          {
+            "index": 594,
+            "name": "/model/DAB_Block_5/DAB_Module_5_0/ca11/conv/Conv",
+            "op_type": "Conv",
+            "activation_has_dq": false,
+            "weight_has_int8_dq": false,
+            "weight_storage_type": null,
+            "output_has_q": false
+          },
+          {
+            "index": 606,
+            "name": "/model/DAB_Block_5/DAB_Module_5_0/conv1x1/conv/Conv",
+            "op_type": "Conv",
+            "activation_has_dq": false,
+            "weight_has_int8_dq": false,
+            "weight_storage_type": null,
+            "output_has_q": false
+          },
+          {
+            "index": 622,
+            "name": "/model/upsample_2/conv/ConvTranspose",
+            "op_type": "ConvTranspose",
+            "activation_has_dq": false,
+            "weight_has_int8_dq": false,
+            "weight_storage_type": null,
+            "output_has_q": false
+          },
+          {
+            "index": 629,
+            "name": "/model/DAB_Block_6/DAB_Module_6_0/conv1x1_in/conv/Conv",
+            "op_type": "Conv",
+            "activation_has_dq": false,
+            "weight_has_int8_dq": false,
+            "weight_storage_type": null,
+            "output_has_q": false
+          },
+          {
+            "index": 636,
+            "name": "/model/DAB_Block_6/DAB_Module_6_0/conv3x1/conv/Conv",
+            "op_type": "Conv",
+            "activation_has_dq": false,
+            "weight_has_int8_dq": false,
+            "weight_storage_type": null,
+            "output_has_q": false
+          },
+          {
+            "index": 643,
+            "name": "/model/DAB_Block_6/DAB_Module_6_0/conv1x3/conv/Conv",
+            "op_type": "Conv",
+            "activation_has_dq": false,
+            "weight_has_int8_dq": false,
+            "weight_storage_type": null,
+            "output_has_q": false
+          },
+          {
+            "index": 650,
+            "name": "/model/DAB_Block_6/DAB_Module_6_0/ddconv3x1/conv/Conv",
+            "op_type": "Conv",
+            "activation_has_dq": false,
+            "weight_has_int8_dq": false,
+            "weight_storage_type": null,
+            "output_has_q": false
+          },
+          {
+            "index": 657,
+            "name": "/model/DAB_Block_6/DAB_Module_6_0/ddconv1x3/conv/Conv",
+            "op_type": "Conv",
+            "activation_has_dq": false,
+            "weight_has_int8_dq": false,
+            "weight_storage_type": null,
+            "output_has_q": false
+          },
+          {
+            "index": 668,
+            "name": "/model/DAB_Block_6/DAB_Module_6_0/ca22/conv/Conv",
+            "op_type": "Conv",
+            "activation_has_dq": false,
+            "weight_has_int8_dq": false,
+            "weight_storage_type": null,
+            "output_has_q": false
+          },
+          {
+            "index": 677,
+            "name": "/model/DAB_Block_6/DAB_Module_6_0/dconv3x1/conv/Conv",
+            "op_type": "Conv",
+            "activation_has_dq": false,
+            "weight_has_int8_dq": false,
+            "weight_storage_type": null,
+            "output_has_q": false
+          },
+          {
+            "index": 684,
+            "name": "/model/DAB_Block_6/DAB_Module_6_0/dconv1x3/conv/Conv",
+            "op_type": "Conv",
+            "activation_has_dq": false,
+            "weight_has_int8_dq": false,
+            "weight_storage_type": null,
+            "output_has_q": false
+          },
+          {
+            "index": 695,
+            "name": "/model/DAB_Block_6/DAB_Module_6_0/ca11/conv/Conv",
+            "op_type": "Conv",
+            "activation_has_dq": false,
+            "weight_has_int8_dq": false,
+            "weight_storage_type": null,
+            "output_has_q": false
+          },
+          {
+            "index": 707,
+            "name": "/model/DAB_Block_6/DAB_Module_6_0/conv1x1/conv/Conv",
+            "op_type": "Conv",
+            "activation_has_dq": false,
+            "weight_has_int8_dq": false,
+            "weight_storage_type": null,
+            "output_has_q": false
+          },
+          {
+            "index": 723,
+            "name": "/model/upsample_3/conv/ConvTranspose",
+            "op_type": "ConvTranspose",
+            "activation_has_dq": false,
+            "weight_has_int8_dq": false,
+            "weight_storage_type": null,
+            "output_has_q": false
+          },
+          {
+            "index": 730,
+            "name": "/model/final_conv/Conv",
+            "op_type": "Conv",
+            "activation_has_dq": false,
+            "weight_has_int8_dq": false,
+            "weight_storage_type": null,
+            "output_has_q": false
+          },
+          {
+            "index": 734,
+            "name": "/model/classifier/classifier.0/conv/Conv",
+            "op_type": "Conv",
+            "activation_has_dq": false,
+            "weight_has_int8_dq": false,
+            "weight_storage_type": null,
+            "output_has_q": false
+          }
+        ]
+      }
+    },
+    "cpu_w8a8": {
+      "path": "models/SpikingLETNet_shallow_max_w8a8_qdq_portable.onnx",
+      "bytes": 2246435,
+      "sha256": "4e16d91770fbc08848ad07821cbd15c3b839fda57f8ea03cbb6b94be3e462e05",
+      "ir_version": 8,
+      "opsets": [
+        {
+          "domain": "ai.onnx",
+          "version": 18
+        },
+        {
+          "domain": "ai.onnx.ml",
+          "version": 5
+        },
+        {
+          "domain": "ai.onnx.training",
+          "version": 1
+        },
+        {
+          "domain": "ai.onnx.preview.training",
+          "version": 1
+        },
+        {
+          "domain": "com.microsoft",
+          "version": 1
+        },
+        {
+          "domain": "com.microsoft.experimental",
+          "version": 1
+        },
+        {
+          "domain": "com.microsoft.nchwc",
+          "version": 1
+        },
+        {
+          "domain": "org.pytorch.aten",
+          "version": 1
+        }
+      ],
+      "inputs": [
+        {
+          "name": "image",
+          "shape": [
+            1,
+            3,
+            400,
+            400
+          ]
+        }
+      ],
+      "outputs": [
+        {
+          "name": "logits",
+          "shape": [
+            1,
+            6,
+            400,
+            400
+          ]
+        }
+      ],
+      "node_count": 1201,
+      "node_types": {
+        "Add": 23,
+        "BatchNormalization": 66,
+        "Clip": 78,
+        "Col2Im": 1,
+        "Concat": 2,
+        "Conv": 74,
+        "ConvTranspose": 3,
+        "DequantizeLinear": 280,
+        "Expand": 13,
+        "Gather": 5,
+        "Gemm": 3,
+        "GlobalAveragePool": 12,
+        "LayerNormalization": 2,
+        "MatMul": 12,
+        "MaxPool": 1,
+        "Mul": 17,
+        "Pad": 2,
+        "QuantizeLinear": 185,
+        "ReduceMean": 1,
+        "Relu": 1,
+        "Reshape": 254,
+        "Resize": 1,
+        "Round": 78,
+        "Sigmoid": 12,
+        "Slice": 15,
+        "Softmax": 5,
+        "Tile": 1,
+        "Transpose": 40,
+        "Unsqueeze": 14
+      },
+      "node_domains": {
+        "ai.onnx": 1201
+      },
+      "initializer_types": {
+        "FLOAT": 539,
+        "INT32": 26,
+        "INT64": 257,
+        "INT8": 349
+      },
+      "qdq": {
+        "quantize_linear": 185,
+        "dequantize_linear": 280,
+        "eligible_op_coverage": {
+          "w8a8": 82,
+          "partial_or_fp32": 10
+        },
+        "per_op_coverage": {
+          "Conv": {
+            "w8a8": 74
+          },
+          "ConvTranspose": {
+            "w8a8": 3
+          },
+          "Gemm": {
+            "w8a8": 3
+          },
+          "MatMul": {
+            "w8a8": 2,
+            "partial_or_fp32": 10
+          }
+        },
+        "eligible_nodes": [
+          {
+            "index": 99,
+            "name": "/model/init_conv/init_conv.0/conv/Conv",
+            "op_type": "Conv",
+            "activation_has_dq": true,
+            "weight_has_int8_dq": true,
+            "weight_storage_type": "INT8",
+            "output_has_q": true
+          },
+          {
+            "index": 110,
+            "name": "/model/init_conv/init_conv.1/conv/Conv",
+            "op_type": "Conv",
+            "activation_has_dq": true,
+            "weight_has_int8_dq": true,
+            "weight_storage_type": "INT8",
+            "output_has_q": true
+          },
+          {
+            "index": 121,
+            "name": "/model/init_conv/init_conv.2/conv/Conv",
+            "op_type": "Conv",
+            "activation_has_dq": true,
+            "weight_has_int8_dq": true,
+            "weight_storage_type": "INT8",
+            "output_has_q": true
+          },
+          {
+            "index": 133,
+            "name": "/model/downsample_1/conv3x3/conv/Conv",
+            "op_type": "Conv",
+            "activation_has_dq": true,
+            "weight_has_int8_dq": true,
+            "weight_storage_type": "INT8",
+            "output_has_q": true
+          },
+          {
+            "index": 146,
+            "name": "/model/DAB_Block_1/DAB_Module_1_0/conv1x1_in/conv/Conv",
+            "op_type": "Conv",
+            "activation_has_dq": true,
+            "weight_has_int8_dq": true,
+            "weight_storage_type": "INT8",
+            "output_has_q": true
+          },
+          {
+            "index": 157,
+            "name": "/model/DAB_Block_1/DAB_Module_1_0/conv3x1/conv/Conv",
+            "op_type": "Conv",
+            "activation_has_dq": true,
+            "weight_has_int8_dq": true,
+            "weight_storage_type": "INT8",
+            "output_has_q": true
+          },
+          {
+            "index": 168,
+            "name": "/model/DAB_Block_1/DAB_Module_1_0/conv1x3/conv/Conv",
+            "op_type": "Conv",
+            "activation_has_dq": true,
+            "weight_has_int8_dq": true,
+            "weight_storage_type": "INT8",
+            "output_has_q": true
+          },
+          {
+            "index": 179,
+            "name": "/model/DAB_Block_1/DAB_Module_1_0/ddconv3x1/conv/Conv",
+            "op_type": "Conv",
+            "activation_has_dq": true,
+            "weight_has_int8_dq": true,
+            "weight_storage_type": "INT8",
+            "output_has_q": true
+          },
+          {
+            "index": 180,
+            "name": "/model/DAB_Block_1/DAB_Module_1_0/dconv3x1/conv/Conv",
+            "op_type": "Conv",
+            "activation_has_dq": true,
+            "weight_has_int8_dq": true,
+            "weight_storage_type": "INT8",
+            "output_has_q": true
+          },
+          {
+            "index": 201,
+            "name": "/model/DAB_Block_1/DAB_Module_1_0/ddconv1x3/conv/Conv",
+            "op_type": "Conv",
+            "activation_has_dq": true,
+            "weight_has_int8_dq": true,
+            "weight_storage_type": "INT8",
+            "output_has_q": true
+          },
+          {
+            "index": 202,
+            "name": "/model/DAB_Block_1/DAB_Module_1_0/dconv1x3/conv/Conv",
+            "op_type": "Conv",
+            "activation_has_dq": true,
+            "weight_has_int8_dq": true,
+            "weight_storage_type": "INT8",
+            "output_has_q": true
+          },
+          {
+            "index": 231,
+            "name": "/model/DAB_Block_1/DAB_Module_1_0/ca22/conv/Conv",
+            "op_type": "Conv",
+            "activation_has_dq": true,
+            "weight_has_int8_dq": true,
+            "weight_storage_type": "INT8",
+            "output_has_q": true
+          },
+          {
+            "index": 232,
+            "name": "/model/DAB_Block_1/DAB_Module_1_0/ca11/conv/Conv",
+            "op_type": "Conv",
+            "activation_has_dq": true,
+            "weight_has_int8_dq": true,
+            "weight_storage_type": "INT8",
+            "output_has_q": true
+          },
+          {
+            "index": 258,
+            "name": "/model/DAB_Block_1/DAB_Module_1_0/conv1x1/conv/Conv",
+            "op_type": "Conv",
+            "activation_has_dq": true,
+            "weight_has_int8_dq": true,
+            "weight_storage_type": "INT8",
+            "output_has_q": true
+          },
+          {
+            "index": 277,
+            "name": "/model/LC1/dconv3x1/Conv",
+            "op_type": "Conv",
+            "activation_has_dq": true,
+            "weight_has_int8_dq": true,
+            "weight_storage_type": "INT8",
+            "output_has_q": true
+          },
+          {
+            "index": 278,
+            "name": "/model/downsample_2/conv3x3/conv/Conv",
+            "op_type": "Conv",
+            "activation_has_dq": true,
+            "weight_has_int8_dq": true,
+            "weight_storage_type": "INT8",
+            "output_has_q": true
+          },
+          {
+            "index": 289,
+            "name": "/model/LC1/dconv1x3/Conv",
+            "op_type": "Conv",
+            "activation_has_dq": true,
+            "weight_has_int8_dq": true,
+            "weight_storage_type": "INT8",
+            "output_has_q": true
+          },
+          {
+            "index": 300,
+            "name": "/model/DAB_Block_2/DAB_Module_2_0/conv1x1_in/conv/Conv",
+            "op_type": "Conv",
+            "activation_has_dq": true,
+            "weight_has_int8_dq": true,
+            "weight_storage_type": "INT8",
+            "output_has_q": true
+          },
+          {
+            "index": 313,
+            "name": "/model/DAB_Block_2/DAB_Module_2_0/conv3x1/conv/Conv",
+            "op_type": "Conv",
+            "activation_has_dq": true,
+            "weight_has_int8_dq": true,
+            "weight_storage_type": "INT8",
+            "output_has_q": true
+          },
+          {
+            "index": 324,
+            "name": "/model/DAB_Block_2/DAB_Module_2_0/conv1x3/conv/Conv",
+            "op_type": "Conv",
+            "activation_has_dq": true,
+            "weight_has_int8_dq": true,
+            "weight_storage_type": "INT8",
+            "output_has_q": true
+          },
+          {
+            "index": 335,
+            "name": "/model/DAB_Block_2/DAB_Module_2_0/ddconv3x1/conv/Conv",
+            "op_type": "Conv",
+            "activation_has_dq": true,
+            "weight_has_int8_dq": true,
+            "weight_storage_type": "INT8",
+            "output_has_q": true
+          },
+          {
+            "index": 336,
+            "name": "/model/DAB_Block_2/DAB_Module_2_0/dconv3x1/conv/Conv",
+            "op_type": "Conv",
+            "activation_has_dq": true,
+            "weight_has_int8_dq": true,
+            "weight_storage_type": "INT8",
+            "output_has_q": true
+          },
+          {
+            "index": 357,
+            "name": "/model/DAB_Block_2/DAB_Module_2_0/ddconv1x3/conv/Conv",
+            "op_type": "Conv",
+            "activation_has_dq": true,
+            "weight_has_int8_dq": true,
+            "weight_storage_type": "INT8",
+            "output_has_q": true
+          },
+          {
+            "index": 358,
+            "name": "/model/DAB_Block_2/DAB_Module_2_0/dconv1x3/conv/Conv",
+            "op_type": "Conv",
+            "activation_has_dq": true,
+            "weight_has_int8_dq": true,
+            "weight_storage_type": "INT8",
+            "output_has_q": true
+          },
+          {
+            "index": 387,
+            "name": "/model/DAB_Block_2/DAB_Module_2_0/ca22/conv/Conv",
+            "op_type": "Conv",
+            "activation_has_dq": true,
+            "weight_has_int8_dq": true,
+            "weight_storage_type": "INT8",
+            "output_has_q": true
+          },
+          {
+            "index": 388,
+            "name": "/model/DAB_Block_2/DAB_Module_2_0/ca11/conv/Conv",
+            "op_type": "Conv",
+            "activation_has_dq": true,
+            "weight_has_int8_dq": true,
+            "weight_storage_type": "INT8",
+            "output_has_q": true
+          },
+          {
+            "index": 414,
+            "name": "/model/DAB_Block_2/DAB_Module_2_0/conv1x1/conv/Conv",
+            "op_type": "Conv",
+            "activation_has_dq": true,
+            "weight_has_int8_dq": true,
+            "weight_storage_type": "INT8",
+            "output_has_q": true
+          },
+          {
+            "index": 433,
+            "name": "/model/LC2/dconv3x1/Conv",
+            "op_type": "Conv",
+            "activation_has_dq": true,
+            "weight_has_int8_dq": true,
+            "weight_storage_type": "INT8",
+            "output_has_q": true
+          },
+          {
+            "index": 434,
+            "name": "/model/downsample_3/conv3x3/conv/Conv",
+            "op_type": "Conv",
+            "activation_has_dq": true,
+            "weight_has_int8_dq": true,
+            "weight_storage_type": "INT8",
+            "output_has_q": true
+          },
+          {
+            "index": 445,
+            "name": "/model/LC2/dconv1x3/Conv",
+            "op_type": "Conv",
+            "activation_has_dq": true,
+            "weight_has_int8_dq": true,
+            "weight_storage_type": "INT8",
+            "output_has_q": true
+          },
+          {
+            "index": 456,
+            "name": "/model/DAB_Block_3/DAB_Module_3_0/conv1x1_in/conv/Conv",
+            "op_type": "Conv",
+            "activation_has_dq": true,
+            "weight_has_int8_dq": true,
+            "weight_storage_type": "INT8",
+            "output_has_q": true
+          },
+          {
+            "index": 469,
+            "name": "/model/DAB_Block_3/DAB_Module_3_0/conv3x1/conv/Conv",
+            "op_type": "Conv",
+            "activation_has_dq": true,
+            "weight_has_int8_dq": true,
+            "weight_storage_type": "INT8",
+            "output_has_q": true
+          },
+          {
+            "index": 480,
+            "name": "/model/DAB_Block_3/DAB_Module_3_0/conv1x3/conv/Conv",
+            "op_type": "Conv",
+            "activation_has_dq": true,
+            "weight_has_int8_dq": true,
+            "weight_storage_type": "INT8",
+            "output_has_q": true
+          },
+          {
+            "index": 491,
+            "name": "/model/DAB_Block_3/DAB_Module_3_0/ddconv3x1/conv/Conv",
+            "op_type": "Conv",
+            "activation_has_dq": true,
+            "weight_has_int8_dq": true,
+            "weight_storage_type": "INT8",
+            "output_has_q": true
+          },
+          {
+            "index": 492,
+            "name": "/model/DAB_Block_3/DAB_Module_3_0/dconv3x1/conv/Conv",
+            "op_type": "Conv",
+            "activation_has_dq": true,
+            "weight_has_int8_dq": true,
+            "weight_storage_type": "INT8",
+            "output_has_q": true
+          },
+          {
+            "index": 513,
+            "name": "/model/DAB_Block_3/DAB_Module_3_0/ddconv1x3/conv/Conv",
+            "op_type": "Conv",
+            "activation_has_dq": true,
+            "weight_has_int8_dq": true,
+            "weight_storage_type": "INT8",
+            "output_has_q": true
+          },
+          {
+            "index": 514,
+            "name": "/model/DAB_Block_3/DAB_Module_3_0/dconv1x3/conv/Conv",
+            "op_type": "Conv",
+            "activation_has_dq": true,
+            "weight_has_int8_dq": true,
+            "weight_storage_type": "INT8",
+            "output_has_q": true
+          },
+          {
+            "index": 543,
+            "name": "/model/DAB_Block_3/DAB_Module_3_0/ca22/conv/Conv",
+            "op_type": "Conv",
+            "activation_has_dq": true,
+            "weight_has_int8_dq": true,
+            "weight_storage_type": "INT8",
+            "output_has_q": true
+          },
+          {
+            "index": 544,
+            "name": "/model/DAB_Block_3/DAB_Module_3_0/ca11/conv/Conv",
+            "op_type": "Conv",
+            "activation_has_dq": true,
+            "weight_has_int8_dq": true,
+            "weight_storage_type": "INT8",
+            "output_has_q": true
+          },
+          {
+            "index": 570,
+            "name": "/model/DAB_Block_3/DAB_Module_3_0/conv1x1/conv/Conv",
+            "op_type": "Conv",
+            "activation_has_dq": true,
+            "weight_has_int8_dq": true,
+            "weight_storage_type": "INT8",
+            "output_has_q": true
+          },
+          {
+            "index": 595,
+            "name": "/model/LC3/dconv3x1/Conv",
+            "op_type": "Conv",
+            "activation_has_dq": true,
+            "weight_has_int8_dq": true,
+            "weight_storage_type": "INT8",
+            "output_has_q": true
+          },
+          {
+            "index": 607,
+            "name": "/model/LC3/dconv1x3/Conv",
+            "op_type": "Conv",
+            "activation_has_dq": true,
+            "weight_has_int8_dq": true,
+            "weight_storage_type": "INT8",
+            "output_has_q": true
+          },
+          {
+            "index": 608,
+            "name": "/model/transformer1/atten/reduce/MatMul",
+            "op_type": "MatMul",
+            "activation_has_dq": true,
+            "weight_has_int8_dq": true,
+            "weight_storage_type": "INT8",
+            "output_has_q": true
+          },
+          {
+            "index": 614,
+            "name": "/model/transformer1/atten/qkv/MatMul",
+            "op_type": "MatMul",
+            "activation_has_dq": true,
+            "weight_has_int8_dq": true,
+            "weight_storage_type": "INT8",
+            "output_has_q": true
+          },
+          {
+            "index": 676,
+            "name": "/model/transformer1/atten/MatMul_8",
+            "op_type": "MatMul",
+            "activation_has_dq": true,
+            "weight_has_int8_dq": false,
+            "weight_storage_type": null,
+            "output_has_q": true
+          },
+          {
+            "index": 677,
+            "name": "/model/transformer1/atten/MatMul_6",
+            "op_type": "MatMul",
+            "activation_has_dq": true,
+            "weight_has_int8_dq": false,
+            "weight_storage_type": null,
+            "output_has_q": true
+          },
+          {
+            "index": 678,
+            "name": "/model/transformer1/atten/MatMul_4",
+            "op_type": "MatMul",
+            "activation_has_dq": true,
+            "weight_has_int8_dq": false,
+            "weight_storage_type": null,
+            "output_has_q": true
+          },
+          {
+            "index": 679,
+            "name": "/model/transformer1/atten/MatMul_2",
+            "op_type": "MatMul",
+            "activation_has_dq": true,
+            "weight_has_int8_dq": false,
+            "weight_storage_type": null,
+            "output_has_q": true
+          },
+          {
+            "index": 680,
+            "name": "/model/transformer1/atten/MatMul",
+            "op_type": "MatMul",
+            "activation_has_dq": true,
+            "weight_has_int8_dq": false,
+            "weight_storage_type": null,
+            "output_has_q": true
+          },
+          {
+            "index": 711,
+            "name": "/model/transformer1/atten/MatMul_9",
+            "op_type": "MatMul",
+            "activation_has_dq": true,
+            "weight_has_int8_dq": false,
+            "weight_storage_type": null,
+            "output_has_q": true
+          },
+          {
+            "index": 712,
+            "name": "/model/transformer1/atten/MatMul_7",
+            "op_type": "MatMul",
+            "activation_has_dq": true,
+            "weight_has_int8_dq": false,
+            "weight_storage_type": null,
+            "output_has_q": true
+          },
+          {
+            "index": 713,
+            "name": "/model/transformer1/atten/MatMul_5",
+            "op_type": "MatMul",
+            "activation_has_dq": true,
+            "weight_has_int8_dq": false,
+            "weight_storage_type": null,
+            "output_has_q": true
+          },
+          {
+            "index": 714,
+            "name": "/model/transformer1/atten/MatMul_3",
+            "op_type": "MatMul",
+            "activation_has_dq": true,
+            "weight_has_int8_dq": false,
+            "weight_storage_type": null,
+            "output_has_q": true
+          },
+          {
+            "index": 715,
+            "name": "/model/transformer1/atten/MatMul_1",
+            "op_type": "MatMul",
+            "activation_has_dq": true,
+            "weight_has_int8_dq": false,
+            "weight_storage_type": null,
+            "output_has_q": true
+          },
+          {
+            "index": 731,
+            "name": "/model/transformer1/atten/proj/MatMul/MatMulAddFusion",
+            "op_type": "Gemm",
+            "activation_has_dq": true,
+            "weight_has_int8_dq": true,
+            "weight_storage_type": "INT8",
+            "output_has_q": true
+          },
+          {
+            "index": 740,
+            "name": "/model/transformer1/mlp/fc1/MatMul/MatMulAddFusion",
+            "op_type": "Gemm",
+            "activation_has_dq": true,
+            "weight_has_int8_dq": true,
+            "weight_storage_type": "INT8",
+            "output_has_q": true
+          },
+          {
+            "index": 748,
+            "name": "/model/transformer1/mlp/fc2/MatMul/MatMulAddFusion",
+            "op_type": "Gemm",
+            "activation_has_dq": true,
+            "weight_has_int8_dq": true,
+            "weight_storage_type": "INT8",
+            "output_has_q": true
+          },
+          {
+            "index": 760,
+            "name": "/model/DAB_Block_4/DAB_Module_4_0/conv1x1_in/conv/Conv",
+            "op_type": "Conv",
+            "activation_has_dq": true,
+            "weight_has_int8_dq": true,
+            "weight_storage_type": "INT8",
+            "output_has_q": true
+          },
+          {
+            "index": 771,
+            "name": "/model/DAB_Block_4/DAB_Module_4_0/conv3x1/conv/Conv",
+            "op_type": "Conv",
+            "activation_has_dq": true,
+            "weight_has_int8_dq": true,
+            "weight_storage_type": "INT8",
+            "output_has_q": true
+          },
+          {
+            "index": 782,
+            "name": "/model/DAB_Block_4/DAB_Module_4_0/conv1x3/conv/Conv",
+            "op_type": "Conv",
+            "activation_has_dq": true,
+            "weight_has_int8_dq": true,
+            "weight_storage_type": "INT8",
+            "output_has_q": true
+          },
+          {
+            "index": 793,
+            "name": "/model/DAB_Block_4/DAB_Module_4_0/ddconv3x1/conv/Conv",
+            "op_type": "Conv",
+            "activation_has_dq": true,
+            "weight_has_int8_dq": true,
+            "weight_storage_type": "INT8",
+            "output_has_q": true
+          },
+          {
+            "index": 794,
+            "name": "/model/DAB_Block_4/DAB_Module_4_0/dconv3x1/conv/Conv",
+            "op_type": "Conv",
+            "activation_has_dq": true,
+            "weight_has_int8_dq": true,
+            "weight_storage_type": "INT8",
+            "output_has_q": true
+          },
+          {
+            "index": 815,
+            "name": "/model/DAB_Block_4/DAB_Module_4_0/ddconv1x3/conv/Conv",
+            "op_type": "Conv",
+            "activation_has_dq": true,
+            "weight_has_int8_dq": true,
+            "weight_storage_type": "INT8",
+            "output_has_q": true
+          },
+          {
+            "index": 816,
+            "name": "/model/DAB_Block_4/DAB_Module_4_0/dconv1x3/conv/Conv",
+            "op_type": "Conv",
+            "activation_has_dq": true,
+            "weight_has_int8_dq": true,
+            "weight_storage_type": "INT8",
+            "output_has_q": true
+          },
+          {
+            "index": 845,
+            "name": "/model/DAB_Block_4/DAB_Module_4_0/ca22/conv/Conv",
+            "op_type": "Conv",
+            "activation_has_dq": true,
+            "weight_has_int8_dq": true,
+            "weight_storage_type": "INT8",
+            "output_has_q": true
+          },
+          {
+            "index": 846,
+            "name": "/model/DAB_Block_4/DAB_Module_4_0/ca11/conv/Conv",
+            "op_type": "Conv",
+            "activation_has_dq": true,
+            "weight_has_int8_dq": true,
+            "weight_storage_type": "INT8",
+            "output_has_q": true
+          },
+          {
+            "index": 872,
+            "name": "/model/DAB_Block_4/DAB_Module_4_0/conv1x1/conv/Conv",
+            "op_type": "Conv",
+            "activation_has_dq": true,
+            "weight_has_int8_dq": true,
+            "weight_storage_type": "INT8",
+            "output_has_q": true
+          },
+          {
+            "index": 892,
+            "name": "/model/upsample_1/conv/ConvTranspose",
+            "op_type": "ConvTranspose",
+            "activation_has_dq": true,
+            "weight_has_int8_dq": true,
+            "weight_storage_type": "INT8",
+            "output_has_q": true
+          },
+          {
+            "index": 903,
+            "name": "/model/DAB_Block_5/DAB_Module_5_0/conv1x1_in/conv/Conv",
+            "op_type": "Conv",
+            "activation_has_dq": true,
+            "weight_has_int8_dq": true,
+            "weight_storage_type": "INT8",
+            "output_has_q": true
+          },
+          {
+            "index": 914,
+            "name": "/model/DAB_Block_5/DAB_Module_5_0/conv3x1/conv/Conv",
+            "op_type": "Conv",
+            "activation_has_dq": true,
+            "weight_has_int8_dq": true,
+            "weight_storage_type": "INT8",
+            "output_has_q": true
+          },
+          {
+            "index": 925,
+            "name": "/model/DAB_Block_5/DAB_Module_5_0/conv1x3/conv/Conv",
+            "op_type": "Conv",
+            "activation_has_dq": true,
+            "weight_has_int8_dq": true,
+            "weight_storage_type": "INT8",
+            "output_has_q": true
+          },
+          {
+            "index": 936,
+            "name": "/model/DAB_Block_5/DAB_Module_5_0/ddconv3x1/conv/Conv",
+            "op_type": "Conv",
+            "activation_has_dq": true,
+            "weight_has_int8_dq": true,
+            "weight_storage_type": "INT8",
+            "output_has_q": true
+          },
+          {
+            "index": 937,
+            "name": "/model/DAB_Block_5/DAB_Module_5_0/dconv3x1/conv/Conv",
+            "op_type": "Conv",
+            "activation_has_dq": true,
+            "weight_has_int8_dq": true,
+            "weight_storage_type": "INT8",
+            "output_has_q": true
+          },
+          {
+            "index": 958,
+            "name": "/model/DAB_Block_5/DAB_Module_5_0/ddconv1x3/conv/Conv",
+            "op_type": "Conv",
+            "activation_has_dq": true,
+            "weight_has_int8_dq": true,
+            "weight_storage_type": "INT8",
+            "output_has_q": true
+          },
+          {
+            "index": 959,
+            "name": "/model/DAB_Block_5/DAB_Module_5_0/dconv1x3/conv/Conv",
+            "op_type": "Conv",
+            "activation_has_dq": true,
+            "weight_has_int8_dq": true,
+            "weight_storage_type": "INT8",
+            "output_has_q": true
+          },
+          {
+            "index": 988,
+            "name": "/model/DAB_Block_5/DAB_Module_5_0/ca22/conv/Conv",
+            "op_type": "Conv",
+            "activation_has_dq": true,
+            "weight_has_int8_dq": true,
+            "weight_storage_type": "INT8",
+            "output_has_q": true
+          },
+          {
+            "index": 989,
+            "name": "/model/DAB_Block_5/DAB_Module_5_0/ca11/conv/Conv",
+            "op_type": "Conv",
+            "activation_has_dq": true,
+            "weight_has_int8_dq": true,
+            "weight_storage_type": "INT8",
+            "output_has_q": true
+          },
+          {
+            "index": 1015,
+            "name": "/model/DAB_Block_5/DAB_Module_5_0/conv1x1/conv/Conv",
+            "op_type": "Conv",
+            "activation_has_dq": true,
+            "weight_has_int8_dq": true,
+            "weight_storage_type": "INT8",
+            "output_has_q": true
+          },
+          {
+            "index": 1035,
+            "name": "/model/upsample_2/conv/ConvTranspose",
+            "op_type": "ConvTranspose",
+            "activation_has_dq": true,
+            "weight_has_int8_dq": true,
+            "weight_storage_type": "INT8",
+            "output_has_q": true
+          },
+          {
+            "index": 1046,
+            "name": "/model/DAB_Block_6/DAB_Module_6_0/conv1x1_in/conv/Conv",
+            "op_type": "Conv",
+            "activation_has_dq": true,
+            "weight_has_int8_dq": true,
+            "weight_storage_type": "INT8",
+            "output_has_q": true
+          },
+          {
+            "index": 1057,
+            "name": "/model/DAB_Block_6/DAB_Module_6_0/conv3x1/conv/Conv",
+            "op_type": "Conv",
+            "activation_has_dq": true,
+            "weight_has_int8_dq": true,
+            "weight_storage_type": "INT8",
+            "output_has_q": true
+          },
+          {
+            "index": 1068,
+            "name": "/model/DAB_Block_6/DAB_Module_6_0/conv1x3/conv/Conv",
+            "op_type": "Conv",
+            "activation_has_dq": true,
+            "weight_has_int8_dq": true,
+            "weight_storage_type": "INT8",
+            "output_has_q": true
+          },
+          {
+            "index": 1079,
+            "name": "/model/DAB_Block_6/DAB_Module_6_0/ddconv3x1/conv/Conv",
+            "op_type": "Conv",
+            "activation_has_dq": true,
+            "weight_has_int8_dq": true,
+            "weight_storage_type": "INT8",
+            "output_has_q": true
+          },
+          {
+            "index": 1080,
+            "name": "/model/DAB_Block_6/DAB_Module_6_0/dconv3x1/conv/Conv",
+            "op_type": "Conv",
+            "activation_has_dq": true,
+            "weight_has_int8_dq": true,
+            "weight_storage_type": "INT8",
+            "output_has_q": true
+          },
+          {
+            "index": 1101,
+            "name": "/model/DAB_Block_6/DAB_Module_6_0/ddconv1x3/conv/Conv",
+            "op_type": "Conv",
+            "activation_has_dq": true,
+            "weight_has_int8_dq": true,
+            "weight_storage_type": "INT8",
+            "output_has_q": true
+          },
+          {
+            "index": 1102,
+            "name": "/model/DAB_Block_6/DAB_Module_6_0/dconv1x3/conv/Conv",
+            "op_type": "Conv",
+            "activation_has_dq": true,
+            "weight_has_int8_dq": true,
+            "weight_storage_type": "INT8",
+            "output_has_q": true
+          },
+          {
+            "index": 1131,
+            "name": "/model/DAB_Block_6/DAB_Module_6_0/ca22/conv/Conv",
+            "op_type": "Conv",
+            "activation_has_dq": true,
+            "weight_has_int8_dq": true,
+            "weight_storage_type": "INT8",
+            "output_has_q": true
+          },
+          {
+            "index": 1132,
+            "name": "/model/DAB_Block_6/DAB_Module_6_0/ca11/conv/Conv",
+            "op_type": "Conv",
+            "activation_has_dq": true,
+            "weight_has_int8_dq": true,
+            "weight_storage_type": "INT8",
+            "output_has_q": true
+          },
+          {
+            "index": 1158,
+            "name": "/model/DAB_Block_6/DAB_Module_6_0/conv1x1/conv/Conv",
+            "op_type": "Conv",
+            "activation_has_dq": true,
+            "weight_has_int8_dq": true,
+            "weight_storage_type": "INT8",
+            "output_has_q": true
+          },
+          {
+            "index": 1178,
+            "name": "/model/upsample_3/conv/ConvTranspose",
+            "op_type": "ConvTranspose",
+            "activation_has_dq": true,
+            "weight_has_int8_dq": true,
+            "weight_storage_type": "INT8",
+            "output_has_q": true
+          },
+          {
+            "index": 1189,
+            "name": "/model/final_conv/Conv",
+            "op_type": "Conv",
+            "activation_has_dq": true,
+            "weight_has_int8_dq": true,
+            "weight_storage_type": "INT8",
+            "output_has_q": true
+          },
+          {
+            "index": 1197,
+            "name": "/model/classifier/classifier.0/conv/Conv",
+            "op_type": "Conv",
+            "activation_has_dq": true,
+            "weight_has_int8_dq": true,
+            "weight_storage_type": "INT8",
+            "output_has_q": true
+          }
+        ]
+      }
+    },
+    "openvino_fp32": {
+      "path": "models/SpikingLETNet_shallow_max_fp32_openvino_portable.onnx",
+      "bytes": 5875501,
+      "sha256": "173dd192fd613783b85506c9e4c86bfc164ae90f9bf6195772b157fe35aa340c",
+      "ir_version": 8,
+      "opsets": [
+        {
+          "domain": "ai.onnx",
+          "version": 18
+        },
+        {
+          "domain": "ai.onnx.ml",
+          "version": 5
+        },
+        {
+          "domain": "ai.onnx.training",
+          "version": 1
+        },
+        {
+          "domain": "ai.onnx.preview.training",
+          "version": 1
+        },
+        {
+          "domain": "com.microsoft",
+          "version": 1
+        },
+        {
+          "domain": "com.microsoft.experimental",
+          "version": 1
+        },
+        {
+          "domain": "com.microsoft.nchwc",
+          "version": 1
+        },
+        {
+          "domain": "org.pytorch.aten",
+          "version": 1
+        }
+      ],
+      "inputs": [
+        {
+          "name": "image",
+          "shape": [
+            1,
+            3,
+            400,
+            400
+          ]
+        }
+      ],
+      "outputs": [
+        {
+          "name": "logits",
+          "shape": [
+            1,
+            6,
+            400,
+            400
+          ]
+        }
+      ],
+      "node_count": 780,
+      "node_types": {
+        "Add": 31,
+        "BatchNormalization": 66,
+        "Clip": 78,
+        "Concat": 2,
+        "Conv": 74,
+        "ConvTranspose": 3,
+        "Expand": 13,
+        "Gather": 5,
+        "Gemm": 3,
+        "GlobalAveragePool": 12,
+        "LayerNormalization": 2,
+        "MatMul": 12,
+        "MaxPool": 1,
+        "Mul": 17,
+        "Pad": 11,
+        "ReduceMean": 1,
+        "Relu": 1,
+        "Reshape": 264,
+        "Resize": 1,
+        "Round": 78,
+        "Sigmoid": 12,
+        "Slice": 33,
+        "Softmax": 5,
+        "Tile": 1,
+        "Transpose": 40,
+        "Unsqueeze": 14
+      },
+      "node_domains": {
+        "ai.onnx": 780
+      },
+      "initializer_types": {
+        "FLOAT": 355,
+        "INT64": 324
+      },
+      "qdq": {
+        "quantize_linear": 0,
+        "dequantize_linear": 0,
+        "eligible_op_coverage": {
+          "partial_or_fp32": 92
+        },
+        "per_op_coverage": {
+          "Conv": {
+            "partial_or_fp32": 74
+          },
+          "ConvTranspose": {
+            "partial_or_fp32": 3
+          },
+          "Gemm": {
+            "partial_or_fp32": 3
+          },
+          "MatMul": {
+            "partial_or_fp32": 12
+          }
+        },
+        "eligible_nodes": [
+          {
+            "index": 2,
+            "name": "/model/init_conv/init_conv.0/conv/Conv",
+            "op_type": "Conv",
+            "activation_has_dq": false,
+            "weight_has_int8_dq": false,
+            "weight_storage_type": null,
+            "output_has_q": false
+          },
+          {
+            "index": 9,
+            "name": "/model/init_conv/init_conv.1/conv/Conv",
+            "op_type": "Conv",
+            "activation_has_dq": false,
+            "weight_has_int8_dq": false,
+            "weight_storage_type": null,
+            "output_has_q": false
+          },
+          {
+            "index": 16,
+            "name": "/model/init_conv/init_conv.2/conv/Conv",
+            "op_type": "Conv",
+            "activation_has_dq": false,
+            "weight_has_int8_dq": false,
+            "weight_storage_type": null,
+            "output_has_q": false
+          },
+          {
+            "index": 25,
+            "name": "/model/downsample_1/conv3x3/conv/Conv",
+            "op_type": "Conv",
+            "activation_has_dq": false,
+            "weight_has_int8_dq": false,
+            "weight_storage_type": null,
+            "output_has_q": false
+          },
+          {
+            "index": 33,
+            "name": "/model/DAB_Block_1/DAB_Module_1_0/conv1x1_in/conv/Conv",
+            "op_type": "Conv",
+            "activation_has_dq": false,
+            "weight_has_int8_dq": false,
+            "weight_storage_type": null,
+            "output_has_q": false
+          },
+          {
+            "index": 40,
+            "name": "/model/DAB_Block_1/DAB_Module_1_0/conv3x1/conv/Conv",
+            "op_type": "Conv",
+            "activation_has_dq": false,
+            "weight_has_int8_dq": false,
+            "weight_storage_type": null,
+            "output_has_q": false
+          },
+          {
+            "index": 47,
+            "name": "/model/DAB_Block_1/DAB_Module_1_0/conv1x3/conv/Conv",
+            "op_type": "Conv",
+            "activation_has_dq": false,
+            "weight_has_int8_dq": false,
+            "weight_storage_type": null,
+            "output_has_q": false
+          },
+          {
+            "index": 54,
+            "name": "/model/DAB_Block_1/DAB_Module_1_0/ddconv3x1/conv/Conv",
+            "op_type": "Conv",
+            "activation_has_dq": false,
+            "weight_has_int8_dq": false,
+            "weight_storage_type": null,
+            "output_has_q": false
+          },
+          {
+            "index": 61,
+            "name": "/model/DAB_Block_1/DAB_Module_1_0/ddconv1x3/conv/Conv",
+            "op_type": "Conv",
+            "activation_has_dq": false,
+            "weight_has_int8_dq": false,
+            "weight_storage_type": null,
+            "output_has_q": false
+          },
+          {
+            "index": 72,
+            "name": "/model/DAB_Block_1/DAB_Module_1_0/ca22/conv/Conv",
+            "op_type": "Conv",
+            "activation_has_dq": false,
+            "weight_has_int8_dq": false,
+            "weight_storage_type": null,
+            "output_has_q": false
+          },
+          {
+            "index": 81,
+            "name": "/model/DAB_Block_1/DAB_Module_1_0/dconv3x1/conv/Conv",
+            "op_type": "Conv",
+            "activation_has_dq": false,
+            "weight_has_int8_dq": false,
+            "weight_storage_type": null,
+            "output_has_q": false
+          },
+          {
+            "index": 88,
+            "name": "/model/DAB_Block_1/DAB_Module_1_0/dconv1x3/conv/Conv",
+            "op_type": "Conv",
+            "activation_has_dq": false,
+            "weight_has_int8_dq": false,
+            "weight_storage_type": null,
+            "output_has_q": false
+          },
+          {
+            "index": 99,
+            "name": "/model/DAB_Block_1/DAB_Module_1_0/ca11/conv/Conv",
+            "op_type": "Conv",
+            "activation_has_dq": false,
+            "weight_has_int8_dq": false,
+            "weight_storage_type": null,
+            "output_has_q": false
+          },
+          {
+            "index": 111,
+            "name": "/model/DAB_Block_1/DAB_Module_1_0/conv1x1/conv/Conv",
+            "op_type": "Conv",
+            "activation_has_dq": false,
+            "weight_has_int8_dq": false,
+            "weight_storage_type": null,
+            "output_has_q": false
+          },
+          {
+            "index": 126,
+            "name": "/model/LC1/dconv3x1/Conv",
+            "op_type": "Conv",
+            "activation_has_dq": false,
+            "weight_has_int8_dq": false,
+            "weight_storage_type": null,
+            "output_has_q": false
+          },
+          {
+            "index": 128,
+            "name": "/model/LC1/dconv1x3/Conv",
+            "op_type": "Conv",
+            "activation_has_dq": false,
+            "weight_has_int8_dq": false,
+            "weight_storage_type": null,
+            "output_has_q": false
+          },
+          {
+            "index": 134,
+            "name": "/model/downsample_2/conv3x3/conv/Conv",
+            "op_type": "Conv",
+            "activation_has_dq": false,
+            "weight_has_int8_dq": false,
+            "weight_storage_type": null,
+            "output_has_q": false
+          },
+          {
+            "index": 141,
+            "name": "/model/DAB_Block_2/DAB_Module_2_0/conv1x1_in/conv/Conv",
+            "op_type": "Conv",
+            "activation_has_dq": false,
+            "weight_has_int8_dq": false,
+            "weight_storage_type": null,
+            "output_has_q": false
+          },
+          {
+            "index": 148,
+            "name": "/model/DAB_Block_2/DAB_Module_2_0/conv3x1/conv/Conv",
+            "op_type": "Conv",
+            "activation_has_dq": false,
+            "weight_has_int8_dq": false,
+            "weight_storage_type": null,
+            "output_has_q": false
+          },
+          {
+            "index": 155,
+            "name": "/model/DAB_Block_2/DAB_Module_2_0/conv1x3/conv/Conv",
+            "op_type": "Conv",
+            "activation_has_dq": false,
+            "weight_has_int8_dq": false,
+            "weight_storage_type": null,
+            "output_has_q": false
+          },
+          {
+            "index": 162,
+            "name": "/model/DAB_Block_2/DAB_Module_2_0/ddconv3x1/conv/Conv",
+            "op_type": "Conv",
+            "activation_has_dq": false,
+            "weight_has_int8_dq": false,
+            "weight_storage_type": null,
+            "output_has_q": false
+          },
+          {
+            "index": 169,
+            "name": "/model/DAB_Block_2/DAB_Module_2_0/ddconv1x3/conv/Conv",
+            "op_type": "Conv",
+            "activation_has_dq": false,
+            "weight_has_int8_dq": false,
+            "weight_storage_type": null,
+            "output_has_q": false
+          },
+          {
+            "index": 180,
+            "name": "/model/DAB_Block_2/DAB_Module_2_0/ca22/conv/Conv",
+            "op_type": "Conv",
+            "activation_has_dq": false,
+            "weight_has_int8_dq": false,
+            "weight_storage_type": null,
+            "output_has_q": false
+          },
+          {
+            "index": 189,
+            "name": "/model/DAB_Block_2/DAB_Module_2_0/dconv3x1/conv/Conv",
+            "op_type": "Conv",
+            "activation_has_dq": false,
+            "weight_has_int8_dq": false,
+            "weight_storage_type": null,
+            "output_has_q": false
+          },
+          {
+            "index": 196,
+            "name": "/model/DAB_Block_2/DAB_Module_2_0/dconv1x3/conv/Conv",
+            "op_type": "Conv",
+            "activation_has_dq": false,
+            "weight_has_int8_dq": false,
+            "weight_storage_type": null,
+            "output_has_q": false
+          },
+          {
+            "index": 207,
+            "name": "/model/DAB_Block_2/DAB_Module_2_0/ca11/conv/Conv",
+            "op_type": "Conv",
+            "activation_has_dq": false,
+            "weight_has_int8_dq": false,
+            "weight_storage_type": null,
+            "output_has_q": false
+          },
+          {
+            "index": 219,
+            "name": "/model/DAB_Block_2/DAB_Module_2_0/conv1x1/conv/Conv",
+            "op_type": "Conv",
+            "activation_has_dq": false,
+            "weight_has_int8_dq": false,
+            "weight_storage_type": null,
+            "output_has_q": false
+          },
+          {
+            "index": 234,
+            "name": "/model/LC2/dconv3x1/Conv",
+            "op_type": "Conv",
+            "activation_has_dq": false,
+            "weight_has_int8_dq": false,
+            "weight_storage_type": null,
+            "output_has_q": false
+          },
+          {
+            "index": 236,
+            "name": "/model/LC2/dconv1x3/Conv",
+            "op_type": "Conv",
+            "activation_has_dq": false,
+            "weight_has_int8_dq": false,
+            "weight_storage_type": null,
+            "output_has_q": false
+          },
+          {
+            "index": 242,
+            "name": "/model/downsample_3/conv3x3/conv/Conv",
+            "op_type": "Conv",
+            "activation_has_dq": false,
+            "weight_has_int8_dq": false,
+            "weight_storage_type": null,
+            "output_has_q": false
+          },
+          {
+            "index": 249,
+            "name": "/model/DAB_Block_3/DAB_Module_3_0/conv1x1_in/conv/Conv",
+            "op_type": "Conv",
+            "activation_has_dq": false,
+            "weight_has_int8_dq": false,
+            "weight_storage_type": null,
+            "output_has_q": false
+          },
+          {
+            "index": 256,
+            "name": "/model/DAB_Block_3/DAB_Module_3_0/conv3x1/conv/Conv",
+            "op_type": "Conv",
+            "activation_has_dq": false,
+            "weight_has_int8_dq": false,
+            "weight_storage_type": null,
+            "output_has_q": false
+          },
+          {
+            "index": 263,
+            "name": "/model/DAB_Block_3/DAB_Module_3_0/conv1x3/conv/Conv",
+            "op_type": "Conv",
+            "activation_has_dq": false,
+            "weight_has_int8_dq": false,
+            "weight_storage_type": null,
+            "output_has_q": false
+          },
+          {
+            "index": 270,
+            "name": "/model/DAB_Block_3/DAB_Module_3_0/ddconv3x1/conv/Conv",
+            "op_type": "Conv",
+            "activation_has_dq": false,
+            "weight_has_int8_dq": false,
+            "weight_storage_type": null,
+            "output_has_q": false
+          },
+          {
+            "index": 277,
+            "name": "/model/DAB_Block_3/DAB_Module_3_0/ddconv1x3/conv/Conv",
+            "op_type": "Conv",
+            "activation_has_dq": false,
+            "weight_has_int8_dq": false,
+            "weight_storage_type": null,
+            "output_has_q": false
+          },
+          {
+            "index": 288,
+            "name": "/model/DAB_Block_3/DAB_Module_3_0/ca22/conv/Conv",
+            "op_type": "Conv",
+            "activation_has_dq": false,
+            "weight_has_int8_dq": false,
+            "weight_storage_type": null,
+            "output_has_q": false
+          },
+          {
+            "index": 297,
+            "name": "/model/DAB_Block_3/DAB_Module_3_0/dconv3x1/conv/Conv",
+            "op_type": "Conv",
+            "activation_has_dq": false,
+            "weight_has_int8_dq": false,
+            "weight_storage_type": null,
+            "output_has_q": false
+          },
+          {
+            "index": 304,
+            "name": "/model/DAB_Block_3/DAB_Module_3_0/dconv1x3/conv/Conv",
+            "op_type": "Conv",
+            "activation_has_dq": false,
+            "weight_has_int8_dq": false,
+            "weight_storage_type": null,
+            "output_has_q": false
+          },
+          {
+            "index": 315,
+            "name": "/model/DAB_Block_3/DAB_Module_3_0/ca11/conv/Conv",
+            "op_type": "Conv",
+            "activation_has_dq": false,
+            "weight_has_int8_dq": false,
+            "weight_storage_type": null,
+            "output_has_q": false
+          },
+          {
+            "index": 327,
+            "name": "/model/DAB_Block_3/DAB_Module_3_0/conv1x1/conv/Conv",
+            "op_type": "Conv",
+            "activation_has_dq": false,
+            "weight_has_int8_dq": false,
+            "weight_storage_type": null,
+            "output_has_q": false
+          },
+          {
+            "index": 344,
+            "name": "/model/LC3/dconv3x1/Conv",
+            "op_type": "Conv",
+            "activation_has_dq": false,
+            "weight_has_int8_dq": false,
+            "weight_storage_type": null,
+            "output_has_q": false
+          },
+          {
+            "index": 346,
+            "name": "/model/LC3/dconv1x3/Conv",
+            "op_type": "Conv",
+            "activation_has_dq": false,
+            "weight_has_int8_dq": false,
+            "weight_storage_type": null,
+            "output_has_q": false
+          },
+          {
+            "index": 360,
+            "name": "/model/transformer1/atten/reduce/MatMul",
+            "op_type": "MatMul",
+            "activation_has_dq": false,
+            "weight_has_int8_dq": false,
+            "weight_storage_type": null,
+            "output_has_q": false
+          },
+          {
+            "index": 361,
+            "name": "/model/transformer1/atten/qkv/MatMul",
+            "op_type": "MatMul",
+            "activation_has_dq": false,
+            "weight_has_int8_dq": false,
+            "weight_storage_type": null,
+            "output_has_q": false
+          },
+          {
+            "index": 369,
+            "name": "/model/transformer1/atten/MatMul_8",
+            "op_type": "MatMul",
+            "activation_has_dq": false,
+            "weight_has_int8_dq": false,
+            "weight_storage_type": null,
+            "output_has_q": false
+          },
+          {
+            "index": 374,
+            "name": "/model/transformer1/atten/MatMul_9",
+            "op_type": "MatMul",
+            "activation_has_dq": false,
+            "weight_has_int8_dq": false,
+            "weight_storage_type": null,
+            "output_has_q": false
+          },
+          {
+            "index": 378,
+            "name": "/model/transformer1/atten/MatMul_6",
+            "op_type": "MatMul",
+            "activation_has_dq": false,
+            "weight_has_int8_dq": false,
+            "weight_storage_type": null,
+            "output_has_q": false
+          },
+          {
+            "index": 382,
+            "name": "/model/transformer1/atten/MatMul_7",
+            "op_type": "MatMul",
+            "activation_has_dq": false,
+            "weight_has_int8_dq": false,
+            "weight_storage_type": null,
+            "output_has_q": false
+          },
+          {
+            "index": 386,
+            "name": "/model/transformer1/atten/MatMul_4",
+            "op_type": "MatMul",
+            "activation_has_dq": false,
+            "weight_has_int8_dq": false,
+            "weight_storage_type": null,
+            "output_has_q": false
+          },
+          {
+            "index": 390,
+            "name": "/model/transformer1/atten/MatMul_5",
+            "op_type": "MatMul",
+            "activation_has_dq": false,
+            "weight_has_int8_dq": false,
+            "weight_storage_type": null,
+            "output_has_q": false
+          },
+          {
+            "index": 394,
+            "name": "/model/transformer1/atten/MatMul_2",
+            "op_type": "MatMul",
+            "activation_has_dq": false,
+            "weight_has_int8_dq": false,
+            "weight_storage_type": null,
+            "output_has_q": false
+          },
+          {
+            "index": 398,
+            "name": "/model/transformer1/atten/MatMul_3",
+            "op_type": "MatMul",
+            "activation_has_dq": false,
+            "weight_has_int8_dq": false,
+            "weight_storage_type": null,
+            "output_has_q": false
+          },
+          {
+            "index": 402,
+            "name": "/model/transformer1/atten/MatMul",
+            "op_type": "MatMul",
+            "activation_has_dq": false,
+            "weight_has_int8_dq": false,
+            "weight_storage_type": null,
+            "output_has_q": false
+          },
+          {
+            "index": 406,
+            "name": "/model/transformer1/atten/MatMul_1",
+            "op_type": "MatMul",
+            "activation_has_dq": false,
+            "weight_has_int8_dq": false,
+            "weight_storage_type": null,
+            "output_has_q": false
+          },
+          {
+            "index": 410,
+            "name": "/model/transformer1/atten/proj/MatMul/MatMulAddFusion",
+            "op_type": "Gemm",
+            "activation_has_dq": false,
+            "weight_has_int8_dq": false,
+            "weight_storage_type": null,
+            "output_has_q": false
+          },
+          {
+            "index": 415,
+            "name": "/model/transformer1/mlp/fc1/MatMul/MatMulAddFusion",
+            "op_type": "Gemm",
+            "activation_has_dq": false,
+            "weight_has_int8_dq": false,
+            "weight_storage_type": null,
+            "output_has_q": false
+          },
+          {
+            "index": 419,
+            "name": "/model/transformer1/mlp/fc2/MatMul/MatMulAddFusion",
+            "op_type": "Gemm",
+            "activation_has_dq": false,
+            "weight_has_int8_dq": false,
+            "weight_storage_type": null,
+            "output_has_q": false
+          },
+          {
+            "index": 471,
+            "name": "/model/DAB_Block_4/DAB_Module_4_0/conv1x1_in/conv/Conv",
+            "op_type": "Conv",
+            "activation_has_dq": false,
+            "weight_has_int8_dq": false,
+            "weight_storage_type": null,
+            "output_has_q": false
+          },
+          {
+            "index": 478,
+            "name": "/model/DAB_Block_4/DAB_Module_4_0/conv3x1/conv/Conv",
+            "op_type": "Conv",
+            "activation_has_dq": false,
+            "weight_has_int8_dq": false,
+            "weight_storage_type": null,
+            "output_has_q": false
+          },
+          {
+            "index": 485,
+            "name": "/model/DAB_Block_4/DAB_Module_4_0/conv1x3/conv/Conv",
+            "op_type": "Conv",
+            "activation_has_dq": false,
+            "weight_has_int8_dq": false,
+            "weight_storage_type": null,
+            "output_has_q": false
+          },
+          {
+            "index": 492,
+            "name": "/model/DAB_Block_4/DAB_Module_4_0/ddconv3x1/conv/Conv",
+            "op_type": "Conv",
+            "activation_has_dq": false,
+            "weight_has_int8_dq": false,
+            "weight_storage_type": null,
+            "output_has_q": false
+          },
+          {
+            "index": 499,
+            "name": "/model/DAB_Block_4/DAB_Module_4_0/ddconv1x3/conv/Conv",
+            "op_type": "Conv",
+            "activation_has_dq": false,
+            "weight_has_int8_dq": false,
+            "weight_storage_type": null,
+            "output_has_q": false
+          },
+          {
+            "index": 510,
+            "name": "/model/DAB_Block_4/DAB_Module_4_0/ca22/conv/Conv",
+            "op_type": "Conv",
+            "activation_has_dq": false,
+            "weight_has_int8_dq": false,
+            "weight_storage_type": null,
+            "output_has_q": false
+          },
+          {
+            "index": 519,
+            "name": "/model/DAB_Block_4/DAB_Module_4_0/dconv3x1/conv/Conv",
+            "op_type": "Conv",
+            "activation_has_dq": false,
+            "weight_has_int8_dq": false,
+            "weight_storage_type": null,
+            "output_has_q": false
+          },
+          {
+            "index": 526,
+            "name": "/model/DAB_Block_4/DAB_Module_4_0/dconv1x3/conv/Conv",
+            "op_type": "Conv",
+            "activation_has_dq": false,
+            "weight_has_int8_dq": false,
+            "weight_storage_type": null,
+            "output_has_q": false
+          },
+          {
+            "index": 537,
+            "name": "/model/DAB_Block_4/DAB_Module_4_0/ca11/conv/Conv",
+            "op_type": "Conv",
+            "activation_has_dq": false,
+            "weight_has_int8_dq": false,
+            "weight_storage_type": null,
+            "output_has_q": false
+          },
+          {
+            "index": 549,
+            "name": "/model/DAB_Block_4/DAB_Module_4_0/conv1x1/conv/Conv",
+            "op_type": "Conv",
+            "activation_has_dq": false,
+            "weight_has_int8_dq": false,
+            "weight_storage_type": null,
+            "output_has_q": false
+          },
+          {
+            "index": 565,
+            "name": "/model/upsample_1/conv/ConvTranspose",
+            "op_type": "ConvTranspose",
+            "activation_has_dq": false,
+            "weight_has_int8_dq": false,
+            "weight_storage_type": null,
+            "output_has_q": false
+          },
+          {
+            "index": 572,
+            "name": "/model/DAB_Block_5/DAB_Module_5_0/conv1x1_in/conv/Conv",
+            "op_type": "Conv",
+            "activation_has_dq": false,
+            "weight_has_int8_dq": false,
+            "weight_storage_type": null,
+            "output_has_q": false
+          },
+          {
+            "index": 579,
+            "name": "/model/DAB_Block_5/DAB_Module_5_0/conv3x1/conv/Conv",
+            "op_type": "Conv",
+            "activation_has_dq": false,
+            "weight_has_int8_dq": false,
+            "weight_storage_type": null,
+            "output_has_q": false
+          },
+          {
+            "index": 586,
+            "name": "/model/DAB_Block_5/DAB_Module_5_0/conv1x3/conv/Conv",
+            "op_type": "Conv",
+            "activation_has_dq": false,
+            "weight_has_int8_dq": false,
+            "weight_storage_type": null,
+            "output_has_q": false
+          },
+          {
+            "index": 593,
+            "name": "/model/DAB_Block_5/DAB_Module_5_0/ddconv3x1/conv/Conv",
+            "op_type": "Conv",
+            "activation_has_dq": false,
+            "weight_has_int8_dq": false,
+            "weight_storage_type": null,
+            "output_has_q": false
+          },
+          {
+            "index": 600,
+            "name": "/model/DAB_Block_5/DAB_Module_5_0/ddconv1x3/conv/Conv",
+            "op_type": "Conv",
+            "activation_has_dq": false,
+            "weight_has_int8_dq": false,
+            "weight_storage_type": null,
+            "output_has_q": false
+          },
+          {
+            "index": 611,
+            "name": "/model/DAB_Block_5/DAB_Module_5_0/ca22/conv/Conv",
+            "op_type": "Conv",
+            "activation_has_dq": false,
+            "weight_has_int8_dq": false,
+            "weight_storage_type": null,
+            "output_has_q": false
+          },
+          {
+            "index": 620,
+            "name": "/model/DAB_Block_5/DAB_Module_5_0/dconv3x1/conv/Conv",
+            "op_type": "Conv",
+            "activation_has_dq": false,
+            "weight_has_int8_dq": false,
+            "weight_storage_type": null,
+            "output_has_q": false
+          },
+          {
+            "index": 627,
+            "name": "/model/DAB_Block_5/DAB_Module_5_0/dconv1x3/conv/Conv",
+            "op_type": "Conv",
+            "activation_has_dq": false,
+            "weight_has_int8_dq": false,
+            "weight_storage_type": null,
+            "output_has_q": false
+          },
+          {
+            "index": 638,
+            "name": "/model/DAB_Block_5/DAB_Module_5_0/ca11/conv/Conv",
+            "op_type": "Conv",
+            "activation_has_dq": false,
+            "weight_has_int8_dq": false,
+            "weight_storage_type": null,
+            "output_has_q": false
+          },
+          {
+            "index": 650,
+            "name": "/model/DAB_Block_5/DAB_Module_5_0/conv1x1/conv/Conv",
+            "op_type": "Conv",
+            "activation_has_dq": false,
+            "weight_has_int8_dq": false,
+            "weight_storage_type": null,
+            "output_has_q": false
+          },
+          {
+            "index": 666,
+            "name": "/model/upsample_2/conv/ConvTranspose",
+            "op_type": "ConvTranspose",
+            "activation_has_dq": false,
+            "weight_has_int8_dq": false,
+            "weight_storage_type": null,
+            "output_has_q": false
+          },
+          {
+            "index": 673,
+            "name": "/model/DAB_Block_6/DAB_Module_6_0/conv1x1_in/conv/Conv",
+            "op_type": "Conv",
+            "activation_has_dq": false,
+            "weight_has_int8_dq": false,
+            "weight_storage_type": null,
+            "output_has_q": false
+          },
+          {
+            "index": 680,
+            "name": "/model/DAB_Block_6/DAB_Module_6_0/conv3x1/conv/Conv",
+            "op_type": "Conv",
+            "activation_has_dq": false,
+            "weight_has_int8_dq": false,
+            "weight_storage_type": null,
+            "output_has_q": false
+          },
+          {
+            "index": 687,
+            "name": "/model/DAB_Block_6/DAB_Module_6_0/conv1x3/conv/Conv",
+            "op_type": "Conv",
+            "activation_has_dq": false,
+            "weight_has_int8_dq": false,
+            "weight_storage_type": null,
+            "output_has_q": false
+          },
+          {
+            "index": 694,
+            "name": "/model/DAB_Block_6/DAB_Module_6_0/ddconv3x1/conv/Conv",
+            "op_type": "Conv",
+            "activation_has_dq": false,
+            "weight_has_int8_dq": false,
+            "weight_storage_type": null,
+            "output_has_q": false
+          },
+          {
+            "index": 701,
+            "name": "/model/DAB_Block_6/DAB_Module_6_0/ddconv1x3/conv/Conv",
+            "op_type": "Conv",
+            "activation_has_dq": false,
+            "weight_has_int8_dq": false,
+            "weight_storage_type": null,
+            "output_has_q": false
+          },
+          {
+            "index": 712,
+            "name": "/model/DAB_Block_6/DAB_Module_6_0/ca22/conv/Conv",
+            "op_type": "Conv",
+            "activation_has_dq": false,
+            "weight_has_int8_dq": false,
+            "weight_storage_type": null,
+            "output_has_q": false
+          },
+          {
+            "index": 721,
+            "name": "/model/DAB_Block_6/DAB_Module_6_0/dconv3x1/conv/Conv",
+            "op_type": "Conv",
+            "activation_has_dq": false,
+            "weight_has_int8_dq": false,
+            "weight_storage_type": null,
+            "output_has_q": false
+          },
+          {
+            "index": 728,
+            "name": "/model/DAB_Block_6/DAB_Module_6_0/dconv1x3/conv/Conv",
+            "op_type": "Conv",
+            "activation_has_dq": false,
+            "weight_has_int8_dq": false,
+            "weight_storage_type": null,
+            "output_has_q": false
+          },
+          {
+            "index": 739,
+            "name": "/model/DAB_Block_6/DAB_Module_6_0/ca11/conv/Conv",
+            "op_type": "Conv",
+            "activation_has_dq": false,
+            "weight_has_int8_dq": false,
+            "weight_storage_type": null,
+            "output_has_q": false
+          },
+          {
+            "index": 751,
+            "name": "/model/DAB_Block_6/DAB_Module_6_0/conv1x1/conv/Conv",
+            "op_type": "Conv",
+            "activation_has_dq": false,
+            "weight_has_int8_dq": false,
+            "weight_storage_type": null,
+            "output_has_q": false
+          },
+          {
+            "index": 767,
+            "name": "/model/upsample_3/conv/ConvTranspose",
+            "op_type": "ConvTranspose",
+            "activation_has_dq": false,
+            "weight_has_int8_dq": false,
+            "weight_storage_type": null,
+            "output_has_q": false
+          },
+          {
+            "index": 774,
+            "name": "/model/final_conv/Conv",
+            "op_type": "Conv",
+            "activation_has_dq": false,
+            "weight_has_int8_dq": false,
+            "weight_storage_type": null,
+            "output_has_q": false
+          },
+          {
+            "index": 778,
+            "name": "/model/classifier/classifier.0/conv/Conv",
+            "op_type": "Conv",
+            "activation_has_dq": false,
+            "weight_has_int8_dq": false,
+            "weight_storage_type": null,
+            "output_has_q": false
+          }
+        ]
+      }
+    },
+    "openvino_w8a8": {
+      "path": "models/SpikingLETNet_shallow_max_w8a8_qdq_openvino_portable.onnx",
+      "bytes": 2260250,
+      "sha256": "412bcd82fa8c3e76b598f61f78272a2115b878359001f1cbc684c26b4db75756",
+      "ir_version": 8,
+      "opsets": [
+        {
+          "domain": "ai.onnx",
+          "version": 18
+        },
+        {
+          "domain": "ai.onnx.ml",
+          "version": 5
+        },
+        {
+          "domain": "ai.onnx.training",
+          "version": 1
+        },
+        {
+          "domain": "ai.onnx.preview.training",
+          "version": 1
+        },
+        {
+          "domain": "com.microsoft",
+          "version": 1
+        },
+        {
+          "domain": "com.microsoft.experimental",
+          "version": 1
+        },
+        {
+          "domain": "com.microsoft.nchwc",
+          "version": 1
+        },
+        {
+          "domain": "org.pytorch.aten",
+          "version": 1
+        }
+      ],
+      "inputs": [
+        {
+          "name": "image",
+          "shape": [
+            1,
+            3,
+            400,
+            400
+          ]
+        }
+      ],
+      "outputs": [
+        {
+          "name": "logits",
+          "shape": [
+            1,
+            6,
+            400,
+            400
+          ]
+        }
+      ],
+      "node_count": 1232,
+      "node_types": {
+        "Add": 31,
+        "BatchNormalization": 66,
+        "Clip": 78,
+        "Concat": 2,
+        "Conv": 74,
+        "ConvTranspose": 3,
+        "DequantizeLinear": 267,
+        "Expand": 13,
+        "Gather": 5,
+        "Gemm": 3,
+        "GlobalAveragePool": 12,
+        "LayerNormalization": 2,
+        "MatMul": 12,
+        "MaxPool": 1,
+        "Mul": 17,
+        "Pad": 11,
+        "QuantizeLinear": 185,
+        "ReduceMean": 1,
+        "Relu": 1,
+        "Reshape": 264,
+        "Resize": 1,
+        "Round": 78,
+        "Sigmoid": 12,
+        "Slice": 33,
+        "Softmax": 5,
+        "Tile": 1,
+        "Transpose": 40,
+        "Unsqueeze": 14
+      },
+      "node_domains": {
+        "ai.onnx": 1232
+      },
+      "initializer_types": {
+        "FLOAT": 553,
+        "INT32": 26,
+        "INT64": 324,
+        "INT8": 349
+      },
+      "qdq": {
+        "quantize_linear": 185,
+        "dequantize_linear": 267,
+        "eligible_op_coverage": {
+          "w8a8": 82,
+          "partial_or_fp32": 10
+        },
+        "per_op_coverage": {
+          "Conv": {
+            "w8a8": 74
+          },
+          "ConvTranspose": {
+            "w8a8": 3
+          },
+          "Gemm": {
+            "w8a8": 3
+          },
+          "MatMul": {
+            "w8a8": 2,
+            "partial_or_fp32": 10
+          }
+        },
+        "eligible_nodes": [
+          {
+            "index": 86,
+            "name": "/model/init_conv/init_conv.0/conv/Conv",
+            "op_type": "Conv",
+            "activation_has_dq": true,
+            "weight_has_int8_dq": true,
+            "weight_storage_type": "INT8",
+            "output_has_q": true
+          },
+          {
+            "index": 97,
+            "name": "/model/init_conv/init_conv.1/conv/Conv",
+            "op_type": "Conv",
+            "activation_has_dq": true,
+            "weight_has_int8_dq": true,
+            "weight_storage_type": "INT8",
+            "output_has_q": true
+          },
+          {
+            "index": 108,
+            "name": "/model/init_conv/init_conv.2/conv/Conv",
+            "op_type": "Conv",
+            "activation_has_dq": true,
+            "weight_has_int8_dq": true,
+            "weight_storage_type": "INT8",
+            "output_has_q": true
+          },
+          {
+            "index": 120,
+            "name": "/model/downsample_1/conv3x3/conv/Conv",
+            "op_type": "Conv",
+            "activation_has_dq": true,
+            "weight_has_int8_dq": true,
+            "weight_storage_type": "INT8",
+            "output_has_q": true
+          },
+          {
+            "index": 133,
+            "name": "/model/DAB_Block_1/DAB_Module_1_0/conv1x1_in/conv/Conv",
+            "op_type": "Conv",
+            "activation_has_dq": true,
+            "weight_has_int8_dq": true,
+            "weight_storage_type": "INT8",
+            "output_has_q": true
+          },
+          {
+            "index": 144,
+            "name": "/model/DAB_Block_1/DAB_Module_1_0/conv3x1/conv/Conv",
+            "op_type": "Conv",
+            "activation_has_dq": true,
+            "weight_has_int8_dq": true,
+            "weight_storage_type": "INT8",
+            "output_has_q": true
+          },
+          {
+            "index": 155,
+            "name": "/model/DAB_Block_1/DAB_Module_1_0/conv1x3/conv/Conv",
+            "op_type": "Conv",
+            "activation_has_dq": true,
+            "weight_has_int8_dq": true,
+            "weight_storage_type": "INT8",
+            "output_has_q": true
+          },
+          {
+            "index": 166,
+            "name": "/model/DAB_Block_1/DAB_Module_1_0/ddconv3x1/conv/Conv",
+            "op_type": "Conv",
+            "activation_has_dq": true,
+            "weight_has_int8_dq": true,
+            "weight_storage_type": "INT8",
+            "output_has_q": true
+          },
+          {
+            "index": 167,
+            "name": "/model/DAB_Block_1/DAB_Module_1_0/dconv3x1/conv/Conv",
+            "op_type": "Conv",
+            "activation_has_dq": true,
+            "weight_has_int8_dq": true,
+            "weight_storage_type": "INT8",
+            "output_has_q": true
+          },
+          {
+            "index": 188,
+            "name": "/model/DAB_Block_1/DAB_Module_1_0/ddconv1x3/conv/Conv",
+            "op_type": "Conv",
+            "activation_has_dq": true,
+            "weight_has_int8_dq": true,
+            "weight_storage_type": "INT8",
+            "output_has_q": true
+          },
+          {
+            "index": 189,
+            "name": "/model/DAB_Block_1/DAB_Module_1_0/dconv1x3/conv/Conv",
+            "op_type": "Conv",
+            "activation_has_dq": true,
+            "weight_has_int8_dq": true,
+            "weight_storage_type": "INT8",
+            "output_has_q": true
+          },
+          {
+            "index": 218,
+            "name": "/model/DAB_Block_1/DAB_Module_1_0/ca22/conv/Conv",
+            "op_type": "Conv",
+            "activation_has_dq": true,
+            "weight_has_int8_dq": true,
+            "weight_storage_type": "INT8",
+            "output_has_q": true
+          },
+          {
+            "index": 219,
+            "name": "/model/DAB_Block_1/DAB_Module_1_0/ca11/conv/Conv",
+            "op_type": "Conv",
+            "activation_has_dq": true,
+            "weight_has_int8_dq": true,
+            "weight_storage_type": "INT8",
+            "output_has_q": true
+          },
+          {
+            "index": 245,
+            "name": "/model/DAB_Block_1/DAB_Module_1_0/conv1x1/conv/Conv",
+            "op_type": "Conv",
+            "activation_has_dq": true,
+            "weight_has_int8_dq": true,
+            "weight_storage_type": "INT8",
+            "output_has_q": true
+          },
+          {
+            "index": 264,
+            "name": "/model/LC1/dconv3x1/Conv",
+            "op_type": "Conv",
+            "activation_has_dq": true,
+            "weight_has_int8_dq": true,
+            "weight_storage_type": "INT8",
+            "output_has_q": true
+          },
+          {
+            "index": 265,
+            "name": "/model/downsample_2/conv3x3/conv/Conv",
+            "op_type": "Conv",
+            "activation_has_dq": true,
+            "weight_has_int8_dq": true,
+            "weight_storage_type": "INT8",
+            "output_has_q": true
+          },
+          {
+            "index": 276,
+            "name": "/model/LC1/dconv1x3/Conv",
+            "op_type": "Conv",
+            "activation_has_dq": true,
+            "weight_has_int8_dq": true,
+            "weight_storage_type": "INT8",
+            "output_has_q": true
+          },
+          {
+            "index": 287,
+            "name": "/model/DAB_Block_2/DAB_Module_2_0/conv1x1_in/conv/Conv",
+            "op_type": "Conv",
+            "activation_has_dq": true,
+            "weight_has_int8_dq": true,
+            "weight_storage_type": "INT8",
+            "output_has_q": true
+          },
+          {
+            "index": 300,
+            "name": "/model/DAB_Block_2/DAB_Module_2_0/conv3x1/conv/Conv",
+            "op_type": "Conv",
+            "activation_has_dq": true,
+            "weight_has_int8_dq": true,
+            "weight_storage_type": "INT8",
+            "output_has_q": true
+          },
+          {
+            "index": 311,
+            "name": "/model/DAB_Block_2/DAB_Module_2_0/conv1x3/conv/Conv",
+            "op_type": "Conv",
+            "activation_has_dq": true,
+            "weight_has_int8_dq": true,
+            "weight_storage_type": "INT8",
+            "output_has_q": true
+          },
+          {
+            "index": 322,
+            "name": "/model/DAB_Block_2/DAB_Module_2_0/ddconv3x1/conv/Conv",
+            "op_type": "Conv",
+            "activation_has_dq": true,
+            "weight_has_int8_dq": true,
+            "weight_storage_type": "INT8",
+            "output_has_q": true
+          },
+          {
+            "index": 323,
+            "name": "/model/DAB_Block_2/DAB_Module_2_0/dconv3x1/conv/Conv",
+            "op_type": "Conv",
+            "activation_has_dq": true,
+            "weight_has_int8_dq": true,
+            "weight_storage_type": "INT8",
+            "output_has_q": true
+          },
+          {
+            "index": 344,
+            "name": "/model/DAB_Block_2/DAB_Module_2_0/ddconv1x3/conv/Conv",
+            "op_type": "Conv",
+            "activation_has_dq": true,
+            "weight_has_int8_dq": true,
+            "weight_storage_type": "INT8",
+            "output_has_q": true
+          },
+          {
+            "index": 345,
+            "name": "/model/DAB_Block_2/DAB_Module_2_0/dconv1x3/conv/Conv",
+            "op_type": "Conv",
+            "activation_has_dq": true,
+            "weight_has_int8_dq": true,
+            "weight_storage_type": "INT8",
+            "output_has_q": true
+          },
+          {
+            "index": 374,
+            "name": "/model/DAB_Block_2/DAB_Module_2_0/ca22/conv/Conv",
+            "op_type": "Conv",
+            "activation_has_dq": true,
+            "weight_has_int8_dq": true,
+            "weight_storage_type": "INT8",
+            "output_has_q": true
+          },
+          {
+            "index": 375,
+            "name": "/model/DAB_Block_2/DAB_Module_2_0/ca11/conv/Conv",
+            "op_type": "Conv",
+            "activation_has_dq": true,
+            "weight_has_int8_dq": true,
+            "weight_storage_type": "INT8",
+            "output_has_q": true
+          },
+          {
+            "index": 401,
+            "name": "/model/DAB_Block_2/DAB_Module_2_0/conv1x1/conv/Conv",
+            "op_type": "Conv",
+            "activation_has_dq": true,
+            "weight_has_int8_dq": true,
+            "weight_storage_type": "INT8",
+            "output_has_q": true
+          },
+          {
+            "index": 420,
+            "name": "/model/LC2/dconv3x1/Conv",
+            "op_type": "Conv",
+            "activation_has_dq": true,
+            "weight_has_int8_dq": true,
+            "weight_storage_type": "INT8",
+            "output_has_q": true
+          },
+          {
+            "index": 421,
+            "name": "/model/downsample_3/conv3x3/conv/Conv",
+            "op_type": "Conv",
+            "activation_has_dq": true,
+            "weight_has_int8_dq": true,
+            "weight_storage_type": "INT8",
+            "output_has_q": true
+          },
+          {
+            "index": 432,
+            "name": "/model/LC2/dconv1x3/Conv",
+            "op_type": "Conv",
+            "activation_has_dq": true,
+            "weight_has_int8_dq": true,
+            "weight_storage_type": "INT8",
+            "output_has_q": true
+          },
+          {
+            "index": 443,
+            "name": "/model/DAB_Block_3/DAB_Module_3_0/conv1x1_in/conv/Conv",
+            "op_type": "Conv",
+            "activation_has_dq": true,
+            "weight_has_int8_dq": true,
+            "weight_storage_type": "INT8",
+            "output_has_q": true
+          },
+          {
+            "index": 456,
+            "name": "/model/DAB_Block_3/DAB_Module_3_0/conv3x1/conv/Conv",
+            "op_type": "Conv",
+            "activation_has_dq": true,
+            "weight_has_int8_dq": true,
+            "weight_storage_type": "INT8",
+            "output_has_q": true
+          },
+          {
+            "index": 467,
+            "name": "/model/DAB_Block_3/DAB_Module_3_0/conv1x3/conv/Conv",
+            "op_type": "Conv",
+            "activation_has_dq": true,
+            "weight_has_int8_dq": true,
+            "weight_storage_type": "INT8",
+            "output_has_q": true
+          },
+          {
+            "index": 478,
+            "name": "/model/DAB_Block_3/DAB_Module_3_0/ddconv3x1/conv/Conv",
+            "op_type": "Conv",
+            "activation_has_dq": true,
+            "weight_has_int8_dq": true,
+            "weight_storage_type": "INT8",
+            "output_has_q": true
+          },
+          {
+            "index": 479,
+            "name": "/model/DAB_Block_3/DAB_Module_3_0/dconv3x1/conv/Conv",
+            "op_type": "Conv",
+            "activation_has_dq": true,
+            "weight_has_int8_dq": true,
+            "weight_storage_type": "INT8",
+            "output_has_q": true
+          },
+          {
+            "index": 500,
+            "name": "/model/DAB_Block_3/DAB_Module_3_0/ddconv1x3/conv/Conv",
+            "op_type": "Conv",
+            "activation_has_dq": true,
+            "weight_has_int8_dq": true,
+            "weight_storage_type": "INT8",
+            "output_has_q": true
+          },
+          {
+            "index": 501,
+            "name": "/model/DAB_Block_3/DAB_Module_3_0/dconv1x3/conv/Conv",
+            "op_type": "Conv",
+            "activation_has_dq": true,
+            "weight_has_int8_dq": true,
+            "weight_storage_type": "INT8",
+            "output_has_q": true
+          },
+          {
+            "index": 530,
+            "name": "/model/DAB_Block_3/DAB_Module_3_0/ca22/conv/Conv",
+            "op_type": "Conv",
+            "activation_has_dq": true,
+            "weight_has_int8_dq": true,
+            "weight_storage_type": "INT8",
+            "output_has_q": true
+          },
+          {
+            "index": 531,
+            "name": "/model/DAB_Block_3/DAB_Module_3_0/ca11/conv/Conv",
+            "op_type": "Conv",
+            "activation_has_dq": true,
+            "weight_has_int8_dq": true,
+            "weight_storage_type": "INT8",
+            "output_has_q": true
+          },
+          {
+            "index": 557,
+            "name": "/model/DAB_Block_3/DAB_Module_3_0/conv1x1/conv/Conv",
+            "op_type": "Conv",
+            "activation_has_dq": true,
+            "weight_has_int8_dq": true,
+            "weight_storage_type": "INT8",
+            "output_has_q": true
+          },
+          {
+            "index": 582,
+            "name": "/model/LC3/dconv3x1/Conv",
+            "op_type": "Conv",
+            "activation_has_dq": true,
+            "weight_has_int8_dq": true,
+            "weight_storage_type": "INT8",
+            "output_has_q": true
+          },
+          {
+            "index": 594,
+            "name": "/model/LC3/dconv1x3/Conv",
+            "op_type": "Conv",
+            "activation_has_dq": true,
+            "weight_has_int8_dq": true,
+            "weight_storage_type": "INT8",
+            "output_has_q": true
+          },
+          {
+            "index": 595,
+            "name": "/model/transformer1/atten/reduce/MatMul",
+            "op_type": "MatMul",
+            "activation_has_dq": true,
+            "weight_has_int8_dq": true,
+            "weight_storage_type": "INT8",
+            "output_has_q": true
+          },
+          {
+            "index": 601,
+            "name": "/model/transformer1/atten/qkv/MatMul",
+            "op_type": "MatMul",
+            "activation_has_dq": true,
+            "weight_has_int8_dq": true,
+            "weight_storage_type": "INT8",
+            "output_has_q": true
+          },
+          {
+            "index": 663,
+            "name": "/model/transformer1/atten/MatMul_8",
+            "op_type": "MatMul",
+            "activation_has_dq": true,
+            "weight_has_int8_dq": false,
+            "weight_storage_type": null,
+            "output_has_q": true
+          },
+          {
+            "index": 664,
+            "name": "/model/transformer1/atten/MatMul_6",
+            "op_type": "MatMul",
+            "activation_has_dq": true,
+            "weight_has_int8_dq": false,
+            "weight_storage_type": null,
+            "output_has_q": true
+          },
+          {
+            "index": 665,
+            "name": "/model/transformer1/atten/MatMul_4",
+            "op_type": "MatMul",
+            "activation_has_dq": true,
+            "weight_has_int8_dq": false,
+            "weight_storage_type": null,
+            "output_has_q": true
+          },
+          {
+            "index": 666,
+            "name": "/model/transformer1/atten/MatMul_2",
+            "op_type": "MatMul",
+            "activation_has_dq": true,
+            "weight_has_int8_dq": false,
+            "weight_storage_type": null,
+            "output_has_q": true
+          },
+          {
+            "index": 667,
+            "name": "/model/transformer1/atten/MatMul",
+            "op_type": "MatMul",
+            "activation_has_dq": true,
+            "weight_has_int8_dq": false,
+            "weight_storage_type": null,
+            "output_has_q": true
+          },
+          {
+            "index": 698,
+            "name": "/model/transformer1/atten/MatMul_9",
+            "op_type": "MatMul",
+            "activation_has_dq": true,
+            "weight_has_int8_dq": false,
+            "weight_storage_type": null,
+            "output_has_q": true
+          },
+          {
+            "index": 699,
+            "name": "/model/transformer1/atten/MatMul_7",
+            "op_type": "MatMul",
+            "activation_has_dq": true,
+            "weight_has_int8_dq": false,
+            "weight_storage_type": null,
+            "output_has_q": true
+          },
+          {
+            "index": 700,
+            "name": "/model/transformer1/atten/MatMul_5",
+            "op_type": "MatMul",
+            "activation_has_dq": true,
+            "weight_has_int8_dq": false,
+            "weight_storage_type": null,
+            "output_has_q": true
+          },
+          {
+            "index": 701,
+            "name": "/model/transformer1/atten/MatMul_3",
+            "op_type": "MatMul",
+            "activation_has_dq": true,
+            "weight_has_int8_dq": false,
+            "weight_storage_type": null,
+            "output_has_q": true
+          },
+          {
+            "index": 702,
+            "name": "/model/transformer1/atten/MatMul_1",
+            "op_type": "MatMul",
+            "activation_has_dq": true,
+            "weight_has_int8_dq": false,
+            "weight_storage_type": null,
+            "output_has_q": true
+          },
+          {
+            "index": 718,
+            "name": "/model/transformer1/atten/proj/MatMul/MatMulAddFusion",
+            "op_type": "Gemm",
+            "activation_has_dq": true,
+            "weight_has_int8_dq": true,
+            "weight_storage_type": "INT8",
+            "output_has_q": true
+          },
+          {
+            "index": 727,
+            "name": "/model/transformer1/mlp/fc1/MatMul/MatMulAddFusion",
+            "op_type": "Gemm",
+            "activation_has_dq": true,
+            "weight_has_int8_dq": true,
+            "weight_storage_type": "INT8",
+            "output_has_q": true
+          },
+          {
+            "index": 735,
+            "name": "/model/transformer1/mlp/fc2/MatMul/MatMulAddFusion",
+            "op_type": "Gemm",
+            "activation_has_dq": true,
+            "weight_has_int8_dq": true,
+            "weight_storage_type": "INT8",
+            "output_has_q": true
+          },
+          {
+            "index": 791,
+            "name": "/model/DAB_Block_4/DAB_Module_4_0/conv1x1_in/conv/Conv",
+            "op_type": "Conv",
+            "activation_has_dq": true,
+            "weight_has_int8_dq": true,
+            "weight_storage_type": "INT8",
+            "output_has_q": true
+          },
+          {
+            "index": 802,
+            "name": "/model/DAB_Block_4/DAB_Module_4_0/conv3x1/conv/Conv",
+            "op_type": "Conv",
+            "activation_has_dq": true,
+            "weight_has_int8_dq": true,
+            "weight_storage_type": "INT8",
+            "output_has_q": true
+          },
+          {
+            "index": 813,
+            "name": "/model/DAB_Block_4/DAB_Module_4_0/conv1x3/conv/Conv",
+            "op_type": "Conv",
+            "activation_has_dq": true,
+            "weight_has_int8_dq": true,
+            "weight_storage_type": "INT8",
+            "output_has_q": true
+          },
+          {
+            "index": 824,
+            "name": "/model/DAB_Block_4/DAB_Module_4_0/ddconv3x1/conv/Conv",
+            "op_type": "Conv",
+            "activation_has_dq": true,
+            "weight_has_int8_dq": true,
+            "weight_storage_type": "INT8",
+            "output_has_q": true
+          },
+          {
+            "index": 825,
+            "name": "/model/DAB_Block_4/DAB_Module_4_0/dconv3x1/conv/Conv",
+            "op_type": "Conv",
+            "activation_has_dq": true,
+            "weight_has_int8_dq": true,
+            "weight_storage_type": "INT8",
+            "output_has_q": true
+          },
+          {
+            "index": 846,
+            "name": "/model/DAB_Block_4/DAB_Module_4_0/ddconv1x3/conv/Conv",
+            "op_type": "Conv",
+            "activation_has_dq": true,
+            "weight_has_int8_dq": true,
+            "weight_storage_type": "INT8",
+            "output_has_q": true
+          },
+          {
+            "index": 847,
+            "name": "/model/DAB_Block_4/DAB_Module_4_0/dconv1x3/conv/Conv",
+            "op_type": "Conv",
+            "activation_has_dq": true,
+            "weight_has_int8_dq": true,
+            "weight_storage_type": "INT8",
+            "output_has_q": true
+          },
+          {
+            "index": 876,
+            "name": "/model/DAB_Block_4/DAB_Module_4_0/ca22/conv/Conv",
+            "op_type": "Conv",
+            "activation_has_dq": true,
+            "weight_has_int8_dq": true,
+            "weight_storage_type": "INT8",
+            "output_has_q": true
+          },
+          {
+            "index": 877,
+            "name": "/model/DAB_Block_4/DAB_Module_4_0/ca11/conv/Conv",
+            "op_type": "Conv",
+            "activation_has_dq": true,
+            "weight_has_int8_dq": true,
+            "weight_storage_type": "INT8",
+            "output_has_q": true
+          },
+          {
+            "index": 903,
+            "name": "/model/DAB_Block_4/DAB_Module_4_0/conv1x1/conv/Conv",
+            "op_type": "Conv",
+            "activation_has_dq": true,
+            "weight_has_int8_dq": true,
+            "weight_storage_type": "INT8",
+            "output_has_q": true
+          },
+          {
+            "index": 923,
+            "name": "/model/upsample_1/conv/ConvTranspose",
+            "op_type": "ConvTranspose",
+            "activation_has_dq": true,
+            "weight_has_int8_dq": true,
+            "weight_storage_type": "INT8",
+            "output_has_q": true
+          },
+          {
+            "index": 934,
+            "name": "/model/DAB_Block_5/DAB_Module_5_0/conv1x1_in/conv/Conv",
+            "op_type": "Conv",
+            "activation_has_dq": true,
+            "weight_has_int8_dq": true,
+            "weight_storage_type": "INT8",
+            "output_has_q": true
+          },
+          {
+            "index": 945,
+            "name": "/model/DAB_Block_5/DAB_Module_5_0/conv3x1/conv/Conv",
+            "op_type": "Conv",
+            "activation_has_dq": true,
+            "weight_has_int8_dq": true,
+            "weight_storage_type": "INT8",
+            "output_has_q": true
+          },
+          {
+            "index": 956,
+            "name": "/model/DAB_Block_5/DAB_Module_5_0/conv1x3/conv/Conv",
+            "op_type": "Conv",
+            "activation_has_dq": true,
+            "weight_has_int8_dq": true,
+            "weight_storage_type": "INT8",
+            "output_has_q": true
+          },
+          {
+            "index": 967,
+            "name": "/model/DAB_Block_5/DAB_Module_5_0/ddconv3x1/conv/Conv",
+            "op_type": "Conv",
+            "activation_has_dq": true,
+            "weight_has_int8_dq": true,
+            "weight_storage_type": "INT8",
+            "output_has_q": true
+          },
+          {
+            "index": 968,
+            "name": "/model/DAB_Block_5/DAB_Module_5_0/dconv3x1/conv/Conv",
+            "op_type": "Conv",
+            "activation_has_dq": true,
+            "weight_has_int8_dq": true,
+            "weight_storage_type": "INT8",
+            "output_has_q": true
+          },
+          {
+            "index": 989,
+            "name": "/model/DAB_Block_5/DAB_Module_5_0/ddconv1x3/conv/Conv",
+            "op_type": "Conv",
+            "activation_has_dq": true,
+            "weight_has_int8_dq": true,
+            "weight_storage_type": "INT8",
+            "output_has_q": true
+          },
+          {
+            "index": 990,
+            "name": "/model/DAB_Block_5/DAB_Module_5_0/dconv1x3/conv/Conv",
+            "op_type": "Conv",
+            "activation_has_dq": true,
+            "weight_has_int8_dq": true,
+            "weight_storage_type": "INT8",
+            "output_has_q": true
+          },
+          {
+            "index": 1019,
+            "name": "/model/DAB_Block_5/DAB_Module_5_0/ca22/conv/Conv",
+            "op_type": "Conv",
+            "activation_has_dq": true,
+            "weight_has_int8_dq": true,
+            "weight_storage_type": "INT8",
+            "output_has_q": true
+          },
+          {
+            "index": 1020,
+            "name": "/model/DAB_Block_5/DAB_Module_5_0/ca11/conv/Conv",
+            "op_type": "Conv",
+            "activation_has_dq": true,
+            "weight_has_int8_dq": true,
+            "weight_storage_type": "INT8",
+            "output_has_q": true
+          },
+          {
+            "index": 1046,
+            "name": "/model/DAB_Block_5/DAB_Module_5_0/conv1x1/conv/Conv",
+            "op_type": "Conv",
+            "activation_has_dq": true,
+            "weight_has_int8_dq": true,
+            "weight_storage_type": "INT8",
+            "output_has_q": true
+          },
+          {
+            "index": 1066,
+            "name": "/model/upsample_2/conv/ConvTranspose",
+            "op_type": "ConvTranspose",
+            "activation_has_dq": true,
+            "weight_has_int8_dq": true,
+            "weight_storage_type": "INT8",
+            "output_has_q": true
+          },
+          {
+            "index": 1077,
+            "name": "/model/DAB_Block_6/DAB_Module_6_0/conv1x1_in/conv/Conv",
+            "op_type": "Conv",
+            "activation_has_dq": true,
+            "weight_has_int8_dq": true,
+            "weight_storage_type": "INT8",
+            "output_has_q": true
+          },
+          {
+            "index": 1088,
+            "name": "/model/DAB_Block_6/DAB_Module_6_0/conv3x1/conv/Conv",
+            "op_type": "Conv",
+            "activation_has_dq": true,
+            "weight_has_int8_dq": true,
+            "weight_storage_type": "INT8",
+            "output_has_q": true
+          },
+          {
+            "index": 1099,
+            "name": "/model/DAB_Block_6/DAB_Module_6_0/conv1x3/conv/Conv",
+            "op_type": "Conv",
+            "activation_has_dq": true,
+            "weight_has_int8_dq": true,
+            "weight_storage_type": "INT8",
+            "output_has_q": true
+          },
+          {
+            "index": 1110,
+            "name": "/model/DAB_Block_6/DAB_Module_6_0/ddconv3x1/conv/Conv",
+            "op_type": "Conv",
+            "activation_has_dq": true,
+            "weight_has_int8_dq": true,
+            "weight_storage_type": "INT8",
+            "output_has_q": true
+          },
+          {
+            "index": 1111,
+            "name": "/model/DAB_Block_6/DAB_Module_6_0/dconv3x1/conv/Conv",
+            "op_type": "Conv",
+            "activation_has_dq": true,
+            "weight_has_int8_dq": true,
+            "weight_storage_type": "INT8",
+            "output_has_q": true
+          },
+          {
+            "index": 1132,
+            "name": "/model/DAB_Block_6/DAB_Module_6_0/ddconv1x3/conv/Conv",
+            "op_type": "Conv",
+            "activation_has_dq": true,
+            "weight_has_int8_dq": true,
+            "weight_storage_type": "INT8",
+            "output_has_q": true
+          },
+          {
+            "index": 1133,
+            "name": "/model/DAB_Block_6/DAB_Module_6_0/dconv1x3/conv/Conv",
+            "op_type": "Conv",
+            "activation_has_dq": true,
+            "weight_has_int8_dq": true,
+            "weight_storage_type": "INT8",
+            "output_has_q": true
+          },
+          {
+            "index": 1162,
+            "name": "/model/DAB_Block_6/DAB_Module_6_0/ca22/conv/Conv",
+            "op_type": "Conv",
+            "activation_has_dq": true,
+            "weight_has_int8_dq": true,
+            "weight_storage_type": "INT8",
+            "output_has_q": true
+          },
+          {
+            "index": 1163,
+            "name": "/model/DAB_Block_6/DAB_Module_6_0/ca11/conv/Conv",
+            "op_type": "Conv",
+            "activation_has_dq": true,
+            "weight_has_int8_dq": true,
+            "weight_storage_type": "INT8",
+            "output_has_q": true
+          },
+          {
+            "index": 1189,
+            "name": "/model/DAB_Block_6/DAB_Module_6_0/conv1x1/conv/Conv",
+            "op_type": "Conv",
+            "activation_has_dq": true,
+            "weight_has_int8_dq": true,
+            "weight_storage_type": "INT8",
+            "output_has_q": true
+          },
+          {
+            "index": 1209,
+            "name": "/model/upsample_3/conv/ConvTranspose",
+            "op_type": "ConvTranspose",
+            "activation_has_dq": true,
+            "weight_has_int8_dq": true,
+            "weight_storage_type": "INT8",
+            "output_has_q": true
+          },
+          {
+            "index": 1220,
+            "name": "/model/final_conv/Conv",
+            "op_type": "Conv",
+            "activation_has_dq": true,
+            "weight_has_int8_dq": true,
+            "weight_storage_type": "INT8",
+            "output_has_q": true
+          },
+          {
+            "index": 1228,
+            "name": "/model/classifier/classifier.0/conv/Conv",
+            "op_type": "Conv",
+            "activation_has_dq": true,
+            "weight_has_int8_dq": true,
+            "weight_storage_type": "INT8",
+            "output_has_q": true
+          }
+        ]
+      }
+    }
+  },
+  "cpu_smoke": {
+    "fp32": {
+      "providers": [
+        "CPUExecutionProvider"
+      ],
+      "provider_options": {
+        "CPUExecutionProvider": {}
+      },
+      "samples": [
+        {
+          "shape": [
+            1,
+            6,
+            400,
+            400
+          ],
+          "finite": true,
+          "minimum": -8.558856964111328,
+          "maximum": 14.66894245147705
+        },
+        {
+          "shape": [
+            1,
+            6,
+            400,
+            400
+          ],
+          "finite": true,
+          "minimum": -8.896156311035156,
+          "maximum": 9.271897315979004
+        },
+        {
+          "shape": [
+            1,
+            6,
+            400,
+            400
+          ],
+          "finite": true,
+          "minimum": -8.372818946838379,
+          "maximum": 13.328211784362793
+        }
+      ]
+    },
+    "w8a8": {
+      "providers": [
+        "CPUExecutionProvider"
+      ],
+      "provider_options": {
+        "CPUExecutionProvider": {}
+      },
+      "samples": [
+        {
+          "shape": [
+            1,
+            6,
+            400,
+            400
+          ],
+          "finite": true,
+          "minimum": -8.53687572479248,
+          "maximum": 13.888350486755371
+        },
+        {
+          "shape": [
+            1,
+            6,
+            400,
+            400
+          ],
+          "finite": true,
+          "minimum": -8.664292335510254,
+          "maximum": 8.664292335510254
+        },
+        {
+          "shape": [
+            1,
+            6,
+            400,
+            400
+          ],
+          "finite": true,
+          "minimum": -7.772379398345947,
+          "maximum": 9.811036109924316
+        }
+      ]
+    }
+  },
+  "openvino_rewrite_equivalence_on_cpu_ep": {
+    "fp32": {
+      "exact_equal": true,
+      "max_abs_errors": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    "w8a8": {
+      "exact_equal": true,
+      "max_abs_errors": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    }
+  },
+  "observational_comparison": [
+    {
+      "max_abs_difference": 7.11194372177124,
+      "argmax_agreement_observational_only": 0.95801875
+    },
+    {
+      "max_abs_difference": 6.320776462554932,
+      "argmax_agreement_observational_only": 0.89694375
+    },
+    {
+      "max_abs_difference": 6.69370698928833,
+      "argmax_agreement_observational_only": 0.928075
+    }
+  ]
+}

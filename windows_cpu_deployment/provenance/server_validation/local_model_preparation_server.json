@@ -1,0 +1,141 @@
+{
+  "generated_at_utc": "2026-07-22T12:17:54.559489+00:00",
+  "target_local_only": true,
+  "warning": "Do not copy these CPU-optimized artifacts to a different CPU/runtime.",
+  "environment": {
+    "generated_at_utc": "2026-07-22T12:17:54.559519+00:00",
+    "platform": "Linux-5.15.0-78-generic-x86_64-with-glibc2.35",
+    "python": "3.12.3 | packaged by Anaconda, Inc. | (main, May  6 2024, 19:46:43) [GCC 11.2.0]",
+    "python_executable": "/tmp/letnet_ortov124/bin/python",
+    "onnxruntime": "1.24.1",
+    "available_providers": [
+      "OpenVINOExecutionProvider",
+      "CPUExecutionProvider"
+    ],
+    "numpy": "2.3.5",
+    "pillow": "11.3.0",
+    "psutil": "7.0.0"
+  },
+  "results": {
+    "cpu": {
+      "fp32": {
+        "path": "/root/autodl-tmp/LETNet/windows_cpu_deployment/models/local_optimized/SpikingLETNet_shallow_max_fp32_ort_cpu.onnx",
+        "bytes": 5569830,
+        "sha256": "c5c1fe0d5c097e1e37045c71dc36ede37d17703ae67b4451988ac6c00b65884f",
+        "node_count": 831,
+        "node_types": {
+          "Add": 23,
+          "BatchNormalization": 66,
+          "Clip": 78,
+          "Col2Im": 1,
+          "Concat": 2,
+          "Conv": 74,
+          "ConvTranspose": 3,
+          "Expand": 13,
+          "FusedMatMul": 5,
+          "Gather": 2,
+          "Gemm": 3,
+          "GlobalAveragePool": 12,
+          "LayerNormalization": 2,
+          "MatMul": 7,
+          "MaxPool": 1,
+          "Mul": 12,
+          "Pad": 2,
+          "ReduceMean": 1,
+          "Relu": 1,
+          "ReorderInput": 53,
+          "ReorderOutput": 63,
+          "Reshape": 254,
+          "Resize": 1,
+          "Round": 78,
+          "Sigmoid": 12,
+          "Softmax": 5,
+          "Split": 4,
+          "Squeeze": 3,
+          "Tile": 1,
+          "Transpose": 35,
+          "Unsqueeze": 14
+        },
+        "node_domains": {
+          "ai.onnx": 647,
+          "com.microsoft": 5,
+          "com.microsoft.nchwc": 179
+        }
+      },
+      "w8a8": {
+        "path": "/root/autodl-tmp/LETNet/windows_cpu_deployment/models/local_optimized/SpikingLETNet_shallow_max_w8a8_ort_cpu.onnx",
+        "bytes": 1845484,
+        "sha256": "503ba9877413eb8ab8fb4a44f177ea28c7306913fe434a1a1563aecfa9522402",
+        "node_count": 1043,
+        "node_types": {
+          "Add": 23,
+          "BatchNormalization": 66,
+          "Clip": 78,
+          "Col2Im": 1,
+          "Concat": 1,
+          "Conv": 17,
+          "ConvTranspose": 3,
+          "DequantizeLinear": 136,
+          "Expand": 13,
+          "Gather": 5,
+          "GlobalAveragePool": 12,
+          "LayerNormalization": 2,
+          "MaxPool": 1,
+          "Mul": 17,
+          "Pad": 2,
+          "QGemm": 3,
+          "QLinearConcat": 1,
+          "QLinearConv": 57,
+          "QLinearMatMul": 12,
+          "QuantizeLinear": 114,
+          "ReduceMean": 1,
+          "Relu": 1,
+          "ReorderInput": 1,
+          "ReorderOutput": 1,
+          "Reshape": 209,
+          "Resize": 1,
+          "Round": 78,
+          "Sigmoid": 12,
+          "Softmax": 5,
+          "Split": 3,
+          "Tile": 1,
+          "Transpose": 152,
+          "Unsqueeze": 14
+        },
+        "node_domains": {
+          "ai.onnx": 979,
+          "com.microsoft": 61,
+          "com.microsoft.nchwc": 3
+        }
+      }
+    },
+    "openvino": {
+      "fp32": {
+        "portable_model": "/root/autodl-tmp/LETNet/windows_cpu_deployment/models/SpikingLETNet_shallow_max_fp32_openvino_portable.onnx",
+        "portable_sha256": "173dd192fd613783b85506c9e4c86bfc164ae90f9bf6195772b157fe35aa340c",
+        "cache_dir": "/root/autodl-tmp/LETNet/windows_cpu_deployment/models/local_optimized/openvino_cache/fp32",
+        "session_providers": [
+          "OpenVINOExecutionProvider",
+          "CPUExecutionProvider"
+        ],
+        "provider_options": {
+          "CPUExecutionProvider": {},
+          "OpenVINOExecutionProvider": {}
+        }
+      },
+      "w8a8": {
+        "portable_model": "/root/autodl-tmp/LETNet/windows_cpu_deployment/models/SpikingLETNet_shallow_max_w8a8_qdq_openvino_portable.onnx",
+        "portable_sha256": "412bcd82fa8c3e76b598f61f78272a2115b878359001f1cbc684c26b4db75756",
+        "cache_dir": "/root/autodl-tmp/LETNet/windows_cpu_deployment/models/local_optimized/openvino_cache/w8a8",
+        "session_providers": [
+          "OpenVINOExecutionProvider",
+          "CPUExecutionProvider"
+        ],
+        "provider_options": {
+          "CPUExecutionProvider": {},
+          "OpenVINOExecutionProvider": {}
+        }
+      }
+    }
+  }
+}
