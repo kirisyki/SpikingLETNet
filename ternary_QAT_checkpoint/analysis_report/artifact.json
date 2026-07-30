@@ -1,0 +1,4573 @@
+{
+  "surface": "report",
+  "manifest": {
+    "version": 1,
+    "surface": "report",
+    "title": "SpikingLETNet 三元量化实验技术报告",
+    "description": "UDD 验证集上的 FP32、W4/A4、W1.58/A4 与 W1.58/A1.58 统一评估；结论按预注册 2.0 mIoU 百分点门槛解释。",
+    "generatedAt": "2026-07-30T08:18:15.854890+00:00",
+    "sources": [
+      {
+        "id": "unified_comparison",
+        "label": "统一精度评估结果",
+        "query": {
+          "engine": "repository JSON",
+          "executed_at": "2026-07-30T08:18:15.854890+00:00",
+          "description": "读取统一评估输出；四个模型均在 UDD val_patches.txt 上，以 batch size 20、T=1、完整 424 batches 计算六类 mean IoU。",
+          "sql": "SELECT * FROM read_json_auto('ternary_QAT_checkpoint/comparison_seed1234/comparison.json');",
+          "tables_used": [
+            "ternary_QAT_checkpoint/comparison_seed1234/comparison.json"
+          ],
+          "filters": [
+            "dataset = UDD val_patches.txt",
+            "evaluated_batches = 424",
+            "classes = background, facade, road, vegetation, vehicle, roof"
+          ],
+          "metric_definitions": [
+            "mIoU = 六个类别 IoU（含 background）的算术平均值。",
+            "W4 优势（pp） = 100 × (W4/A4 mIoU − W1.58/A4 mIoU)。",
+            "保留率 = 100 × 候选模型 mIoU ÷ 参考模型 mIoU。",
+            "理论权重位宽仅比较码字位数，不计比例因子、封装开销或硬件实现。"
+          ]
+        }
+      },
+      {
+        "id": "ternary_training",
+        "label": "三元 QAT 训练曲线与最佳指标",
+        "query": {
+          "engine": "repository CSV/JSON",
+          "executed_at": "2026-07-30T08:18:15.854890+00:00",
+          "description": "读取两个 seed=1234 三元 QAT 运行的 150 轮 metrics.csv 与 best_metrics.json，并复核轮次连续性和数值有限性。",
+          "sql": "SELECT 'W1.58/A4' AS variant, * FROM read_csv_auto('ternary_QAT_checkpoint/udd/SpikingLETNet_shallow_max_w1p58_a4_bs64_seed1234/metrics.csv') UNION ALL SELECT 'W1.58/A1.58' AS variant, * FROM read_csv_auto('ternary_QAT_checkpoint/udd/SpikingLETNet_shallow_max_w1p58_a1p58_bs64_seed1234/metrics.csv');",
+          "tables_used": [
+            "ternary_QAT_checkpoint/udd/SpikingLETNet_shallow_max_w1p58_a4_bs64_seed1234/metrics.csv",
+            "ternary_QAT_checkpoint/udd/SpikingLETNet_shallow_max_w1p58_a1p58_bs64_seed1234/metrics.csv"
+          ],
+          "filters": [
+            "seed = 1234",
+            "epochs = 1..150",
+            "batch_size = 64"
+          ],
+          "metric_definitions": [
+            "末 10 轮均值/标准差基于各运行 metrics.csv 中 epoch 141–150 的 val_miou。",
+            "权重零值率 = 三元量化权重中码字 0 的数量 ÷ 量化权重总数。"
+          ]
+        }
+      },
+      {
+        "id": "pipeline_manifest",
+        "label": "实验流水线完成清单",
+        "query": {
+          "engine": "repository JSON",
+          "executed_at": "2026-07-30T08:18:15.854890+00:00",
+          "description": "实验预注册判据、阶段状态、主种子、可选复现实验种子以及完成时间。",
+          "tables_used": [
+            "ternary_QAT_checkpoint/pipeline_manifest.json"
+          ],
+          "metric_definitions": [
+            "预注册判据：W4/A4 − W1.58/A4 ≥ 2.0 个绝对 mIoU 百分点，则支持 4-bit 的精度价值；否则追加两个种子。"
+          ]
+        }
+      },
+      {
+        "id": "w4_training_log",
+        "label": "历史 W4/A4 QAT 训练日志",
+        "query": {
+          "engine": "repository log",
+          "description": "历史 W4/A4 日志声明 max_epochs=150，但包含 epoch 0–126 共 127 个训练轮次；统一比较使用已保存的最佳量化权重。",
+          "tables_used": [
+            "QAT_checkpoint/udd/SpikingLETNet_shallow_maxbs64gpu1_trainval20260612-135249/log.txt"
+          ],
+          "filters": [
+            "seed = 1234",
+            "quant_bits = 4",
+            "activation_quant = true"
+          ]
+        }
+      }
+    ],
+    "cards": [
+      {
+        "id": "card_w4_gap",
+        "dataset": "headline_metrics",
+        "description": "统一评估 mIoU 的绝对百分点差。",
+        "sourceId": "unified_comparison",
+        "metrics": [
+          {
+            "label": "W4 精度优势",
+            "field": "w4_advantage_pp",
+            "format": "number"
+          },
+          {
+            "label": "预设门槛",
+            "field": "threshold_pp",
+            "format": "number"
+          },
+          {
+            "label": "超过门槛",
+            "field": "margin_over_threshold_pp",
+            "format": "number",
+            "signed": true
+          }
+        ]
+      },
+      {
+        "id": "card_ternary_retention",
+        "dataset": "headline_metrics",
+        "description": "W1.58/A4 相对 W4/A4 的 mIoU 保留率。",
+        "sourceId": "unified_comparison",
+        "metrics": [
+          {
+            "label": "相对 W4 保留率",
+            "field": "ternary_a4_retention_vs_w4_pct",
+            "format": "number"
+          },
+          {
+            "label": "理论权重位数减少",
+            "field": "theoretical_bit_reduction_vs_w4_pct",
+            "format": "number"
+          }
+        ]
+      },
+      {
+        "id": "card_activation_penalty",
+        "dataset": "headline_metrics",
+        "description": "同为三元权重时，A4 改为 A1.58 的 mIoU 损失。",
+        "sourceId": "unified_comparison",
+        "metrics": [
+          {
+            "label": "激活量化损失",
+            "field": "activation_penalty_pp",
+            "format": "number"
+          },
+          {
+            "label": "W1.58/A1.58 mIoU",
+            "field": "ternary_a1p58_miou",
+            "format": "percent"
+          }
+        ]
+      }
+    ],
+    "charts": [
+      {
+        "id": "chart_model_miou",
+        "title": "四种精度方案的统一验证集 mIoU",
+        "subtitle": "W4/A4 比 W1.58/A4 高 2.85 个百分点；W1.58/A1.58 出现显著精度塌缩。",
+        "showDescription": true,
+        "dataset": "model_comparison",
+        "sourceId": "unified_comparison",
+        "type": "bar",
+        "encodings": {
+          "x": {
+            "field": "model",
+            "type": "nominal",
+            "label": "精度方案"
+          },
+          "y": {
+            "field": "miou",
+            "type": "quantitative",
+            "label": "mIoU",
+            "format": "percent"
+          },
+          "tooltip": [
+            {
+              "field": "weight_bits",
+              "label": "权重位宽",
+              "format": "number"
+            },
+            {
+              "field": "activation_bits",
+              "label": "激活位宽",
+              "format": "number"
+            },
+            {
+              "field": "retention_vs_fp_pct",
+              "label": "相对 FP32 保留率(%)",
+              "format": "number"
+            },
+            {
+              "field": "evaluated_batches",
+              "label": "评估 batches",
+              "format": "number"
+            }
+          ]
+        }
+      },
+      {
+        "id": "chart_training_curves",
+        "title": "三元 QAT 验证 mIoU 训练曲线",
+        "subtitle": "两个运行均完成 150 轮；A4 最佳点在第 150 轮，A1.58 最佳点在第 97 轮。",
+        "showDescription": true,
+        "dataset": "training_curves",
+        "sourceId": "ternary_training",
+        "type": "line",
+        "encodings": {
+          "x": {
+            "field": "epoch",
+            "type": "quantitative",
+            "label": "训练轮次"
+          },
+          "y": {
+            "field": "val_miou",
+            "type": "quantitative",
+            "label": "验证 mIoU",
+            "format": "percent"
+          },
+          "color": {
+            "field": "variant",
+            "type": "nominal",
+            "label": "方案"
+          },
+          "tooltip": [
+            {
+              "field": "train_loss",
+              "label": "训练损失",
+              "format": "number"
+            },
+            {
+              "field": "weight_zero_fraction",
+              "label": "权重零值率",
+              "format": "percent"
+            },
+            {
+              "field": "lr",
+              "label": "学习率",
+              "format": "number"
+            }
+          ]
+        }
+      },
+      {
+        "id": "chart_class_gap",
+        "title": "W4/A4 相对 W1.58/A4 的逐类别 IoU 优势",
+        "subtitle": "差距主要来自道路、背景和车辆；各类别差值均为正。",
+        "showDescription": true,
+        "dataset": "class_gaps",
+        "sourceId": "unified_comparison",
+        "type": "bar",
+        "options": {
+          "orientation": "horizontal",
+          "grouping": "single"
+        },
+        "encodings": {
+          "x": {
+            "field": "class",
+            "type": "nominal",
+            "label": "类别"
+          },
+          "y": {
+            "field": "w4_advantage_pp",
+            "type": "quantitative",
+            "label": "W4 优势（mIoU 百分点）",
+            "format": "number"
+          },
+          "tooltip": [
+            {
+              "field": "w4_iou",
+              "label": "W4/A4 IoU",
+              "format": "percent"
+            },
+            {
+              "field": "ternary_a4_iou",
+              "label": "W1.58/A4 IoU",
+              "format": "percent"
+            },
+            {
+              "field": "activation_penalty_pp",
+              "label": "A1.58 激活损失(pp)",
+              "format": "number"
+            }
+          ]
+        }
+      }
+    ],
+    "tables": [
+      {
+        "id": "table_model_comparison",
+        "title": "统一评估明细",
+        "subtitle": "所有模型使用相同 UDD 验证协议；按 mIoU 降序。",
+        "showDescription": true,
+        "dataset": "model_comparison",
+        "sourceId": "unified_comparison",
+        "columns": [
+          {
+            "field": "model",
+            "label": "方案",
+            "type": "text"
+          },
+          {
+            "field": "miou",
+            "label": "mIoU",
+            "format": "percent"
+          },
+          {
+            "field": "gap_vs_fp_pp",
+            "label": "距 FP32 (pp)",
+            "format": "number"
+          },
+          {
+            "field": "retention_vs_fp_pct",
+            "label": "FP32 保留率 (%)",
+            "format": "number"
+          },
+          {
+            "field": "weight_bits",
+            "label": "权重位宽",
+            "format": "number"
+          },
+          {
+            "field": "activation_bits",
+            "label": "激活位宽",
+            "format": "number"
+          },
+          {
+            "field": "best_epoch",
+            "label": "最佳轮次",
+            "format": "number"
+          }
+        ],
+        "defaultSort": {
+          "field": "miou",
+          "direction": "desc"
+        }
+      },
+      {
+        "id": "table_training_summary",
+        "title": "三元 QAT 训练质量摘要",
+        "subtitle": "末 10 轮统计反映最终阶段的验证波动。",
+        "showDescription": true,
+        "dataset": "training_summary",
+        "sourceId": "ternary_training",
+        "columns": [
+          {
+            "field": "variant",
+            "label": "方案",
+            "type": "text"
+          },
+          {
+            "field": "best_epoch",
+            "label": "最佳轮次",
+            "format": "number"
+          },
+          {
+            "field": "best_val_miou",
+            "label": "最佳 mIoU",
+            "format": "percent"
+          },
+          {
+            "field": "final_val_miou",
+            "label": "末轮 mIoU",
+            "format": "percent"
+          },
+          {
+            "field": "last10_mean",
+            "label": "末10轮均值",
+            "format": "percent"
+          },
+          {
+            "field": "last10_std",
+            "label": "末10轮标准差",
+            "format": "percent"
+          },
+          {
+            "field": "elapsed_hours",
+            "label": "耗时(h)",
+            "format": "number"
+          },
+          {
+            "field": "zero_fraction_final",
+            "label": "末轮零值率",
+            "format": "percent"
+          }
+        ],
+        "defaultSort": {
+          "field": "best_val_miou",
+          "direction": "desc"
+        }
+      }
+    ],
+    "blocks": [
+      {
+        "id": "title",
+        "type": "markdown",
+        "body": "# SpikingLETNet 三元量化实验技术报告"
+      },
+      {
+        "id": "technical_summary",
+        "type": "markdown",
+        "sourceId": "unified_comparison",
+        "body": "## 技术摘要\n\n**实验已完整结束。** 在相同 UDD 验证协议下，W4/A4 的 mIoU 为 **61.95%**，W1.58/A4 为 **59.11%**，前者领先 **2.85 个绝对百分点**，超过预注册的 2.0 pp 判据。因此，在当前模型、量化器与训练配方下，结果支持 4-bit 方案具有实际精度价值。\n\n这不是对三元权重的全面否定：W1.58/A4 仍保留 W4/A4 的 **95.41%** mIoU，同时理论权重码位数减少 **60.38%**。若系统可接受约 2.85 pp 的精度损失，它仍是值得做硬件验证的压缩候选。相反，W1.58/A1.58 仅有 **22.33%** mIoU，当前三元激活方案不可用。"
+      },
+      {
+        "id": "headline_metrics",
+        "type": "metric-strip",
+        "cardIds": [
+          "card_w4_gap",
+          "card_ternary_retention",
+          "card_activation_penalty"
+        ]
+      },
+      {
+        "id": "findings_heading",
+        "type": "markdown",
+        "body": "## 关键发现与视觉证据\n\n下图和明细表都来自同一次统一评估，避免使用不同验证批次或不同 mIoU 口径造成横向偏差。"
+      },
+      {
+        "id": "model_chart_block",
+        "type": "chart",
+        "chartId": "chart_model_miou"
+      },
+      {
+        "id": "model_table_block",
+        "type": "table",
+        "tableId": "table_model_comparison"
+      },
+      {
+        "id": "class_analysis",
+        "type": "markdown",
+        "sourceId": "unified_comparison",
+        "body": "## 逐类别差异\n\nW4/A4 在六个类别上都高于 W1.58/A4。差距最大的是道路 **5.64 pp**，其次为背景 **3.56 pp** 和车辆 **3.34 pp**；立面、植被、屋顶的差距均约为 1.46–1.58 pp。说明总体差距不是由单一类别完全驱动，但道路类对结论贡献最大。"
+      },
+      {
+        "id": "class_chart_block",
+        "type": "chart",
+        "chartId": "chart_class_gap"
+      },
+      {
+        "id": "training_quality",
+        "type": "markdown",
+        "sourceId": "ternary_training",
+        "body": "## 训练质量与稳定性\n\n两个新增运行均具有连续的 1–150 轮记录，且每轮包含 401 个训练 batch 和 424 个验证 batch。W1.58/A4 的最佳点出现在第 150 轮；末 10 轮验证 mIoU 均值为 **53.68%**、总体标准差为 **2.61 pp**，说明后期仍有较明显波动。W1.58/A1.58 的最佳点在第 97 轮，末轮退至 17.71%，未表现出可用的稳定收敛。"
+      },
+      {
+        "id": "training_chart_block",
+        "type": "chart",
+        "chartId": "chart_training_curves"
+      },
+      {
+        "id": "training_table_block",
+        "type": "table",
+        "tableId": "table_training_summary"
+      },
+      {
+        "id": "scope_and_metrics",
+        "type": "markdown",
+        "sourceId": "pipeline_manifest",
+        "body": "## 范围、数据与指标定义\n\n模型为 `SpikingLETNet_shallow_max`，时间步 `T=1`。两个新增三元模型从同一个 FP32 最佳检查点启动，主种子为 1234，训练150 轮、batch size 64。最终比较在 UDD `val_patches.txt` 完整 8,478 个 patch（424 batches，batch size 20）上执行。\n\n主指标 mIoU 是背景、立面、道路、植被、车辆和屋顶六类 IoU 的算术平均。所有“pp”均指 mIoU 的绝对百分点差，而不是相对百分比。"
+      },
+      {
+        "id": "methodology",
+        "type": "markdown",
+        "sourceId": "pipeline_manifest",
+        "body": "## 方法与实验设计\n\n新增量化框架独立于既有 W4 框架。三元权重严格使用 `{-α, 0, +α}`，按输出通道绝对均值缩放并通过 STE 训练；覆盖 Conv2d、ConvTranspose2d 和 Linear。W1.58/A4 使用独立框架内的 4-bit 激活，W1.58/A1.58 使用每张量动态缩放的有符号三元激活。偏置、BN 与神经元状态保留 FP32。\n\n优化器为 Adam，初始学习率 1e-3，poly 调度，KD 权重 0.1。预注册主判据为 W4/A4 − W1.58/A4 ≥ 2.0 pp；只有未达到该门槛时才追加种子 4321 和 2026。本次差距达到 2.85 pp，故流水线按设计未触发额外种子。"
+      },
+      {
+        "id": "limitations",
+        "type": "markdown",
+        "sourceId": "w4_training_log",
+        "body": "## 局限、不确定性与稳健性\n\n第一，核心结论只有单种子证据；且 cuDNN 未强制确定性，因此该结果应表述为“支持”而不是“证明”。第二，历史 W4/A4 日志虽然配置 `max_epochs=150`，实际只记录 epoch 0–126 共 127 轮；统一评估使用其已保存的最佳权重（第 119 个训练轮次）。因此比较的是各自保存的最佳模型，而非严格相同的完整训练暴露。\n\n第三，W4 权重采用既有框架的每张量 max 缩放，三元权重采用每输出通道 absmean 缩放；这是两个完整量化配方的系统级比较，不能把全部差距只归因于位宽。第四，本实验没有测量部署后的延迟、显存、能耗或真实模型包大小；60.38% 仅是理论权重码位数减少，不包含缩放因子和硬件封装开销。"
+      },
+      {
+        "id": "recommendations",
+        "type": "markdown",
+        "body": "## 建议的下一步\n\n1. 若目标是当前精度优先，继续采用 W4/A4；它跨过预注册门槛，且六类 IoU 全面领先。\n2. 若目标是极限压缩，保留 W1.58/A4 作为候选，先在目标硬件上测量实际延迟、能耗、峰值内存和模型包大小，再决定 2.85 pp 是否值得交换。\n3. 为形成可发表或可推广的统计结论，仍建议补跑种子 4321、2026，报告均值、标准差和置信区间；这属于增强证据，不是本次预注册判据要求的补跑。\n4. 暂停当前 W1.58/A1.58 激活方案。若继续探索，应先记录各层激活分布，并测试非负三元/阈值学习、首末层保留 A4，或逐层混合精度，再进行完整训练。"
+      },
+      {
+        "id": "further_questions",
+        "type": "markdown",
+        "body": "## 仍需回答的问题\n\n- 目标硬件是否对稀疏三元权重（W1.58/A4 最佳权重零值率 86.20%）有原生加速支持？\n- 业务或部署约束能否接受 2.85 pp 的 mIoU 损失，换取理论权重码位数减少 60.38%？\n- W4 若补足至 150 轮，最佳模型是否会变化？\n- 道路和车辆类别是否是下游任务的关键类别，从而需要比全局mIoU 更高的决策权重？"
+      }
+    ]
+  },
+  "snapshot": {
+    "version": 1,
+    "status": "ready",
+    "generatedAt": "2026-07-30T08:18:15.854890+00:00",
+    "datasets": {
+      "headline_metrics": [
+        {
+          "w4_advantage_pp": 2.8457283973693848,
+          "threshold_pp": 2.0,
+          "margin_over_threshold_pp": 0.8457283973693848,
+          "ternary_a4_retention_vs_w4_pct": 95.4067617388373,
+          "ternary_a4_retention_vs_fp_pct": 87.11686800257323,
+          "theoretical_bit_reduction_vs_w4_pct": 60.3759374819711,
+          "activation_penalty_pp": 36.783094704151154,
+          "ternary_a1p58_miou": 0.2232590764760971,
+          "ternary_a4_zero_fraction": 0.8620411537413618
+        }
+      ],
+      "model_comparison": [
+        {
+          "rank": 1,
+          "model": "FP32",
+          "miou": 0.6785023808479309,
+          "miou_percent": 67.85023808479309,
+          "gap_vs_fp_pp": 0.0,
+          "gap_vs_w4_pp": -5.895507335662842,
+          "retention_vs_fp_pct": 100.0,
+          "weight_bits": 32.0,
+          "activation_bits": 32.0,
+          "evaluated_batches": 424,
+          "best_epoch": 286,
+          "weight_zero_fraction": null
+        },
+        {
+          "rank": 2,
+          "model": "W4/A4",
+          "miou": 0.6195473074913025,
+          "miou_percent": 61.95473074913025,
+          "gap_vs_fp_pp": 5.895507335662842,
+          "gap_vs_w4_pp": 0.0,
+          "retention_vs_fp_pct": 91.31099978117221,
+          "weight_bits": 4.0,
+          "activation_bits": 4.0,
+          "evaluated_batches": 424,
+          "best_epoch": 119,
+          "weight_zero_fraction": null
+        },
+        {
+          "rank": 3,
+          "model": "W1.58/A4",
+          "miou": 0.5910900235176086,
+          "miou_percent": 59.109002351760864,
+          "gap_vs_fp_pp": 8.741235733032227,
+          "gap_vs_w4_pp": 2.8457283973693848,
+          "retention_vs_fp_pct": 87.11686800257323,
+          "weight_bits": 1.584962500721156,
+          "activation_bits": 4.0,
+          "evaluated_batches": 424,
+          "best_epoch": 150,
+          "weight_zero_fraction": 0.8620411537413618
+        },
+        {
+          "rank": 4,
+          "model": "W1.58/A1.58",
+          "miou": 0.2232590764760971,
+          "miou_percent": 22.32590764760971,
+          "gap_vs_fp_pp": 45.52433043718338,
+          "gap_vs_w4_pp": 39.62882310152054,
+          "retention_vs_fp_pct": 32.904685787113685,
+          "weight_bits": 1.584962500721156,
+          "activation_bits": 1.584962500721156,
+          "evaluated_batches": 424,
+          "best_epoch": 97,
+          "weight_zero_fraction": 0.8076506885790008
+        }
+      ],
+      "class_comparison": [
+        {
+          "model": "FP32",
+          "class": "背景",
+          "class_key": "background",
+          "iou": 0.5449322462081909,
+          "iou_percent": 54.49322462081909,
+          "overall_miou": 0.6785023808479309,
+          "weight_bits": 32.0,
+          "activation_bits": 32.0
+        },
+        {
+          "model": "FP32",
+          "class": "立面",
+          "class_key": "facade",
+          "iou": 0.6293352842330933,
+          "iou_percent": 62.933528423309326,
+          "overall_miou": 0.6785023808479309,
+          "weight_bits": 32.0,
+          "activation_bits": 32.0
+        },
+        {
+          "model": "FP32",
+          "class": "道路",
+          "class_key": "road",
+          "iou": 0.6390929818153381,
+          "iou_percent": 63.90929818153381,
+          "overall_miou": 0.6785023808479309,
+          "weight_bits": 32.0,
+          "activation_bits": 32.0
+        },
+        {
+          "model": "FP32",
+          "class": "植被",
+          "class_key": "vegetation",
+          "iou": 0.8897508978843689,
+          "iou_percent": 88.97508978843689,
+          "overall_miou": 0.6785023808479309,
+          "weight_bits": 32.0,
+          "activation_bits": 32.0
+        },
+        {
+          "model": "FP32",
+          "class": "车辆",
+          "class_key": "vehicle",
+          "iou": 0.5456108450889587,
+          "iou_percent": 54.561084508895874,
+          "overall_miou": 0.6785023808479309,
+          "weight_bits": 32.0,
+          "activation_bits": 32.0
+        },
+        {
+          "model": "FP32",
+          "class": "屋顶",
+          "class_key": "roof",
+          "iou": 0.8222922086715698,
+          "iou_percent": 82.22922086715698,
+          "overall_miou": 0.6785023808479309,
+          "weight_bits": 32.0,
+          "activation_bits": 32.0
+        },
+        {
+          "model": "W4/A4",
+          "class": "背景",
+          "class_key": "background",
+          "iou": 0.49017009139060974,
+          "iou_percent": 49.017009139060974,
+          "overall_miou": 0.6195473074913025,
+          "weight_bits": 4.0,
+          "activation_bits": 4.0
+        },
+        {
+          "model": "W4/A4",
+          "class": "立面",
+          "class_key": "facade",
+          "iou": 0.5768358111381531,
+          "iou_percent": 57.68358111381531,
+          "overall_miou": 0.6195473074913025,
+          "weight_bits": 4.0,
+          "activation_bits": 4.0
+        },
+        {
+          "model": "W4/A4",
+          "class": "道路",
+          "class_key": "road",
+          "iou": 0.5958941578865051,
+          "iou_percent": 59.58941578865051,
+          "overall_miou": 0.6195473074913025,
+          "weight_bits": 4.0,
+          "activation_bits": 4.0
+        },
+        {
+          "model": "W4/A4",
+          "class": "植被",
+          "class_key": "vegetation",
+          "iou": 0.8745988607406616,
+          "iou_percent": 87.45988607406616,
+          "overall_miou": 0.6195473074913025,
+          "weight_bits": 4.0,
+          "activation_bits": 4.0
+        },
+        {
+          "model": "W4/A4",
+          "class": "车辆",
+          "class_key": "vehicle",
+          "iou": 0.39856165647506714,
+          "iou_percent": 39.856165647506714,
+          "overall_miou": 0.6195473074913025,
+          "weight_bits": 4.0,
+          "activation_bits": 4.0
+        },
+        {
+          "model": "W4/A4",
+          "class": "屋顶",
+          "class_key": "roof",
+          "iou": 0.7812234163284302,
+          "iou_percent": 78.12234163284302,
+          "overall_miou": 0.6195473074913025,
+          "weight_bits": 4.0,
+          "activation_bits": 4.0
+        },
+        {
+          "model": "W1.58/A4",
+          "class": "背景",
+          "class_key": "background",
+          "iou": 0.4546132981777191,
+          "iou_percent": 45.46132981777191,
+          "overall_miou": 0.5910900235176086,
+          "weight_bits": 1.584962500721156,
+          "activation_bits": 4.0
+        },
+        {
+          "model": "W1.58/A4",
+          "class": "立面",
+          "class_key": "facade",
+          "iou": 0.5618504285812378,
+          "iou_percent": 56.18504285812378,
+          "overall_miou": 0.5910900235176086,
+          "weight_bits": 1.584962500721156,
+          "activation_bits": 4.0
+        },
+        {
+          "model": "W1.58/A4",
+          "class": "道路",
+          "class_key": "road",
+          "iou": 0.5394566655158997,
+          "iou_percent": 53.945666551589966,
+          "overall_miou": 0.5910900235176086,
+          "weight_bits": 1.584962500721156,
+          "activation_bits": 4.0
+        },
+        {
+          "model": "W1.58/A4",
+          "class": "植被",
+          "class_key": "vegetation",
+          "iou": 0.858834445476532,
+          "iou_percent": 85.8834445476532,
+          "overall_miou": 0.5910900235176086,
+          "weight_bits": 1.584962500721156,
+          "activation_bits": 4.0
+        },
+        {
+          "model": "W1.58/A4",
+          "class": "车辆",
+          "class_key": "vehicle",
+          "iou": 0.36513060331344604,
+          "iou_percent": 36.513060331344604,
+          "overall_miou": 0.5910900235176086,
+          "weight_bits": 1.584962500721156,
+          "activation_bits": 4.0
+        },
+        {
+          "model": "W1.58/A4",
+          "class": "屋顶",
+          "class_key": "roof",
+          "iou": 0.7666549682617188,
+          "iou_percent": 76.66549682617188,
+          "overall_miou": 0.5910900235176086,
+          "weight_bits": 1.584962500721156,
+          "activation_bits": 4.0
+        },
+        {
+          "model": "W1.58/A1.58",
+          "class": "背景",
+          "class_key": "background",
+          "iou": 0.1910414695739746,
+          "iou_percent": 19.10414695739746,
+          "overall_miou": 0.2232590764760971,
+          "weight_bits": 1.584962500721156,
+          "activation_bits": 1.584962500721156
+        },
+        {
+          "model": "W1.58/A1.58",
+          "class": "立面",
+          "class_key": "facade",
+          "iou": 0.1211031824350357,
+          "iou_percent": 12.11031824350357,
+          "overall_miou": 0.2232590764760971,
+          "weight_bits": 1.584962500721156,
+          "activation_bits": 1.584962500721156
+        },
+        {
+          "model": "W1.58/A1.58",
+          "class": "道路",
+          "class_key": "road",
+          "iou": 0.16026027500629425,
+          "iou_percent": 16.026027500629425,
+          "overall_miou": 0.2232590764760971,
+          "weight_bits": 1.584962500721156,
+          "activation_bits": 1.584962500721156
+        },
+        {
+          "model": "W1.58/A1.58",
+          "class": "植被",
+          "class_key": "vegetation",
+          "iou": 0.5298978686332703,
+          "iou_percent": 52.989786863327026,
+          "overall_miou": 0.2232590764760971,
+          "weight_bits": 1.584962500721156,
+          "activation_bits": 1.584962500721156
+        },
+        {
+          "model": "W1.58/A1.58",
+          "class": "车辆",
+          "class_key": "vehicle",
+          "iou": 3.211122748325579e-05,
+          "iou_percent": 0.003211122748325579,
+          "overall_miou": 0.2232590764760971,
+          "weight_bits": 1.584962500721156,
+          "activation_bits": 1.584962500721156
+        },
+        {
+          "model": "W1.58/A1.58",
+          "class": "屋顶",
+          "class_key": "roof",
+          "iou": 0.3372195363044739,
+          "iou_percent": 33.72195363044739,
+          "overall_miou": 0.2232590764760971,
+          "weight_bits": 1.584962500721156,
+          "activation_bits": 1.584962500721156
+        }
+      ],
+      "class_gaps": [
+        {
+          "class": "道路",
+          "class_key": "road",
+          "w4_iou": 0.5958941578865051,
+          "ternary_a4_iou": 0.5394566655158997,
+          "ternary_a1p58_iou": 0.16026027500629425,
+          "w4_advantage_pp": 5.643749237060547,
+          "activation_penalty_pp": 37.91963905096054
+        },
+        {
+          "class": "背景",
+          "class_key": "background",
+          "w4_iou": 0.49017009139060974,
+          "ternary_a4_iou": 0.4546132981777191,
+          "ternary_a1p58_iou": 0.1910414695739746,
+          "w4_advantage_pp": 3.5556793212890625,
+          "activation_penalty_pp": 26.35718286037445
+        },
+        {
+          "class": "车辆",
+          "class_key": "vehicle",
+          "w4_iou": 0.39856165647506714,
+          "ternary_a4_iou": 0.36513060331344604,
+          "ternary_a1p58_iou": 3.211122748325579e-05,
+          "w4_advantage_pp": 3.3431053161621094,
+          "activation_penalty_pp": 36.50984920859628
+        },
+        {
+          "class": "植被",
+          "class_key": "vegetation",
+          "w4_iou": 0.8745988607406616,
+          "ternary_a4_iou": 0.858834445476532,
+          "ternary_a1p58_iou": 0.5298978686332703,
+          "w4_advantage_pp": 1.5764415264129639,
+          "activation_penalty_pp": 32.89365768432617
+        },
+        {
+          "class": "立面",
+          "class_key": "facade",
+          "w4_iou": 0.5768358111381531,
+          "ternary_a4_iou": 0.5618504285812378,
+          "ternary_a1p58_iou": 0.1211031824350357,
+          "w4_advantage_pp": 1.4985382556915283,
+          "activation_penalty_pp": 44.07472461462021
+        },
+        {
+          "class": "屋顶",
+          "class_key": "roof",
+          "w4_iou": 0.7812234163284302,
+          "ternary_a4_iou": 0.7666549682617188,
+          "ternary_a1p58_iou": 0.3372195363044739,
+          "w4_advantage_pp": 1.4568448066711426,
+          "activation_penalty_pp": 42.94354319572449
+        }
+      ],
+      "training_curves": [
+        {
+          "variant": "W1.58/A4",
+          "epoch": 1,
+          "val_miou": 0.4344038963317871,
+          "train_loss": 1.2584732794702203,
+          "task_loss": 0.9059317929489059,
+          "kd_loss": 3.525414815270098,
+          "lr": 0.0009940129676867249,
+          "weight_zero_fraction": 0.8187743046095163,
+          "train_batches": 401,
+          "val_batches": 424
+        },
+        {
+          "variant": "W1.58/A4",
+          "epoch": 2,
+          "val_miou": 0.460519939661026,
+          "train_loss": 1.0712741311648837,
+          "task_loss": 0.7761000424549169,
+          "kd_loss": 2.95174079226734,
+          "lr": 0.0009880069432915259,
+          "weight_zero_fraction": 0.8233666373566493,
+          "train_batches": 401,
+          "val_batches": 424
+        },
+        {
+          "variant": "W1.58/A4",
+          "epoch": 3,
+          "val_miou": 0.46991610527038574,
+          "train_loss": 1.0207021066970063,
+          "task_loss": 0.7416735110140203,
+          "kd_loss": 2.7902858917255355,
+          "lr": 0.0009819968594364196,
+          "weight_zero_fraction": 0.8259503566740148,
+          "train_batches": 401,
+          "val_batches": 424
+        },
+        {
+          "variant": "W1.58/A4",
+          "epoch": 4,
+          "val_miou": 0.49051544070243835,
+          "train_loss": 0.9985157994558091,
+          "task_loss": 0.7259804578196081,
+          "kd_loss": 2.7253533444202453,
+          "lr": 0.0009759826857342084,
+          "weight_zero_fraction": 0.8277058615906671,
+          "train_batches": 401,
+          "val_batches": 424
+        },
+        {
+          "variant": "W1.58/A4",
+          "epoch": 5,
+          "val_miou": 0.39186468720436096,
+          "train_loss": 0.9775203476820206,
+          "task_loss": 0.7095973903401535,
+          "kd_loss": 2.6792295139626674,
+          "lr": 0.0009699643913604667,
+          "weight_zero_fraction": 0.8290457112426621,
+          "train_batches": 401,
+          "val_batches": 424
+        },
+        {
+          "variant": "W1.58/A4",
+          "epoch": 6,
+          "val_miou": 0.44642266631126404,
+          "train_loss": 0.9615327683172916,
+          "task_loss": 0.6976250780193586,
+          "kd_loss": 2.639076832821244,
+          "lr": 0.0009639419450441902,
+          "weight_zero_fraction": 0.8308050863200654,
+          "train_batches": 401,
+          "val_batches": 424
+        },
+        {
+          "variant": "W1.58/A4",
+          "epoch": 7,
+          "val_miou": 0.4717783033847809,
+          "train_loss": 0.9500976876724985,
+          "task_loss": 0.6886083769084806,
+          "kd_loss": 2.6148930505624137,
+          "lr": 0.0009579153150581766,
+          "weight_zero_fraction": 0.8319460097094593,
+          "train_batches": 401,
+          "val_batches": 424
+        },
+        {
+          "variant": "W1.58/A4",
+          "epoch": 8,
+          "val_miou": 0.46420350670814514,
+          "train_loss": 0.9303468409321849,
+          "task_loss": 0.6740710211365003,
+          "kd_loss": 2.56275812408276,
+          "lr": 0.0009518844692091346,
+          "weight_zero_fraction": 0.8322610407945904,
+          "train_batches": 401,
+          "val_batches": 424
+        },
+        {
+          "variant": "W1.58/A4",
+          "epoch": 9,
+          "val_miou": 0.4825626313686371,
+          "train_loss": 0.9420817278864377,
+          "task_loss": 0.6833604351243473,
+          "kd_loss": 2.5872128806506605,
+          "lr": 0.0009458493748275042,
+          "weight_zero_fraction": 0.8337084809154633,
+          "train_batches": 401,
+          "val_batches": 424
+        },
+        {
+          "variant": "W1.58/A4",
+          "epoch": 10,
+          "val_miou": 0.5057318806648254,
+          "train_loss": 0.9311539955864523,
+          "task_loss": 0.6749516160708116,
+          "kd_loss": 2.5620237437269635,
+          "lr": 0.0009398099987569807,
+          "weight_zero_fraction": 0.8344732246798603,
+          "train_batches": 401,
+          "val_batches": 424
+        },
+        {
+          "variant": "W1.58/A4",
+          "epoch": 11,
+          "val_miou": 0.5167362093925476,
+          "train_loss": 0.9346837778935706,
+          "task_loss": 0.6766142940283416,
+          "kd_loss": 2.5806947890065257,
+          "lr": 0.0009337663073437344,
+          "weight_zero_fraction": 0.8346798912639636,
+          "train_batches": 401,
+          "val_batches": 424
+        },
+        {
+          "variant": "W1.58/A4",
+          "epoch": 12,
+          "val_miou": 0.4653037488460541,
+          "train_loss": 0.9215275576881637,
+          "task_loss": 0.66606467835921,
+          "kd_loss": 2.5546287324957717,
+          "lr": 0.0009277182664253095,
+          "weight_zero_fraction": 0.8353246600450797,
+          "train_batches": 401,
+          "val_batches": 424
+        },
+        {
+          "variant": "W1.58/A4",
+          "epoch": 13,
+          "val_miou": 0.5000715255737305,
+          "train_loss": 0.9214192805742087,
+          "task_loss": 0.6658326614081413,
+          "kd_loss": 2.5558661487037106,
+          "lr": 0.0009216658413191943,
+          "weight_zero_fraction": 0.8357828870779976,
+          "train_batches": 401,
+          "val_batches": 424
+        },
+        {
+          "variant": "W1.58/A4",
+          "epoch": 14,
+          "val_miou": 0.4887116253376007,
+          "train_loss": 0.9179906920899179,
+          "task_loss": 0.6629587240944479,
+          "kd_loss": 2.5503196329844564,
+          "lr": 0.0009156089968110495,
+          "weight_zero_fraction": 0.8370375931934709,
+          "train_batches": 401,
+          "val_batches": 424
+        },
+        {
+          "variant": "W1.58/A4",
+          "epoch": 15,
+          "val_miou": 0.46855083107948303,
+          "train_loss": 0.9125862594257269,
+          "task_loss": 0.6574450821947873,
+          "kd_loss": 2.551411708988751,
+          "lr": 0.0009095476971425803,
+          "weight_zero_fraction": 0.8378201396973225,
+          "train_batches": 401,
+          "val_batches": 424
+        },
+        {
+          "variant": "W1.58/A4",
+          "epoch": 16,
+          "val_miou": 0.5073828101158142,
+          "train_loss": 0.9087152831869529,
+          "task_loss": 0.6548026727322034,
+          "kd_loss": 2.53912603290301,
+          "lr": 0.0009034819059990411,
+          "weight_zero_fraction": 0.8382117999653234,
+          "train_batches": 401,
+          "val_batches": 424
+        },
+        {
+          "variant": "W1.58/A4",
+          "epoch": 17,
+          "val_miou": 0.47663435339927673,
+          "train_loss": 0.910383528158849,
+          "task_loss": 0.6559770978299757,
+          "kd_loss": 2.544064247102809,
+          "lr": 0.0008974115864963575,
+          "weight_zero_fraction": 0.8397289029797141,
+          "train_batches": 401,
+          "val_batches": 424
+        },
+        {
+          "variant": "W1.58/A4",
+          "epoch": 18,
+          "val_miou": 0.5094589591026306,
+          "train_loss": 0.9083200294775261,
+          "task_loss": 0.654263374514116,
+          "kd_loss": 2.5405664824488157,
+          "lr": 0.0008913367011678507,
+          "weight_zero_fraction": 0.8402536967775494,
+          "train_batches": 401,
+          "val_batches": 424
+        },
+        {
+          "variant": "W1.58/A4",
+          "epoch": 19,
+          "val_miou": 0.4326716959476471,
+          "train_loss": 0.9124965701911812,
+          "task_loss": 0.6576801534008206,
+          "kd_loss": 2.5481641363919225,
+          "lr": 0.0008852572119505499,
+          "weight_zero_fraction": 0.8411020360141679,
+          "train_batches": 401,
+          "val_batches": 424
+        },
+        {
+          "variant": "W1.58/A4",
+          "epoch": 20,
+          "val_miou": 0.5014299750328064,
+          "train_loss": 0.9079684781612006,
+          "task_loss": 0.6536058743398385,
+          "kd_loss": 2.5436260022427377,
+          "lr": 0.0008791730801710756,
+          "weight_zero_fraction": 0.8411461558467292,
+          "train_batches": 401,
+          "val_batches": 424
+        },
+        {
+          "variant": "W1.58/A4",
+          "epoch": 21,
+          "val_miou": 0.39739537239074707,
+          "train_loss": 0.9063741478539464,
+          "task_loss": 0.6531998825043515,
+          "kd_loss": 2.5317425929994655,
+          "lr": 0.0008730842665310786,
+          "weight_zero_fraction": 0.8414147450028484,
+          "train_batches": 401,
+          "val_batches": 424
+        },
+        {
+          "variant": "W1.58/A4",
+          "epoch": 22,
+          "val_miou": 0.4750279486179352,
+          "train_loss": 0.9028007116103708,
+          "task_loss": 0.6504257331019327,
+          "kd_loss": 2.5237497546131773,
+          "lr": 0.0008669907310922142,
+          "weight_zero_fraction": 0.8418071793029995,
+          "train_batches": 401,
+          "val_batches": 424
+        },
+        {
+          "variant": "W1.58/A4",
+          "epoch": 23,
+          "val_miou": 0.37148651480674744,
+          "train_loss": 0.9027940983189608,
+          "task_loss": 0.6506874692113025,
+          "kd_loss": 2.5210662048653774,
+          "lr": 0.0008608924332606365,
+          "weight_zero_fraction": 0.8422692764966686,
+          "train_batches": 401,
+          "val_batches": 424
+        },
+        {
+          "variant": "W1.58/A4",
+          "epoch": 24,
+          "val_miou": 0.4982886016368866,
+          "train_loss": 0.9080618165080386,
+          "task_loss": 0.6536165779814161,
+          "kd_loss": 2.5444523194187,
+          "lr": 0.0008547893317709919,
+          "weight_zero_fraction": 0.842721311272385,
+          "train_batches": 401,
+          "val_batches": 424
+        },
+        {
+          "variant": "W1.58/A4",
+          "epoch": 25,
+          "val_miou": 0.48740044236183167,
+          "train_loss": 0.9080681032373423,
+          "task_loss": 0.6526416923637105,
+          "kd_loss": 2.5542640543340744,
+          "lr": 0.0008486813846698896,
+          "weight_zero_fraction": 0.84293494414584,
+          "train_batches": 401,
+          "val_batches": 424
+        },
+        {
+          "variant": "W1.58/A4",
+          "epoch": 26,
+          "val_miou": 0.4606419801712036,
+          "train_loss": 0.903271722526027,
+          "task_loss": 0.6500947051809316,
+          "kd_loss": 2.5317701169677505,
+          "lr": 0.0008425685492988323,
+          "weight_zero_fraction": 0.843000736878607,
+          "train_batches": 401,
+          "val_batches": 424
+        },
+        {
+          "variant": "W1.58/A4",
+          "epoch": 27,
+          "val_miou": 0.48207858204841614,
+          "train_loss": 0.8938246717179505,
+          "task_loss": 0.6430007885221829,
+          "kd_loss": 2.50823874544919,
+          "lr": 0.0008364507822765806,
+          "weight_zero_fraction": 0.8433784645679043,
+          "train_batches": 401,
+          "val_batches": 424
+        },
+        {
+          "variant": "W1.58/A4",
+          "epoch": 28,
+          "val_miou": 0.5262938141822815,
+          "train_loss": 0.904263660646139,
+          "task_loss": 0.6495599196736057,
+          "kd_loss": 2.547037333918926,
+          "lr": 0.00083032803948093,
+          "weight_zero_fraction": 0.8434310987541178,
+          "train_batches": 401,
+          "val_batches": 424
+        },
+        {
+          "variant": "W1.58/A4",
+          "epoch": 29,
+          "val_miou": 0.4634411334991455,
+          "train_loss": 0.9045585860635277,
+          "task_loss": 0.6493690797218361,
+          "kd_loss": 2.5518950304188337,
+          "lr": 0.000824200276029874,
+          "weight_zero_fraction": 0.8437407116141976,
+          "train_batches": 401,
+          "val_batches": 424
+        },
+        {
+          "variant": "W1.58/A4",
+          "epoch": 30,
+          "val_miou": 0.5045270919799805,
+          "train_loss": 0.9021331639658483,
+          "task_loss": 0.6477112306323729,
+          "kd_loss": 2.544219239394266,
+          "lr": 0.000818067446262131,
+          "weight_zero_fraction": 0.8441447563966017,
+          "train_batches": 401,
+          "val_batches": 424
+        },
+        {
+          "variant": "W1.58/A4",
+          "epoch": 31,
+          "val_miou": 0.49191248416900635,
+          "train_loss": 0.8949043575367726,
+          "task_loss": 0.6422019465605814,
+          "kd_loss": 2.5270240407929454,
+          "lr": 0.0008119295037170033,
+          "weight_zero_fraction": 0.8441857801005622,
+          "train_batches": 401,
+          "val_batches": 424
+        },
+        {
+          "variant": "W1.58/A4",
+          "epoch": 32,
+          "val_miou": 0.44723471999168396,
+          "train_loss": 0.9009894594884573,
+          "task_loss": 0.6468629155521678,
+          "kd_loss": 2.5412653758936097,
+          "lr": 0.0008057864011135426,
+          "weight_zero_fraction": 0.844437340549377,
+          "train_batches": 401,
+          "val_batches": 424
+        },
+        {
+          "variant": "W1.58/A4",
+          "epoch": 33,
+          "val_miou": 0.4815537929534912,
+          "train_loss": 0.8986468432550121,
+          "task_loss": 0.6449227993030501,
+          "kd_loss": 2.537240382144576,
+          "lr": 0.0007996380903289922,
+          "weight_zero_fraction": 0.8444590134495826,
+          "train_batches": 401,
+          "val_batches": 424
+        },
+        {
+          "variant": "W1.58/A4",
+          "epoch": 34,
+          "val_miou": 0.4215288460254669,
+          "train_loss": 0.9051078156640108,
+          "task_loss": 0.6499451569785502,
+          "kd_loss": 2.5516265223448413,
+          "lr": 0.0007934845223764714,
+          "weight_zero_fraction": 0.8446865789017413,
+          "train_batches": 401,
+          "val_batches": 424
+        },
+        {
+          "variant": "W1.58/A4",
+          "epoch": 35,
+          "val_miou": 0.4917151927947998,
+          "train_loss": 0.8925307201328421,
+          "task_loss": 0.6397727564386002,
+          "kd_loss": 2.527579581648334,
+          "lr": 0.0007873256473818732,
+          "weight_zero_fraction": 0.8456502489287395,
+          "train_batches": 401,
+          "val_batches": 424
+        },
+        {
+          "variant": "W1.58/A4",
+          "epoch": 36,
+          "val_miou": 0.5239847302436829,
+          "train_loss": 0.8900325912192575,
+          "task_loss": 0.6379933182586756,
+          "kd_loss": 2.5203926807032557,
+          "lr": 0.0007811614145599355,
+          "weight_zero_fraction": 0.8452516223713868,
+          "train_batches": 401,
+          "val_batches": 424
+        },
+        {
+          "variant": "W1.58/A4",
+          "epoch": 37,
+          "val_miou": 0.4771850109100342,
+          "train_loss": 0.9032289690507618,
+          "task_loss": 0.6485847555045178,
+          "kd_loss": 2.5464420895326763,
+          "lr": 0.0007749917721894537,
+          "weight_zero_fraction": 0.8451409357739083,
+          "train_batches": 401,
+          "val_batches": 424
+        },
+        {
+          "variant": "W1.58/A4",
+          "epoch": 38,
+          "val_miou": 0.5039138793945312,
+          "train_loss": 0.895559311953566,
+          "task_loss": 0.64229004921164,
+          "kd_loss": 2.532692573908856,
+          "lr": 0.0007688166675875914,
+          "weight_zero_fraction": 0.8452206610853789,
+          "train_batches": 401,
+          "val_batches": 424
+        },
+        {
+          "variant": "W1.58/A4",
+          "epoch": 39,
+          "val_miou": 0.4695853292942047,
+          "train_loss": 0.8888787969092181,
+          "task_loss": 0.6368641654154904,
+          "kd_loss": 2.5201462504275125,
+          "lr": 0.0007626360470832516,
+          "weight_zero_fraction": 0.8454265536373319,
+          "train_batches": 401,
+          "val_batches": 424
+        },
+        {
+          "variant": "W1.58/A4",
+          "epoch": 40,
+          "val_miou": 0.3733961582183838,
+          "train_loss": 0.8938693945247336,
+          "task_loss": 0.6399515581844454,
+          "kd_loss": 2.5391782965148773,
+          "lr": 0.0007564498559894636,
+          "weight_zero_fraction": 0.8456757919896961,
+          "train_batches": 401,
+          "val_batches": 424
+        },
+        {
+          "variant": "W1.58/A4",
+          "epoch": 41,
+          "val_miou": 0.4931001663208008,
+          "train_loss": 0.8914716569265523,
+          "task_loss": 0.638379754642596,
+          "kd_loss": 2.530918954316517,
+          "lr": 0.0007502580385747388,
+          "weight_zero_fraction": 0.8457671277834196,
+          "train_batches": 401,
+          "val_batches": 424
+        },
+        {
+          "variant": "W1.58/A4",
+          "epoch": 42,
+          "val_miou": 0.4407775104045868,
+          "train_loss": 0.8885934366252357,
+          "task_loss": 0.6350003012695218,
+          "kd_loss": 2.535931297073935,
+          "lr": 0.0007440605380333515,
+          "weight_zero_fraction": 0.8465767654125281,
+          "train_batches": 401,
+          "val_batches": 424
+        },
+        {
+          "variant": "W1.58/A4",
+          "epoch": 43,
+          "val_miou": 0.5198960900306702,
+          "train_loss": 0.8921661339793122,
+          "task_loss": 0.6383577276792313,
+          "kd_loss": 2.5380840099363255,
+          "lr": 0.0007378572964544873,
+          "weight_zero_fraction": 0.8474026577167909,
+          "train_batches": 401,
+          "val_batches": 424
+        },
+        {
+          "variant": "W1.58/A4",
+          "epoch": 44,
+          "val_miou": 0.53146892786026,
+          "train_loss": 0.8807242919976574,
+          "task_loss": 0.6294308190333873,
+          "kd_loss": 2.512934680591498,
+          "lr": 0.0007316482547902116,
+          "weight_zero_fraction": 0.8474630322245065,
+          "train_batches": 401,
+          "val_batches": 424
+        },
+        {
+          "variant": "W1.58/A4",
+          "epoch": 45,
+          "val_miou": 0.5198363661766052,
+          "train_loss": 0.8885338966388655,
+          "task_loss": 0.6359915112765353,
+          "kd_loss": 2.5254238079908187,
+          "lr": 0.000725433352822197,
+          "weight_zero_fraction": 0.8471015592103633,
+          "train_batches": 401,
+          "val_batches": 424
+        },
+        {
+          "variant": "W1.58/A4",
+          "epoch": 46,
+          "val_miou": 0.4849015772342682,
+          "train_loss": 0.8935815415477515,
+          "task_loss": 0.6395304943260707,
+          "kd_loss": 2.540510397004962,
+          "lr": 0.000719212529127151,
+          "weight_zero_fraction": 0.8475636564040324,
+          "train_batches": 401,
+          "val_batches": 424
+        },
+        {
+          "variant": "W1.58/A4",
+          "epoch": 47,
+          "val_miou": 0.4822724759578705,
+          "train_loss": 0.8861545165280749,
+          "task_loss": 0.6324682830277821,
+          "kd_loss": 2.536862265142122,
+          "lr": 0.0007129857210408809,
+          "weight_zero_fraction": 0.847325254501771,
+          "train_batches": 401,
+          "val_batches": 424
+        },
+        {
+          "variant": "W1.58/A4",
+          "epoch": 48,
+          "val_miou": 0.5048301219940186,
+          "train_loss": 0.8820968937695473,
+          "task_loss": 0.6301103543462302,
+          "kd_loss": 2.519865358856848,
+          "lr": 0.000706752864620926,
+          "weight_zero_fraction": 0.8480567148837094,
+          "train_batches": 401,
+          "val_batches": 424
+        },
+        {
+          "variant": "W1.58/A4",
+          "epoch": 49,
+          "val_miou": 0.49662211537361145,
+          "train_loss": 0.884427024093352,
+          "task_loss": 0.6323786661066022,
+          "kd_loss": 2.520483508668933,
+          "lr": 0.0007005138946076883,
+          "weight_zero_fraction": 0.8480195613404998,
+          "train_batches": 401,
+          "val_batches": 424
+        },
+        {
+          "variant": "W1.58/A4",
+          "epoch": 50,
+          "val_miou": 0.5291666388511658,
+          "train_loss": 0.885849941252473,
+          "task_loss": 0.6323205878461091,
+          "kd_loss": 2.5352934584058726,
+          "lr": 0.000694268744383984,
+          "weight_zero_fraction": 0.8478237312064993,
+          "train_batches": 401,
+          "val_batches": 424
+        },
+        {
+          "variant": "W1.58/A4",
+          "epoch": 51,
+          "val_miou": 0.5371173024177551,
+          "train_loss": 0.8838091341040081,
+          "task_loss": 0.6322501723903076,
+          "kd_loss": 2.51558955411364,
+          "lr": 0.0006880173459329353,
+          "weight_zero_fraction": 0.8479204852252743,
+          "train_batches": 401,
+          "val_batches": 424
+        },
+        {
+          "variant": "W1.58/A4",
+          "epoch": 52,
+          "val_miou": 0.5181772708892822,
+          "train_loss": 0.8722038957246224,
+          "task_loss": 0.6231595400414265,
+          "kd_loss": 2.4904434865252334,
+          "lr": 0.0006817596297941178,
+          "weight_zero_fraction": 0.8484832065984693,
+          "train_batches": 401,
+          "val_batches": 424
+        },
+        {
+          "variant": "W1.58/A4",
+          "epoch": 53,
+          "val_miou": 0.5046681761741638,
+          "train_loss": 0.8772681642351602,
+          "task_loss": 0.6264026370131761,
+          "kd_loss": 2.5086552294115174,
+          "lr": 0.0006754955250178724,
+          "weight_zero_fraction": 0.8478438560424045,
+          "train_batches": 401,
+          "val_batches": 424
+        },
+        {
+          "variant": "W1.58/A4",
+          "epoch": 54,
+          "val_miou": 0.5451467037200928,
+          "train_loss": 0.8793999191531516,
+          "task_loss": 0.6283334666059499,
+          "kd_loss": 2.5106644725561735,
+          "lr": 0.000669224959117684,
+          "weight_zero_fraction": 0.8480536187551087,
+          "train_batches": 401,
+          "val_batches": 424
+        },
+        {
+          "variant": "W1.58/A4",
+          "epoch": 55,
+          "val_miou": 0.527392566204071,
+          "train_loss": 0.8729515004336388,
+          "task_loss": 0.6225880404511592,
+          "kd_loss": 2.503634513464949,
+          "lr": 0.0006629478580205268,
+          "weight_zero_fraction": 0.8484313464444059,
+          "train_batches": 401,
+          "val_batches": 424
+        },
+        {
+          "variant": "W1.58/A4",
+          "epoch": 56,
+          "val_miou": 0.48779985308647156,
+          "train_loss": 0.8759257846936918,
+          "task_loss": 0.624974512622838,
+          "kd_loss": 2.509512659320213,
+          "lr": 0.0006566641460150637,
+          "weight_zero_fraction": 0.8486279506105565,
+          "train_batches": 401,
+          "val_batches": 424
+        },
+        {
+          "variant": "W1.58/A4",
+          "epoch": 57,
+          "val_miou": 0.5110406279563904,
+          "train_loss": 0.8883883771753668,
+          "task_loss": 0.6348910230650866,
+          "kd_loss": 2.534973506023759,
+          "lr": 0.0006503737456975854,
+          "weight_zero_fraction": 0.84883539122681,
+          "train_batches": 401,
+          "val_batches": 424
+        },
+        {
+          "variant": "W1.58/A4",
+          "epoch": 58,
+          "val_miou": 0.4551568329334259,
+          "train_loss": 0.8805239650971277,
+          "task_loss": 0.6282032691035188,
+          "kd_loss": 2.5232068856160836,
+          "lr": 0.0006440765779155654,
+          "weight_zero_fraction": 0.849021932975008,
+          "train_batches": 401,
+          "val_batches": 424
+        },
+        {
+          "variant": "W1.58/A4",
+          "epoch": 59,
+          "val_miou": 0.5191609859466553,
+          "train_loss": 0.8767513785873565,
+          "task_loss": 0.6256021661800042,
+          "kd_loss": 2.5114920704144787,
+          "lr": 0.0006377725617086982,
+          "weight_zero_fraction": 0.8495351162905902,
+          "train_batches": 401,
+          "val_batches": 424
+        },
+        {
+          "variant": "W1.58/A4",
+          "epoch": 60,
+          "val_miou": 0.5183209776878357,
+          "train_loss": 0.8808364536696836,
+          "task_loss": 0.6291678466107186,
+          "kd_loss": 2.516686000728845,
+          "lr": 0.0006314616142472774,
+          "weight_zero_fraction": 0.849584654348203,
+          "train_batches": 401,
+          "val_batches": 424
+        },
+        {
+          "variant": "W1.58/A4",
+          "epoch": 61,
+          "val_miou": 0.5046250224113464,
+          "train_loss": 0.870100736766682,
+          "task_loss": 0.620622555811209,
+          "kd_loss": 2.4947817610980865,
+          "lr": 0.0006251436507677669,
+          "weight_zero_fraction": 0.8493586369603447,
+          "train_batches": 401,
+          "val_batches": 424
+        },
+        {
+          "variant": "W1.58/A4",
+          "epoch": 62,
+          "val_miou": 0.4973592758178711,
+          "train_loss": 0.8715394044160248,
+          "task_loss": 0.620172555830116,
+          "kd_loss": 2.513668402174762,
+          "lr": 0.0006188185845054015,
+          "weight_zero_fraction": 0.8496063272484086,
+          "train_batches": 401,
+          "val_batches": 424
+        },
+        {
+          "variant": "W1.58/A4",
+          "epoch": 63,
+          "val_miou": 0.5460494160652161,
+          "train_loss": 0.870304349503315,
+          "task_loss": 0.6196198899698376,
+          "kd_loss": 2.5068445520805303,
+          "lr": 0.0006124863266236448,
+          "weight_zero_fraction": 0.8502867015084339,
+          "train_batches": 401,
+          "val_batches": 424
+        },
+        {
+          "variant": "W1.58/A4",
+          "epoch": 64,
+          "val_miou": 0.4250721037387848,
+          "train_loss": 0.8693465426972977,
+          "task_loss": 0.6188409607160715,
+          "kd_loss": 2.5050557682341767,
+          "lr": 0.0006061467861403206,
+          "weight_zero_fraction": 0.8505274255071459,
+          "train_batches": 401,
+          "val_batches": 424
+        },
+        {
+          "variant": "W1.58/A4",
+          "epoch": 65,
+          "val_miou": 0.47744250297546387,
+          "train_loss": 0.8661245598162796,
+          "task_loss": 0.6173524337813742,
+          "kd_loss": 2.487721214865211,
+          "lr": 0.0005997998698502216,
+          "weight_zero_fraction": 0.8507580870879052,
+          "train_batches": 401,
+          "val_batches": 424
+        },
+        {
+          "variant": "W1.58/A4",
+          "epoch": 66,
+          "val_miou": 0.5027248859405518,
+          "train_loss": 0.8681881742881717,
+          "task_loss": 0.6181998923235106,
+          "kd_loss": 2.4998827652443674,
+          "lr": 0.0005934454822439811,
+          "weight_zero_fraction": 0.8511497473559062,
+          "train_batches": 401,
+          "val_batches": 424
+        },
+        {
+          "variant": "W1.58/A4",
+          "epoch": 67,
+          "val_miou": 0.5223076939582825,
+          "train_loss": 0.8695305046297963,
+          "task_loss": 0.6183649093432914,
+          "kd_loss": 2.5116558978682444,
+          "lr": 0.0005870835254229821,
+          "weight_zero_fraction": 0.8509036051321428,
+          "train_batches": 401,
+          "val_batches": 424
+        },
+        {
+          "variant": "W1.58/A4",
+          "epoch": 68,
+          "val_miou": 0.49865758419036865,
+          "train_loss": 0.8668356203378882,
+          "task_loss": 0.617642929280488,
+          "kd_loss": 2.4919268300111157,
+          "lr": 0.0005807138990100624,
+          "weight_zero_fraction": 0.8514245287692269,
+          "train_batches": 401,
+          "val_batches": 424
+        },
+        {
+          "variant": "W1.58/A4",
+          "epoch": 69,
+          "val_miou": 0.5184348225593567,
+          "train_loss": 0.8643944434394266,
+          "task_loss": 0.6148714535402835,
+          "kd_loss": 2.4952298441432657,
+          "lr": 0.0005743365000557488,
+          "weight_zero_fraction": 0.8515561142347609,
+          "train_batches": 401,
+          "val_batches": 424
+        },
+        {
+          "variant": "W1.58/A4",
+          "epoch": 70,
+          "val_miou": 0.5263445973396301,
+          "train_loss": 0.862516163293263,
+          "task_loss": 0.6132286358949847,
+          "kd_loss": 2.492875202041017,
+          "lr": 0.0005679512229397437,
+          "weight_zero_fraction": 0.851715564857702,
+          "train_batches": 401,
+          "val_batches": 424
+        },
+        {
+          "variant": "W1.58/A4",
+          "epoch": 71,
+          "val_miou": 0.4585067331790924,
+          "train_loss": 0.8629733179870092,
+          "task_loss": 0.6133456878234026,
+          "kd_loss": 2.496276255557662,
+          "lr": 0.0005615579592673594,
+          "weight_zero_fraction": 0.8517852277512199,
+          "train_batches": 401,
+          "val_batches": 424
+        },
+        {
+          "variant": "W1.58/A4",
+          "epoch": 72,
+          "val_miou": 0.5345619320869446,
+          "train_loss": 0.8613174077578614,
+          "task_loss": 0.6125787687569187,
+          "kd_loss": 2.487386331891181,
+          "lr": 0.0005551565977605726,
+          "weight_zero_fraction": 0.8516962140539469,
+          "train_batches": 401,
+          "val_batches": 424
+        },
+        {
+          "variant": "W1.58/A4",
+          "epoch": 73,
+          "val_miou": 0.5453145503997803,
+          "train_loss": 0.866034097802312,
+          "task_loss": 0.6165058895982709,
+          "kd_loss": 2.4952820245167264,
+          "lr": 0.0005487470241433482,
+          "weight_zero_fraction": 0.8520058269140267,
+          "train_batches": 401,
+          "val_batches": 424
+        },
+        {
+          "variant": "W1.58/A4",
+          "epoch": 74,
+          "val_miou": 0.44170665740966797,
+          "train_loss": 0.8640933015994597,
+          "task_loss": 0.6153191408314312,
+          "kd_loss": 2.4877415500079603,
+          "lr": 0.0005423291210208529,
+          "weight_zero_fraction": 0.8522078493052287,
+          "train_batches": 401,
+          "val_batches": 424
+        },
+        {
+          "variant": "W1.58/A4",
+          "epoch": 75,
+          "val_miou": 0.4759354591369629,
+          "train_loss": 0.8659859259526925,
+          "task_loss": 0.6162270209438486,
+          "kd_loss": 2.4975889680391536,
+          "lr": 0.0005359027677521474,
+          "weight_zero_fraction": 0.8517643288831644,
+          "train_batches": 401,
+          "val_batches": 424
+        },
+        {
+          "variant": "W1.58/A4",
+          "epoch": 76,
+          "val_miou": 0.5443003177642822,
+          "train_loss": 0.8652618387690804,
+          "task_loss": 0.6157250863655547,
+          "kd_loss": 2.4953674657683718,
+          "lr": 0.0005294678403159141,
+          "weight_zero_fraction": 0.8520832301290466,
+          "train_batches": 401,
+          "val_batches": 424
+        },
+        {
+          "variant": "W1.58/A4",
+          "epoch": 77,
+          "val_miou": 0.48551151156425476,
+          "train_loss": 0.8617360783634043,
+          "task_loss": 0.6131694762784049,
+          "kd_loss": 2.4856659706096695,
+          "lr": 0.0005230242111687382,
+          "weight_zero_fraction": 0.8521049030292522,
+          "train_batches": 401,
+          "val_batches": 424
+        },
+        {
+          "variant": "W1.58/A4",
+          "epoch": 78,
+          "val_miou": 0.5033407211303711,
+          "train_loss": 0.8620736438437293,
+          "task_loss": 0.6122751654383548,
+          "kd_loss": 2.4979847208817403,
+          "lr": 0.0005165717490954254,
+          "weight_zero_fraction": 0.8519106209595522,
+          "train_batches": 401,
+          "val_batches": 424
+        },
+        {
+          "variant": "W1.58/A4",
+          "epoch": 79,
+          "val_miou": 0.5143332481384277,
+          "train_loss": 0.8680207152616354,
+          "task_loss": 0.6180354413992152,
+          "kd_loss": 2.4998527007209987,
+          "lr": 0.0005101103190507864,
+          "weight_zero_fraction": 0.8520963886756,
+          "train_batches": 401,
+          "val_batches": 424
+        },
+        {
+          "variant": "W1.58/A4",
+          "epoch": 80,
+          "val_miou": 0.5298922061920166,
+          "train_loss": 0.8582261800765991,
+          "task_loss": 0.610281840375534,
+          "kd_loss": 2.479443362228888,
+          "lr": 0.0005036397819922788,
+          "weight_zero_fraction": 0.8525368129690635,
+          "train_batches": 401,
+          "val_batches": 424
+        },
+        {
+          "variant": "W1.58/A4",
+          "epoch": 81,
+          "val_miou": 0.5325857400894165,
+          "train_loss": 0.8565405703839518,
+          "task_loss": 0.6078670108853433,
+          "kd_loss": 2.4867355318140807,
+          "lr": 0.0004971599947028389,
+          "weight_zero_fraction": 0.8526931674634037,
+          "train_batches": 401,
+          "val_batches": 424
+        },
+        {
+          "variant": "W1.58/A4",
+          "epoch": 82,
+          "val_miou": 0.5012437701225281,
+          "train_loss": 0.8525557925279004,
+          "task_loss": 0.6052611907224108,
+          "kd_loss": 2.4729459630580912,
+          "lr": 0.000490670809603176,
+          "weight_zero_fraction": 0.8527078740742575,
+          "train_batches": 401,
+          "val_batches": 424
+        },
+        {
+          "variant": "W1.58/A4",
+          "epoch": 83,
+          "val_miou": 0.5046489834785461,
+          "train_loss": 0.8556446636704138,
+          "task_loss": 0.6071871525034346,
+          "kd_loss": 2.4845750504301076,
+          "lr": 0.00048417207455273963,
+          "weight_zero_fraction": 0.8529818814554281,
+          "train_batches": 401,
+          "val_batches": 424
+        },
+        {
+          "variant": "W1.58/A4",
+          "epoch": 84,
+          "val_miou": 0.5019006133079529,
+          "train_loss": 0.8617503209007054,
+          "task_loss": 0.6126408971604563,
+          "kd_loss": 2.491094171852245,
+          "lr": 0.00047766363263849706,
+          "weight_zero_fraction": 0.8531219812746142,
+          "train_batches": 401,
+          "val_batches": 424
+        },
+        {
+          "variant": "W1.58/A4",
+          "epoch": 85,
+          "val_miou": 0.47748827934265137,
+          "train_loss": 0.8519011303373702,
+          "task_loss": 0.6044417714091608,
+          "kd_loss": 2.4745935281910505,
+          "lr": 0.00047114532195057613,
+          "weight_zero_fraction": 0.8538890471354618,
+          "train_batches": 401,
+          "val_batches": 424
+        },
+        {
+          "variant": "W1.58/A4",
+          "epoch": 86,
+          "val_miou": 0.5188813805580139,
+          "train_loss": 0.851558331242226,
+          "task_loss": 0.6037843551421701,
+          "kd_loss": 2.477739705111915,
+          "lr": 0.0004646169753437456,
+          "weight_zero_fraction": 0.8534075991380378,
+          "train_batches": 401,
+          "val_batches": 424
+        },
+        {
+          "variant": "W1.58/A4",
+          "epoch": 87,
+          "val_miou": 0.5209079384803772,
+          "train_loss": 0.8543301792513402,
+          "task_loss": 0.6062699654453115,
+          "kd_loss": 2.480602089009083,
+          "lr": 0.0004580784201835987,
+          "weight_zero_fraction": 0.8535190597676665,
+          "train_batches": 401,
+          "val_batches": 424
+        },
+        {
+          "variant": "W1.58/A4",
+          "epoch": 88,
+          "val_miou": 0.5168580412864685,
+          "train_loss": 0.8551730568569498,
+          "task_loss": 0.6069981053731686,
+          "kd_loss": 2.481749465637968,
+          "lr": 0.00045152947807620383,
+          "weight_zero_fraction": 0.8536173618507419,
+          "train_batches": 401,
+          "val_batches": 424
+        },
+        {
+          "variant": "W1.58/A4",
+          "epoch": 89,
+          "val_miou": 0.48868298530578613,
+          "train_loss": 0.8536258063411475,
+          "task_loss": 0.6058522751949672,
+          "kd_loss": 2.4777352536408386,
+          "lr": 0.0004449699645798606,
+          "weight_zero_fraction": 0.8539780608327348,
+          "train_batches": 401,
+          "val_batches": 424
+        },
+        {
+          "variant": "W1.58/A4",
+          "epoch": 90,
+          "val_miou": 0.5253004431724548,
+          "train_loss": 0.8552120338354324,
+          "task_loss": 0.6063627012055414,
+          "kd_loss": 2.488493276058587,
+          "lr": 0.0004383996888974615,
+          "weight_zero_fraction": 0.8548333663587051,
+          "train_batches": 401,
+          "val_batches": 424
+        },
+        {
+          "variant": "W1.58/A4",
+          "epoch": 91,
+          "val_miou": 0.4910363256931305,
+          "train_loss": 0.8503804266304149,
+          "task_loss": 0.6029837745383493,
+          "kd_loss": 2.473966466518412,
+          "lr": 0.0004318184535478115,
+          "weight_zero_fraction": 0.85434804820053,
+          "train_batches": 401,
+          "val_batches": 424
+        },
+        {
+          "variant": "W1.58/A4",
+          "epoch": 92,
+          "val_miou": 0.545238733291626,
+          "train_loss": 0.8554671478093117,
+          "task_loss": 0.6071187894689175,
+          "kd_loss": 2.483483526772097,
+          "lr": 0.00042522605401408326,
+          "weight_zero_fraction": 0.8542071743491938,
+          "train_batches": 401,
+          "val_batches": 424
+        },
+        {
+          "variant": "W1.58/A4",
+          "epoch": 93,
+          "val_miou": 0.5507754683494568,
+          "train_loss": 0.8489285566265744,
+          "task_loss": 0.6013292469585922,
+          "kd_loss": 2.475993062492618,
+          "lr": 0.000418622278367395,
+          "weight_zero_fraction": 0.8540887474302132,
+          "train_batches": 401,
+          "val_batches": 424
+        },
+        {
+          "variant": "W1.58/A4",
+          "epoch": 94,
+          "val_miou": 0.5330658555030823,
+          "train_loss": 0.8542338235122604,
+          "task_loss": 0.6061168778269665,
+          "kd_loss": 2.4811693968023745,
+          "lr": 0.0004120069068632848,
+          "weight_zero_fraction": 0.8545833539741907,
+          "train_batches": 401,
+          "val_batches": 424
+        },
+        {
+          "variant": "W1.58/A4",
+          "epoch": 95,
+          "val_miou": 0.5247212052345276,
+          "train_loss": 0.8476361932599931,
+          "task_loss": 0.6009470028918877,
+          "kd_loss": 2.4668918559676096,
+          "lr": 0.00040537971150860646,
+          "weight_zero_fraction": 0.8548395586159067,
+          "train_batches": 401,
+          "val_batches": 424
+        },
+        {
+          "variant": "W1.58/A4",
+          "epoch": 96,
+          "val_miou": 0.5276325941085815,
+          "train_loss": 0.8469876904142765,
+          "task_loss": 0.6005717023946995,
+          "kd_loss": 2.4641598216316054,
+          "lr": 0.0003987404555961057,
+          "weight_zero_fraction": 0.8546932665395189,
+          "train_batches": 401,
+          "val_batches": 424
+        },
+        {
+          "variant": "W1.58/A4",
+          "epoch": 97,
+          "val_miou": 0.5020936131477356,
+          "train_loss": 0.8436930485794372,
+          "task_loss": 0.5983555372665054,
+          "kd_loss": 2.4533750594702743,
+          "lr": 0.00039208889320361563,
+          "weight_zero_fraction": 0.8549773363386421,
+          "train_batches": 401,
+          "val_batches": 424
+        },
+        {
+          "variant": "W1.58/A4",
+          "epoch": 98,
+          "val_miou": 0.536686360836029,
+          "train_loss": 0.84444510193537,
+          "task_loss": 0.5978605701144497,
+          "kd_loss": 2.4658452715362396,
+          "lr": 0.00038542476865446667,
+          "weight_zero_fraction": 0.8551770366333936,
+          "train_batches": 401,
+          "val_batches": 424
+        },
+        {
+          "variant": "W1.58/A4",
+          "epoch": 99,
+          "val_miou": 0.5171722769737244,
+          "train_loss": 0.8381161245324665,
+          "task_loss": 0.592464043017932,
+          "kd_loss": 2.4565207547975003,
+          "lr": 0.00037874781593530063,
+          "weight_zero_fraction": 0.8550686721323657,
+          "train_batches": 401,
+          "val_batches": 424
+        },
+        {
+          "variant": "W1.58/A4",
+          "epoch": 100,
+          "val_miou": 0.5424147844314575,
+          "train_loss": 0.8483716135013133,
+          "task_loss": 0.6009070440718063,
+          "kd_loss": 2.474645645541146,
+          "lr": 0.0003720577580670232,
+          "weight_zero_fraction": 0.8553991838605008,
+          "train_batches": 401,
+          "val_batches": 424
+        },
+        {
+          "variant": "W1.58/A4",
+          "epoch": 101,
+          "val_miou": 0.539193868637085,
+          "train_loss": 0.8441505898858543,
+          "task_loss": 0.5972067470711069,
+          "kd_loss": 2.469438383406832,
+          "lr": 0.00036535430642411,
+          "weight_zero_fraction": 0.85516310405469,
+          "train_batches": 401,
+          "val_batches": 424
+        },
+        {
+          "variant": "W1.58/A4",
+          "epoch": 102,
+          "val_miou": 0.44271668791770935,
+          "train_loss": 0.846087883238186,
+          "task_loss": 0.5996814409544937,
+          "kd_loss": 2.4640643614485973,
+          "lr": 0.0003586371599968829,
+          "weight_zero_fraction": 0.8557668491318455,
+          "train_batches": 401,
+          "val_batches": 424
+        },
+        {
+          "variant": "W1.58/A4",
+          "epoch": 103,
+          "val_miou": 0.5127250552177429,
+          "train_loss": 0.8469533810294477,
+          "task_loss": 0.5999268932532789,
+          "kd_loss": 2.4702648165220036,
+          "lr": 0.0003519060045906882,
+          "weight_zero_fraction": 0.855330294999133,
+          "train_batches": 401,
+          "val_batches": 424
+        },
+        {
+          "variant": "W1.58/A4",
+          "epoch": 104,
+          "val_miou": 0.4927639961242676,
+          "train_loss": 0.8512233861366709,
+          "task_loss": 0.6033078672879949,
+          "kd_loss": 2.479155123085155,
+          "lr": 0.00034516051195512153,
+          "weight_zero_fraction": 0.8557327917172368,
+          "train_batches": 401,
+          "val_batches": 424
+        },
+        {
+          "variant": "W1.58/A4",
+          "epoch": 105,
+          "val_miou": 0.5352199673652649,
+          "train_loss": 0.8263051535125979,
+          "task_loss": 0.583912868600831,
+          "kd_loss": 2.4239227813378235,
+          "lr": 0.0003384003388355307,
+          "weight_zero_fraction": 0.8561499950461943,
+          "train_batches": 401,
+          "val_batches": 424
+        },
+        {
+          "variant": "W1.58/A4",
+          "epoch": 106,
+          "val_miou": 0.5201818943023682,
+          "train_loss": 0.842107842093394,
+          "task_loss": 0.5968125897304078,
+          "kd_loss": 2.4529524830511384,
+          "lr": 0.0003316251259379751,
+          "weight_zero_fraction": 0.8561290961781388,
+          "train_batches": 401,
+          "val_batches": 424
+        },
+        {
+          "variant": "W1.58/A4",
+          "epoch": 107,
+          "val_miou": 0.548311173915863,
+          "train_loss": 0.8426156836257611,
+          "task_loss": 0.5965825968847013,
+          "kd_loss": 2.4603308240077144,
+          "lr": 0.0003248344967975973,
+          "weight_zero_fraction": 0.8560122173234588,
+          "train_batches": 401,
+          "val_batches": 424
+        },
+        {
+          "variant": "W1.58/A4",
+          "epoch": 108,
+          "val_miou": 0.4910273253917694,
+          "train_loss": 0.84059252212767,
+          "task_loss": 0.5946466192937552,
+          "kd_loss": 2.4594589742341837,
+          "lr": 0.0003180280565389278,
+          "weight_zero_fraction": 0.8565269487033413,
+          "train_batches": 401,
+          "val_batches": 424
+        },
+        {
+          "variant": "W1.58/A4",
+          "epoch": 109,
+          "val_miou": 0.5418004393577576,
+          "train_loss": 0.8360296698877044,
+          "task_loss": 0.5912222736642843,
+          "kd_loss": 2.4480739026295573,
+          "lr": 0.00031120539051498434,
+          "weight_zero_fraction": 0.8565370111212939,
+          "train_batches": 401,
+          "val_batches": 424
+        },
+        {
+          "variant": "W1.58/A4",
+          "epoch": 110,
+          "val_miou": 0.48757484555244446,
+          "train_loss": 0.8417216163323704,
+          "task_loss": 0.5958019314412761,
+          "kd_loss": 2.4591967815770177,
+          "lr": 0.00030436606281005894,
+          "weight_zero_fraction": 0.856386074852005,
+          "train_batches": 401,
+          "val_batches": 424
+        },
+        {
+          "variant": "W1.58/A4",
+          "epoch": 111,
+          "val_miou": 0.47791722416877747,
+          "train_loss": 0.8468982638266318,
+          "task_loss": 0.6002347031584999,
+          "kd_loss": 2.4666355524277153,
+          "lr": 0.00029750961458878487,
+          "weight_zero_fraction": 0.8562467490649691,
+          "train_batches": 401,
+          "val_batches": 424
+        },
+        {
+          "variant": "W1.58/A4",
+          "epoch": 112,
+          "val_miou": 0.5123634934425354,
+          "train_loss": 0.8368800398417542,
+          "task_loss": 0.5911313315430782,
+          "kd_loss": 2.457487027841316,
+          "lr": 0.00029063556227134464,
+          "weight_zero_fraction": 0.8565462995070964,
+          "train_batches": 401,
+          "val_batches": 424
+        },
+        {
+          "variant": "W1.58/A4",
+          "epoch": 113,
+          "val_miou": 0.5073723196983337,
+          "train_loss": 0.8268415623174938,
+          "task_loss": 0.5840327712960374,
+          "kd_loss": 2.4280878445156793,
+          "lr": 0.0002837433955114395,
+          "weight_zero_fraction": 0.8566507938473732,
+          "train_batches": 401,
+          "val_batches": 424
+        },
+        {
+          "variant": "W1.58/A4",
+          "epoch": 114,
+          "val_miou": 0.5445154905319214,
+          "train_loss": 0.8392430361072322,
+          "task_loss": 0.5939197428059995,
+          "kd_loss": 2.453232878164163,
+          "lr": 0.00027683257494978426,
+          "weight_zero_fraction": 0.8566004817576103,
+          "train_batches": 401,
+          "val_batches": 424
+        },
+        {
+          "variant": "W1.58/A4",
+          "epoch": 115,
+          "val_miou": 0.5651243925094604,
+          "train_loss": 0.8322976845458261,
+          "task_loss": 0.5870392261597879,
+          "kd_loss": 2.4525845169723777,
+          "lr": 0.0002699025297112586,
+          "weight_zero_fraction": 0.8566120922398632,
+          "train_batches": 401,
+          "val_batches": 424
+        },
+        {
+          "variant": "W1.58/A4",
+          "epoch": 116,
+          "val_miou": 0.5376904606819153,
+          "train_loss": 0.8307342313768857,
+          "task_loss": 0.5858395929051159,
+          "kd_loss": 2.448946317235133,
+          "lr": 0.0002629526546082857,
+          "weight_zero_fraction": 0.8564015554950091,
+          "train_batches": 401,
+          "val_batches": 424
+        },
+        {
+          "variant": "W1.58/A4",
+          "epoch": 117,
+          "val_miou": 0.4875507652759552,
+          "train_loss": 0.8265597509624357,
+          "task_loss": 0.5829210832826515,
+          "kd_loss": 2.4363866322058394,
+          "lr": 0.00025598230700627644,
+          "weight_zero_fraction": 0.8569441520322988,
+          "train_batches": 401,
+          "val_batches": 424
+        },
+        {
+          "variant": "W1.58/A4",
+          "epoch": 118,
+          "val_miou": 0.5507046580314636,
+          "train_loss": 0.8275048468178348,
+          "task_loss": 0.5839180121398032,
+          "kd_loss": 2.4358682828651106,
+          "lr": 0.00024899080329879276,
+          "weight_zero_fraction": 0.8569201570356426,
+          "train_batches": 401,
+          "val_batches": 424
+        },
+        {
+          "variant": "W1.58/A4",
+          "epoch": 119,
+          "val_miou": 0.5132850408554077,
+          "train_loss": 0.8206697637006232,
+          "task_loss": 0.5783799931295495,
+          "kd_loss": 2.422897659335053,
+          "lr": 0.00024197741493008272,
+          "weight_zero_fraction": 0.8569100946176901,
+          "train_batches": 401,
+          "val_batches": 424
+        },
+        {
+          "variant": "W1.58/A4",
+          "epoch": 120,
+          "val_miou": 0.5236347317695618,
+          "train_loss": 0.8235326012471073,
+          "task_loss": 0.5801193412402621,
+          "kd_loss": 2.4341325462607672,
+          "lr": 0.00023494136389033997,
+          "weight_zero_fraction": 0.8569967862185124,
+          "train_batches": 401,
+          "val_batches": 424
+        },
+        {
+          "variant": "W1.58/A4",
+          "epoch": 121,
+          "val_miou": 0.4864720404148102,
+          "train_loss": 0.8259830196896694,
+          "task_loss": 0.5830699412751377,
+          "kd_loss": 2.429130743269314,
+          "lr": 0.00022788181759381563,
+          "weight_zero_fraction": 0.8573458747182523,
+          "train_batches": 401,
+          "val_batches": 424
+        },
+        {
+          "variant": "W1.58/A4",
+          "epoch": 122,
+          "val_miou": 0.530695378780365,
+          "train_loss": 0.8195514659631876,
+          "task_loss": 0.5772290903136618,
+          "kd_loss": 2.4232236952555746,
+          "lr": 0.00022079788303096062,
+          "weight_zero_fraction": 0.8573350382681495,
+          "train_batches": 401,
+          "val_batches": 424
+        },
+        {
+          "variant": "W1.58/A4",
+          "epoch": 123,
+          "val_miou": 0.5278896689414978,
+          "train_loss": 0.8271131297002112,
+          "task_loss": 0.5834649263177429,
+          "kd_loss": 2.43648199607012,
+          "lr": 0.00021368860006198883,
+          "weight_zero_fraction": 0.8574488209942288,
+          "train_batches": 401,
+          "val_batches": 424
+        },
+        {
+          "variant": "W1.58/A4",
+          "epoch": 124,
+          "val_miou": 0.47697415947914124,
+          "train_loss": 0.8129514219457669,
+          "task_loss": 0.5724518234444378,
+          "kd_loss": 2.4049959515692882,
+          "lr": 0.0002065529336892026,
+          "weight_zero_fraction": 0.857561829688158,
+          "train_batches": 401,
+          "val_batches": 424
+        },
+        {
+          "variant": "W1.58/A4",
+          "epoch": 125,
+          "val_miou": 0.5659831166267395,
+          "train_loss": 0.8185011589913594,
+          "task_loss": 0.5775351195115401,
+          "kd_loss": 2.4096603482738694,
+          "lr": 0.00019938976510713193,
+          "weight_zero_fraction": 0.8575687959775097,
+          "train_batches": 401,
+          "val_batches": 424
+        },
+        {
+          "variant": "W1.58/A4",
+          "epoch": 126,
+          "val_miou": 0.5197867155075073,
+          "train_loss": 0.8216110668574783,
+          "task_loss": 0.5797900194836376,
+          "kd_loss": 2.418210407147681,
+          "lr": 0.0001921978812803302,
+          "weight_zero_fraction": 0.8577011554751938,
+          "train_batches": 401,
+          "val_batches": 424
+        },
+        {
+          "variant": "W1.58/A4",
+          "epoch": 127,
+          "val_miou": 0.49170199036598206,
+          "train_loss": 0.8191587936848477,
+          "task_loss": 0.5762534756166977,
+          "kd_loss": 2.429053132968056,
+          "lr": 0.00018497596273485607,
+          "weight_zero_fraction": 0.858000705917321,
+          "train_batches": 401,
+          "val_batches": 424
+        },
+        {
+          "variant": "W1.58/A4",
+          "epoch": 128,
+          "val_miou": 0.5320608019828796,
+          "train_loss": 0.8261425087874072,
+          "task_loss": 0.5831369165321836,
+          "kd_loss": 2.4300558775143135,
+          "lr": 0.00017772256916586464,
+          "weight_zero_fraction": 0.8578644762588858,
+          "train_batches": 401,
+          "val_batches": 424
+        },
+        {
+          "variant": "W1.58/A4",
+          "epoch": 129,
+          "val_miou": 0.4567648470401764,
+          "train_loss": 0.8172833475091511,
+          "task_loss": 0.5767496062484465,
+          "kd_loss": 2.4053373640017615,
+          "lr": 0.00017043612235302972,
+          "weight_zero_fraction": 0.8581098444504991,
+          "train_batches": 401,
+          "val_batches": 424
+        },
+        {
+          "variant": "W1.58/A4",
+          "epoch": 130,
+          "val_miou": 0.558347225189209,
+          "train_loss": 0.8142110046900418,
+          "task_loss": 0.5738849617596576,
+          "kd_loss": 2.4032603677668773,
+          "lr": 0.00016311488572720828,
+          "weight_zero_fraction": 0.8582638768483888,
+          "train_batches": 401,
+          "val_batches": 424
+        },
+        {
+          "variant": "W1.58/A4",
+          "epoch": 131,
+          "val_miou": 0.4811103641986847,
+          "train_loss": 0.8148971133101314,
+          "task_loss": 0.5738621859479129,
+          "kd_loss": 2.4103492227873007,
+          "lr": 0.0001557569397305217,
+          "weight_zero_fraction": 0.8582019542763728,
+          "train_batches": 401,
+          "val_batches": 424
+        },
+        {
+          "variant": "W1.58/A4",
+          "epoch": 132,
+          "val_miou": 0.5464234352111816,
+          "train_loss": 0.8129583250851999,
+          "task_loss": 0.57288858272191,
+          "kd_loss": 2.400697360906815,
+          "lr": 0.00014836015183518063,
+          "weight_zero_fraction": 0.8584055247318753,
+          "train_batches": 401,
+          "val_batches": 424
+        },
+        {
+          "variant": "W1.58/A4",
+          "epoch": 133,
+          "val_miou": 0.42265191674232483,
+          "train_loss": 0.810263529828659,
+          "task_loss": 0.5701922931130093,
+          "kd_loss": 2.4007123200376137,
+          "lr": 0.0001409221396996719,
+          "weight_zero_fraction": 0.8585781339013697,
+          "train_batches": 401,
+          "val_batches": 424
+        },
+        {
+          "variant": "W1.58/A4",
+          "epoch": 134,
+          "val_miou": 0.5108988285064697,
+          "train_loss": 0.8192093922313015,
+          "task_loss": 0.5773576239397995,
+          "kd_loss": 2.418517629999175,
+          "lr": 0.00013344022539164228,
+          "weight_zero_fraction": 0.8587515171030143,
+          "train_batches": 401,
+          "val_batches": 424
+        },
+        {
+          "variant": "W1.58/A4",
+          "epoch": 135,
+          "val_miou": 0.5041778087615967,
+          "train_loss": 0.8148381325074859,
+          "task_loss": 0.5742112443482786,
+          "kd_loss": 2.406268821392868,
+          "lr": 0.0001259113778120483,
+          "weight_zero_fraction": 0.8588049253213782,
+          "train_batches": 401,
+          "val_batches": 424
+        },
+        {
+          "variant": "W1.58/A4",
+          "epoch": 136,
+          "val_miou": 0.5540316104888916,
+          "train_loss": 0.8083359184407831,
+          "task_loss": 0.5700467580423093,
+          "kd_loss": 2.382891556271294,
+          "lr": 0.00011833213928118776,
+          "weight_zero_fraction": 0.8590889951205013,
+          "train_batches": 401,
+          "val_batches": 424
+        },
+        {
+          "variant": "W1.58/A4",
+          "epoch": 137,
+          "val_miou": 0.48521339893341064,
+          "train_loss": 0.8107196376508014,
+          "task_loss": 0.57098176517986,
+          "kd_loss": 2.3973786878466905,
+          "lr": 0.00011069853047268995,
+          "weight_zero_fraction": 0.8593227528298616,
+          "train_batches": 401,
+          "val_batches": 424
+        },
+        {
+          "variant": "W1.58/A4",
+          "epoch": 138,
+          "val_miou": 0.55949467420578,
+          "train_loss": 0.8115020956184501,
+          "task_loss": 0.5714620741971413,
+          "kd_loss": 2.4004001445009227,
+          "lr": 0.00010300592512828055,
+          "weight_zero_fraction": 0.8591989076858296,
+          "train_batches": 401,
+          "val_batches": 424
+        },
+        {
+          "variant": "W1.58/A4",
+          "epoch": 139,
+          "val_miou": 0.5576686859130859,
+          "train_loss": 0.8098809892994507,
+          "task_loss": 0.570307720183137,
+          "kd_loss": 2.3957326275452115,
+          "lr": 9.524888158571802e-05,
+          "weight_zero_fraction": 0.8594520161989448,
+          "train_batches": 401,
+          "val_batches": 424
+        },
+        {
+          "variant": "W1.58/A4",
+          "epoch": 140,
+          "val_miou": 0.5427129864692688,
+          "train_loss": 0.7992359576677146,
+          "task_loss": 0.5616712630389634,
+          "kd_loss": 2.3756468979795082,
+          "lr": 8.742091087546612e-05,
+          "weight_zero_fraction": 0.8594535642632453,
+          "train_batches": 401,
+          "val_batches": 424
+        },
+        {
+          "variant": "W1.58/A4",
+          "epoch": 141,
+          "val_miou": 0.5410062670707703,
+          "train_loss": 0.8005598230552198,
+          "task_loss": 0.563561936715,
+          "kd_loss": 2.3699788268367548,
+          "lr": 7.951414862202304e-05,
+          "weight_zero_fraction": 0.8595503182820201,
+          "train_batches": 401,
+          "val_batches": 424
+        },
+        {
+          "variant": "W1.58/A4",
+          "epoch": 142,
+          "val_miou": 0.540661633014679,
+          "train_loss": 0.8008534044696208,
+          "task_loss": 0.5638239463219916,
+          "kd_loss": 2.370294523952608,
+          "lr": 7.151887541786292e-05,
+          "weight_zero_fraction": 0.8597384080945186,
+          "train_batches": 401,
+          "val_batches": 424
+        },
+        {
+          "variant": "W1.58/A4",
+          "epoch": 143,
+          "val_miou": 0.5314207673072815,
+          "train_loss": 0.7968729171075131,
+          "task_loss": 0.5600266676591221,
+          "kd_loss": 2.368462435919745,
+          "lr": 6.342278732208405e-05,
+          "weight_zero_fraction": 0.8597624030911748,
+          "train_batches": 401,
+          "val_batches": 424
+        },
+        {
+          "variant": "W1.58/A4",
+          "epoch": 144,
+          "val_miou": 0.5615089535713196,
+          "train_loss": 0.7939534081782486,
+          "task_loss": 0.5583237284734065,
+          "kd_loss": 2.356296734322336,
+          "lr": 5.5209830363582926e-05,
+          "weight_zero_fraction": 0.860046472890298,
+          "train_batches": 401,
+          "val_batches": 424
+        },
+        {
+          "variant": "W1.58/A4",
+          "epoch": 145,
+          "val_miou": 0.5059751272201538,
+          "train_loss": 0.793928386861844,
+          "task_loss": 0.5588275260312896,
+          "kd_loss": 2.3510085382960977,
+          "lr": 4.685821786887853e-05,
+          "weight_zero_fraction": 0.8599814541896812,
+          "train_batches": 401,
+          "val_batches": 424
+        },
+        {
+          "variant": "W1.58/A4",
+          "epoch": 146,
+          "val_miou": 0.5586562752723694,
+          "train_loss": 0.7892982414238471,
+          "task_loss": 0.5559839471022684,
+          "kd_loss": 2.333142888813542,
+          "lr": 3.8336765164842775e-05,
+          "weight_zero_fraction": 0.8603591818789785,
+          "train_batches": 401,
+          "val_batches": 424
+        },
+        {
+          "variant": "W1.58/A4",
+          "epoch": 147,
+          "val_miou": 0.5101589560508728,
+          "train_loss": 0.7884847811629945,
+          "task_loss": 0.5555130417210206,
+          "kd_loss": 2.329717319207893,
+          "lr": 2.959727786265262e-05,
+          "weight_zero_fraction": 0.860462128154955,
+          "train_batches": 401,
+          "val_batches": 424
+        },
+        {
+          "variant": "W1.58/A4",
+          "epoch": 148,
+          "val_miou": 0.5150408148765564,
+          "train_loss": 0.7776630563926221,
+          "task_loss": 0.5470039295288095,
+          "kd_loss": 2.3065912176546015,
+          "lr": 2.0555683504617175e-05,
+          "weight_zero_fraction": 0.8609327397022762,
+          "train_batches": 401,
+          "val_batches": 424
+        },
+        {
+          "variant": "W1.58/A4",
+          "epoch": 149,
+          "val_miou": 0.5122153162956238,
+          "train_loss": 0.7799580485148917,
+          "task_loss": 0.5492094312968694,
+          "kd_loss": 2.307486119710299,
+          "lr": 1.1027863433569247e-05,
+          "weight_zero_fraction": 0.8612299680479528,
+          "train_batches": 401,
+          "val_batches": 424
+        },
+        {
+          "variant": "W1.58/A4",
+          "epoch": 150,
+          "val_miou": 0.5910084843635559,
+          "train_loss": 0.7550155517466348,
+          "task_loss": 0.5315402044619705,
+          "kd_loss": 2.2347534330111194,
+          "lr": 4.9967535707481485e-08,
+          "weight_zero_fraction": 0.8620411537413618,
+          "train_batches": 401,
+          "val_batches": 424
+        },
+        {
+          "variant": "W1.58/A1.58",
+          "epoch": 1,
+          "val_miou": 0.16642501950263977,
+          "train_loss": 2.2050066710707554,
+          "task_loss": 1.494606751158945,
+          "kd_loss": 7.1039990237228885,
+          "lr": 0.0009940129676867249,
+          "weight_zero_fraction": 0.7785091521561439,
+          "train_batches": 401,
+          "val_batches": 424
+        },
+        {
+          "variant": "W1.58/A1.58",
+          "epoch": 2,
+          "val_miou": 0.1674838662147522,
+          "train_loss": 1.9992925713484424,
+          "task_loss": 1.3396085670166777,
+          "kd_loss": 6.596839922621958,
+          "lr": 0.0009880069432915259,
+          "weight_zero_fraction": 0.7726489547469844,
+          "train_batches": 401,
+          "val_batches": 424
+        },
+        {
+          "variant": "W1.58/A1.58",
+          "epoch": 3,
+          "val_miou": 0.18644686043262482,
+          "train_loss": 1.9286736336134913,
+          "task_loss": 1.3053395575716014,
+          "kd_loss": 6.233340643885129,
+          "lr": 0.0009819968594364196,
+          "weight_zero_fraction": 0.7686154732122954,
+          "train_batches": 401,
+          "val_batches": 424
+        },
+        {
+          "variant": "W1.58/A1.58",
+          "epoch": 4,
+          "val_miou": 0.1873220056295395,
+          "train_loss": 1.9033413923292088,
+          "task_loss": 1.2860055689205254,
+          "kd_loss": 6.173358168090668,
+          "lr": 0.0009759826857342084,
+          "weight_zero_fraction": 0.7686394682089516,
+          "train_batches": 401,
+          "val_batches": 424
+        },
+        {
+          "variant": "W1.58/A1.58",
+          "epoch": 5,
+          "val_miou": 0.18239159882068634,
+          "train_loss": 1.898947025177782,
+          "task_loss": 1.2761330405375606,
+          "kd_loss": 6.22813968230364,
+          "lr": 0.0009699643913604667,
+          "weight_zero_fraction": 0.772612575235925,
+          "train_batches": 401,
+          "val_batches": 424
+        },
+        {
+          "variant": "W1.58/A1.58",
+          "epoch": 6,
+          "val_miou": 0.1531360000371933,
+          "train_loss": 1.878456349384755,
+          "task_loss": 1.2599867222612338,
+          "kd_loss": 6.184696157079682,
+          "lr": 0.0009639419450441902,
+          "weight_zero_fraction": 0.774774447031432,
+          "train_batches": 401,
+          "val_batches": 424
+        },
+        {
+          "variant": "W1.58/A1.58",
+          "epoch": 7,
+          "val_miou": 0.1843193918466568,
+          "train_loss": 1.86743163854404,
+          "task_loss": 1.2499519351711892,
+          "kd_loss": 6.174796907087217,
+          "lr": 0.0009579153150581766,
+          "weight_zero_fraction": 0.7757628860872365,
+          "train_batches": 401,
+          "val_batches": 424
+        },
+        {
+          "variant": "W1.58/A1.58",
+          "epoch": 8,
+          "val_miou": 0.1608802080154419,
+          "train_loss": 1.866703798051487,
+          "task_loss": 1.245052769594359,
+          "kd_loss": 6.216510229277195,
+          "lr": 0.0009518844692091346,
+          "weight_zero_fraction": 0.7782916491219379,
+          "train_batches": 401,
+          "val_batches": 424
+        },
+        {
+          "variant": "W1.58/A1.58",
+          "epoch": 9,
+          "val_miou": 0.15303681790828705,
+          "train_loss": 1.8657596560190444,
+          "task_loss": 1.242627362955241,
+          "kd_loss": 6.231322786754504,
+          "lr": 0.0009458493748275042,
+          "weight_zero_fraction": 0.7802275035295866,
+          "train_batches": 401,
+          "val_batches": 424
+        },
+        {
+          "variant": "W1.58/A1.58",
+          "epoch": 10,
+          "val_miou": 0.15581315755844116,
+          "train_loss": 1.8716142641338624,
+          "task_loss": 1.245770489188501,
+          "kd_loss": 6.258437627568804,
+          "lr": 0.0009398099987569807,
+          "weight_zero_fraction": 0.782538763530082,
+          "train_batches": 401,
+          "val_batches": 424
+        },
+        {
+          "variant": "W1.58/A1.58",
+          "epoch": 11,
+          "val_miou": 0.17813925445079803,
+          "train_loss": 1.8659221317405414,
+          "task_loss": 1.2397634010957066,
+          "kd_loss": 6.261587159592017,
+          "lr": 0.0009337663073437344,
+          "weight_zero_fraction": 0.7838801612463775,
+          "train_batches": 401,
+          "val_batches": 424
+        },
+        {
+          "variant": "W1.58/A1.58",
+          "epoch": 12,
+          "val_miou": 0.17146915197372437,
+          "train_loss": 1.8589925343853577,
+          "task_loss": 1.2343156941216487,
+          "kd_loss": 6.2467682522134,
+          "lr": 0.0009277182664253095,
+          "weight_zero_fraction": 0.7848647301414311,
+          "train_batches": 401,
+          "val_batches": 424
+        },
+        {
+          "variant": "W1.58/A1.58",
+          "epoch": 13,
+          "val_miou": 0.14521600306034088,
+          "train_loss": 1.843903486270857,
+          "task_loss": 1.2241446995675713,
+          "kd_loss": 6.197587755255569,
+          "lr": 0.0009216658413191943,
+          "weight_zero_fraction": 0.7855799358482154,
+          "train_batches": 401,
+          "val_batches": 424
+        },
+        {
+          "variant": "W1.58/A1.58",
+          "epoch": 14,
+          "val_miou": 0.18602514266967773,
+          "train_loss": 1.836617512595921,
+          "task_loss": 1.2239887699521985,
+          "kd_loss": 6.126287323578337,
+          "lr": 0.0009156089968110495,
+          "weight_zero_fraction": 0.7858322703291803,
+          "train_batches": 401,
+          "val_batches": 424
+        },
+        {
+          "variant": "W1.58/A1.58",
+          "epoch": 15,
+          "val_miou": 0.1611025184392929,
+          "train_loss": 1.83015863021413,
+          "task_loss": 1.218027862527424,
+          "kd_loss": 6.121307528821608,
+          "lr": 0.0009095476971425803,
+          "weight_zero_fraction": 0.7867138929482576,
+          "train_batches": 401,
+          "val_batches": 424
+        },
+        {
+          "variant": "W1.58/A1.58",
+          "epoch": 16,
+          "val_miou": 0.1664121299982071,
+          "train_loss": 1.83548067097652,
+          "task_loss": 1.2202609920144973,
+          "kd_loss": 6.152196695085178,
+          "lr": 0.0009034819059990411,
+          "weight_zero_fraction": 0.7877921197334853,
+          "train_batches": 401,
+          "val_batches": 424
+        },
+        {
+          "variant": "W1.58/A1.58",
+          "epoch": 17,
+          "val_miou": 0.1628362387418747,
+          "train_loss": 1.8381349680726962,
+          "task_loss": 1.2200792367916156,
+          "kd_loss": 6.180557168927276,
+          "lr": 0.0008974115864963575,
+          "weight_zero_fraction": 0.788656713645258,
+          "train_batches": 401,
+          "val_batches": 424
+        },
+        {
+          "variant": "W1.58/A1.58",
+          "epoch": 18,
+          "val_miou": 0.14102165400981903,
+          "train_loss": 1.8489267368269087,
+          "task_loss": 1.226918387294113,
+          "kd_loss": 6.220083359173706,
+          "lr": 0.0008913367011678507,
+          "weight_zero_fraction": 0.7898487231565651,
+          "train_batches": 401,
+          "val_batches": 424
+        },
+        {
+          "variant": "W1.58/A1.58",
+          "epoch": 19,
+          "val_miou": 0.1294011026620865,
+          "train_loss": 1.8477517990697352,
+          "task_loss": 1.2223638208429712,
+          "kd_loss": 6.253879645816109,
+          "lr": 0.0008852572119505499,
+          "weight_zero_fraction": 0.7906691972357763,
+          "train_batches": 401,
+          "val_batches": 424
+        },
+        {
+          "variant": "W1.58/A1.58",
+          "epoch": 20,
+          "val_miou": 0.15594638884067535,
+          "train_loss": 1.8524169642431778,
+          "task_loss": 1.2247632471403278,
+          "kd_loss": 6.276537047360009,
+          "lr": 0.0008791730801710756,
+          "weight_zero_fraction": 0.790469496941025,
+          "train_batches": 401,
+          "val_batches": 424
+        },
+        {
+          "variant": "W1.58/A1.58",
+          "epoch": 21,
+          "val_miou": 0.08006343245506287,
+          "train_loss": 1.8429536673790796,
+          "task_loss": 1.214238330313095,
+          "kd_loss": 6.287153227370873,
+          "lr": 0.0008730842665310786,
+          "weight_zero_fraction": 0.7913844029425606,
+          "train_batches": 401,
+          "val_batches": 424
+        },
+        {
+          "variant": "W1.58/A1.58",
+          "epoch": 22,
+          "val_miou": 0.10914687067270279,
+          "train_loss": 1.8448519201350033,
+          "task_loss": 1.2138210823411062,
+          "kd_loss": 6.310308280431125,
+          "lr": 0.0008669907310922142,
+          "weight_zero_fraction": 0.7921499207391078,
+          "train_batches": 401,
+          "val_batches": 424
+        },
+        {
+          "variant": "W1.58/A1.58",
+          "epoch": 23,
+          "val_miou": 0.15831531584262848,
+          "train_loss": 1.8423674683321147,
+          "task_loss": 1.2107706408845516,
+          "kd_loss": 6.315968192426344,
+          "lr": 0.0008608924332606365,
+          "weight_zero_fraction": 0.7933643771827706,
+          "train_batches": 401,
+          "val_batches": 424
+        },
+        {
+          "variant": "W1.58/A1.58",
+          "epoch": 24,
+          "val_miou": 0.11375725269317627,
+          "train_loss": 1.8417848012691127,
+          "task_loss": 1.2090928477242107,
+          "kd_loss": 6.326919408213171,
+          "lr": 0.0008547893317709919,
+          "weight_zero_fraction": 0.7941507938473732,
+          "train_batches": 401,
+          "val_batches": 424
+        },
+        {
+          "variant": "W1.58/A1.58",
+          "epoch": 25,
+          "val_miou": 0.1565730720758438,
+          "train_loss": 1.8353851165557442,
+          "task_loss": 1.2054909866052375,
+          "kd_loss": 6.298941201997219,
+          "lr": 0.0008486813846698896,
+          "weight_zero_fraction": 0.79487606197211,
+          "train_batches": 401,
+          "val_batches": 424
+        },
+        {
+          "variant": "W1.58/A1.58",
+          "epoch": 26,
+          "val_miou": 0.12634678184986115,
+          "train_loss": 1.8281894265267618,
+          "task_loss": 1.198768924002041,
+          "kd_loss": 6.294204915253599,
+          "lr": 0.0008425685492988323,
+          "weight_zero_fraction": 0.7959140390855275,
+          "train_batches": 401,
+          "val_batches": 424
+        },
+        {
+          "variant": "W1.58/A1.58",
+          "epoch": 27,
+          "val_miou": 0.09079599380493164,
+          "train_loss": 1.8336281155112972,
+          "task_loss": 1.2029058677597235,
+          "kd_loss": 6.307222355630927,
+          "lr": 0.0008364507822765806,
+          "weight_zero_fraction": 0.796591317216952,
+          "train_batches": 401,
+          "val_batches": 424
+        },
+        {
+          "variant": "W1.58/A1.58",
+          "epoch": 28,
+          "val_miou": 0.1539703756570816,
+          "train_loss": 1.8386927263397825,
+          "task_loss": 1.2031100474093621,
+          "kd_loss": 6.355826584775549,
+          "lr": 0.00083032803948093,
+          "weight_zero_fraction": 0.7971656490723998,
+          "train_batches": 401,
+          "val_batches": 424
+        },
+        {
+          "variant": "W1.58/A1.58",
+          "epoch": 29,
+          "val_miou": 0.15861080586910248,
+          "train_loss": 1.8307233659406552,
+          "task_loss": 1.19682939183385,
+          "kd_loss": 6.338939657235086,
+          "lr": 0.000824200276029874,
+          "weight_zero_fraction": 0.7976827025487331,
+          "train_batches": 401,
+          "val_batches": 424
+        },
+        {
+          "variant": "W1.58/A1.58",
+          "epoch": 30,
+          "val_miou": 0.13796527683734894,
+          "train_loss": 1.835222338500463,
+          "task_loss": 1.2006844958462324,
+          "kd_loss": 6.345378318035097,
+          "lr": 0.000818067446262131,
+          "weight_zero_fraction": 0.7985163351744978,
+          "train_batches": 401,
+          "val_batches": 424
+        },
+        {
+          "variant": "W1.58/A1.58",
+          "epoch": 31,
+          "val_miou": 0.16770242154598236,
+          "train_loss": 1.8283888806131414,
+          "task_loss": 1.1949474160510702,
+          "kd_loss": 6.334414514222942,
+          "lr": 0.0008119295037170033,
+          "weight_zero_fraction": 0.799017908007827,
+          "train_batches": 401,
+          "val_batches": 424
+        },
+        {
+          "variant": "W1.58/A1.58",
+          "epoch": 32,
+          "val_miou": 0.17707844078540802,
+          "train_loss": 1.833028982702336,
+          "task_loss": 1.1965548314358527,
+          "kd_loss": 6.364741415751546,
+          "lr": 0.0008057864011135426,
+          "weight_zero_fraction": 0.799472264879994,
+          "train_batches": 401,
+          "val_batches": 424
+        },
+        {
+          "variant": "W1.58/A1.58",
+          "epoch": 33,
+          "val_miou": 0.16272607445716858,
+          "train_loss": 1.830097360206661,
+          "task_loss": 1.1933839187360464,
+          "kd_loss": 6.36713432492758,
+          "lr": 0.0007996380903289922,
+          "weight_zero_fraction": 0.8000233757709361,
+          "train_batches": 401,
+          "val_batches": 424
+        },
+        {
+          "variant": "W1.58/A1.58",
+          "epoch": 34,
+          "val_miou": 0.11554033309221268,
+          "train_loss": 1.8324225269945482,
+          "task_loss": 1.194465509971181,
+          "kd_loss": 6.379570054889022,
+          "lr": 0.0007934845223764714,
+          "weight_zero_fraction": 0.8009808535407327,
+          "train_batches": 401,
+          "val_batches": 424
+        },
+        {
+          "variant": "W1.58/A1.58",
+          "epoch": 35,
+          "val_miou": 0.14580075442790985,
+          "train_loss": 1.8353149397414819,
+          "task_loss": 1.1958227930520835,
+          "kd_loss": 6.3949213099301305,
+          "lr": 0.0007873256473818732,
+          "weight_zero_fraction": 0.802150416119684,
+          "train_batches": 401,
+          "val_batches": 424
+        },
+        {
+          "variant": "W1.58/A1.58",
+          "epoch": 36,
+          "val_miou": 0.1269410252571106,
+          "train_loss": 1.8371650322417072,
+          "task_loss": 1.1967081631210974,
+          "kd_loss": 6.404568549700806,
+          "lr": 0.0007811614145599355,
+          "weight_zero_fraction": 0.8035398038292918,
+          "train_batches": 401,
+          "val_batches": 424
+        },
+        {
+          "variant": "W1.58/A1.58",
+          "epoch": 37,
+          "val_miou": 0.16316451132297516,
+          "train_loss": 1.8346504606213654,
+          "task_loss": 1.1959122805821332,
+          "kd_loss": 6.387381709424635,
+          "lr": 0.0007749917721894537,
+          "weight_zero_fraction": 0.8038486426572214,
+          "train_batches": 401,
+          "val_batches": 424
+        },
+        {
+          "variant": "W1.58/A1.58",
+          "epoch": 38,
+          "val_miou": 0.1568867564201355,
+          "train_loss": 1.8359215830329647,
+          "task_loss": 1.1966318376641023,
+          "kd_loss": 6.392897325263654,
+          "lr": 0.0007688166675875914,
+          "weight_zero_fraction": 0.8045259207886459,
+          "train_batches": 401,
+          "val_batches": 424
+        },
+        {
+          "variant": "W1.58/A1.58",
+          "epoch": 39,
+          "val_miou": 0.12262552976608276,
+          "train_loss": 1.8284351879224516,
+          "task_loss": 1.1916006928370184,
+          "kd_loss": 6.368344831347763,
+          "lr": 0.0007626360470832516,
+          "weight_zero_fraction": 0.8058410014118347,
+          "train_batches": 401,
+          "val_batches": 424
+        },
+        {
+          "variant": "W1.58/A1.58",
+          "epoch": 40,
+          "val_miou": 0.14871664345264435,
+          "train_loss": 1.8352660220162826,
+          "task_loss": 1.1957716423079854,
+          "kd_loss": 6.394943705818005,
+          "lr": 0.0007564498559894636,
+          "weight_zero_fraction": 0.8068302144997894,
+          "train_batches": 401,
+          "val_batches": 424
+        },
+        {
+          "variant": "W1.58/A1.58",
+          "epoch": 41,
+          "val_miou": 0.14183564484119415,
+          "train_loss": 1.8318955820992107,
+          "task_loss": 1.1950965101582154,
+          "kd_loss": 6.3679905865257815,
+          "lr": 0.0007502580385747388,
+          "weight_zero_fraction": 0.8066258700121368,
+          "train_batches": 401,
+          "val_batches": 424
+        },
+        {
+          "variant": "W1.58/A1.58",
+          "epoch": 42,
+          "val_miou": 0.1681629866361618,
+          "train_loss": 1.8315553543276324,
+          "task_loss": 1.1948203199224876,
+          "kd_loss": 6.367350275082481,
+          "lr": 0.0007440605380333515,
+          "weight_zero_fraction": 0.8081747083446859,
+          "train_batches": 401,
+          "val_batches": 424
+        },
+        {
+          "variant": "W1.58/A1.58",
+          "epoch": 43,
+          "val_miou": 0.1261254847049713,
+          "train_loss": 1.8362245431861972,
+          "task_loss": 1.195322322429267,
+          "kd_loss": 6.409022094602894,
+          "lr": 0.0007378572964544873,
+          "weight_zero_fraction": 0.8092459688405618,
+          "train_batches": 401,
+          "val_batches": 424
+        },
+        {
+          "variant": "W1.58/A1.58",
+          "epoch": 44,
+          "val_miou": 0.1658962517976761,
+          "train_loss": 1.8400173980993524,
+          "task_loss": 1.2001736743789064,
+          "kd_loss": 6.398437131372771,
+          "lr": 0.0007316482547902116,
+          "weight_zero_fraction": 0.8100703130805241,
+          "train_batches": 401,
+          "val_batches": 424
+        },
+        {
+          "variant": "W1.58/A1.58",
+          "epoch": 45,
+          "val_miou": 0.1660074144601822,
+          "train_loss": 1.8354042447415968,
+          "task_loss": 1.1936090141163205,
+          "kd_loss": 6.417952201015634,
+          "lr": 0.000725433352822197,
+          "weight_zero_fraction": 0.8103574790082481,
+          "train_batches": 401,
+          "val_batches": 424
+        },
+        {
+          "variant": "W1.58/A1.58",
+          "epoch": 46,
+          "val_miou": 0.15245811641216278,
+          "train_loss": 1.8391845041974226,
+          "task_loss": 1.1978206603307082,
+          "kd_loss": 6.413638313512255,
+          "lr": 0.000719212529127151,
+          "weight_zero_fraction": 0.8097018737770292,
+          "train_batches": 401,
+          "val_batches": 424
+        },
+        {
+          "variant": "W1.58/A1.58",
+          "epoch": 47,
+          "val_miou": 0.16780948638916016,
+          "train_loss": 1.8373735991499371,
+          "task_loss": 1.1941374317368962,
+          "kd_loss": 6.432361545705438,
+          "lr": 0.0007129857210408809,
+          "weight_zero_fraction": 0.8098040460208555,
+          "train_batches": 401,
+          "val_batches": 424
+        },
+        {
+          "variant": "W1.58/A1.58",
+          "epoch": 48,
+          "val_miou": 0.1600058227777481,
+          "train_loss": 1.8435161720190263,
+          "task_loss": 1.1974963993205692,
+          "kd_loss": 6.460197591424881,
+          "lr": 0.000706752864620926,
+          "weight_zero_fraction": 0.8105966549426596,
+          "train_batches": 401,
+          "val_batches": 424
+        },
+        {
+          "variant": "W1.58/A1.58",
+          "epoch": 49,
+          "val_miou": 0.17554855346679688,
+          "train_loss": 1.8420641333087722,
+          "task_loss": 1.196075166252783,
+          "kd_loss": 6.459889555809801,
+          "lr": 0.0007005138946076883,
+          "weight_zero_fraction": 0.8106214239714661,
+          "train_batches": 401,
+          "val_batches": 424
+        },
+        {
+          "variant": "W1.58/A1.58",
+          "epoch": 50,
+          "val_miou": 0.15680818259716034,
+          "train_loss": 1.850524390427549,
+          "task_loss": 1.2010718117331032,
+          "kd_loss": 6.494525717975493,
+          "lr": 0.000694268744383984,
+          "weight_zero_fraction": 0.8111237708369455,
+          "train_batches": 401,
+          "val_batches": 424
+        },
+        {
+          "variant": "W1.58/A1.58",
+          "epoch": 51,
+          "val_miou": 0.1376124769449234,
+          "train_loss": 1.852589886384712,
+          "task_loss": 1.2003447596271735,
+          "kd_loss": 6.522451164121937,
+          "lr": 0.0006880173459329353,
+          "weight_zero_fraction": 0.8115038206226934,
+          "train_batches": 401,
+          "val_batches": 424
+        },
+        {
+          "variant": "W1.58/A1.58",
+          "epoch": 52,
+          "val_miou": 0.18760192394256592,
+          "train_loss": 1.8494057896131293,
+          "task_loss": 1.199546255078399,
+          "kd_loss": 6.498595217516892,
+          "lr": 0.0006817596297941178,
+          "weight_zero_fraction": 0.8120866668317935,
+          "train_batches": 401,
+          "val_batches": 424
+        },
+        {
+          "variant": "W1.58/A1.58",
+          "epoch": 53,
+          "val_miou": 0.1559634953737259,
+          "train_loss": 1.8574228325389568,
+          "task_loss": 1.2035367105369854,
+          "kd_loss": 6.538861116566266,
+          "lr": 0.0006754955250178724,
+          "weight_zero_fraction": 0.8118916107299433,
+          "train_batches": 401,
+          "val_batches": 424
+        },
+        {
+          "variant": "W1.58/A1.58",
+          "epoch": 54,
+          "val_miou": 0.1815187931060791,
+          "train_loss": 1.864798852927667,
+          "task_loss": 1.205667369978089,
+          "kd_loss": 6.591314721285851,
+          "lr": 0.000669224959117684,
+          "weight_zero_fraction": 0.81195662943056,
+          "train_batches": 401,
+          "val_batches": 424
+        },
+        {
+          "variant": "W1.58/A1.58",
+          "epoch": 55,
+          "val_miou": 0.14866922795772552,
+          "train_loss": 1.8653839624433446,
+          "task_loss": 1.2044685368526011,
+          "kd_loss": 6.609154160183267,
+          "lr": 0.0006629478580205268,
+          "weight_zero_fraction": 0.8126037203081267,
+          "train_batches": 401,
+          "val_batches": 424
+        },
+        {
+          "variant": "W1.58/A1.58",
+          "epoch": 56,
+          "val_miou": 0.18699727952480316,
+          "train_loss": 1.862002282071292,
+          "task_loss": 1.2037882787033805,
+          "kd_loss": 6.582139948657029,
+          "lr": 0.0006566641460150637,
+          "weight_zero_fraction": 0.8126145567582295,
+          "train_batches": 401,
+          "val_batches": 424
+        },
+        {
+          "variant": "W1.58/A1.58",
+          "epoch": 57,
+          "val_miou": 0.16818934679031372,
+          "train_loss": 1.8601407870984732,
+          "task_loss": 1.1993836054480878,
+          "kd_loss": 6.607571710077605,
+          "lr": 0.0006503737456975854,
+          "weight_zero_fraction": 0.8115564548089069,
+          "train_batches": 401,
+          "val_batches": 424
+        },
+        {
+          "variant": "W1.58/A1.58",
+          "epoch": 58,
+          "val_miou": 0.15958498418331146,
+          "train_loss": 1.8633604849365881,
+          "task_loss": 1.198514713610794,
+          "kd_loss": 6.64845760564257,
+          "lr": 0.0006440765779155654,
+          "weight_zero_fraction": 0.8100269672801129,
+          "train_batches": 401,
+          "val_batches": 424
+        },
+        {
+          "variant": "W1.58/A1.58",
+          "epoch": 59,
+          "val_miou": 0.16662363708019257,
+          "train_loss": 1.8602645551771892,
+          "task_loss": 1.19977493104792,
+          "kd_loss": 6.604896122083402,
+          "lr": 0.0006377725617086982,
+          "weight_zero_fraction": 0.8086553823099596,
+          "train_batches": 401,
+          "val_batches": 424
+        },
+        {
+          "variant": "W1.58/A1.58",
+          "epoch": 60,
+          "val_miou": 0.18051254749298096,
+          "train_loss": 1.8570845793012967,
+          "task_loss": 1.1945219453136224,
+          "kd_loss": 6.625626232261372,
+          "lr": 0.0006314616142472774,
+          "weight_zero_fraction": 0.807395257969435,
+          "train_batches": 401,
+          "val_batches": 424
+        },
+        {
+          "variant": "W1.58/A1.58",
+          "epoch": 61,
+          "val_miou": 0.1869051307439804,
+          "train_loss": 1.871380303268718,
+          "task_loss": 1.2021462316822233,
+          "kd_loss": 6.692340589223657,
+          "lr": 0.0006251436507677669,
+          "weight_zero_fraction": 0.8059222747876056,
+          "train_batches": 401,
+          "val_batches": 424
+        },
+        {
+          "variant": "W1.58/A1.58",
+          "epoch": 62,
+          "val_miou": 0.1523350030183792,
+          "train_loss": 1.869763322304609,
+          "task_loss": 1.2009442896022464,
+          "kd_loss": 6.688190165303294,
+          "lr": 0.0006188185845054015,
+          "weight_zero_fraction": 0.8068859448146039,
+          "train_batches": 401,
+          "val_batches": 424
+        },
+        {
+          "variant": "W1.58/A1.58",
+          "epoch": 63,
+          "val_miou": 0.17405171692371368,
+          "train_loss": 1.8678039026973847,
+          "task_loss": 1.2018200569319308,
+          "kd_loss": 6.659838310203647,
+          "lr": 0.0006124863266236448,
+          "weight_zero_fraction": 0.8059338852698585,
+          "train_batches": 401,
+          "val_batches": 424
+        },
+        {
+          "variant": "W1.58/A1.58",
+          "epoch": 64,
+          "val_miou": 0.19435656070709229,
+          "train_loss": 1.866128385215626,
+          "task_loss": 1.199258679463679,
+          "kd_loss": 6.66869692552714,
+          "lr": 0.0006061467861403206,
+          "weight_zero_fraction": 0.8049431241176034,
+          "train_batches": 401,
+          "val_batches": 424
+        },
+        {
+          "variant": "W1.58/A1.58",
+          "epoch": 65,
+          "val_miou": 0.17559786140918732,
+          "train_loss": 1.8666158923484442,
+          "task_loss": 1.1984059528222406,
+          "kd_loss": 6.68209920203002,
+          "lr": 0.0005997998698502216,
+          "weight_zero_fraction": 0.8047147846332945,
+          "train_batches": 401,
+          "val_batches": 424
+        },
+        {
+          "variant": "W1.58/A1.58",
+          "epoch": 66,
+          "val_miou": 0.15065927803516388,
+          "train_loss": 1.860427052897408,
+          "task_loss": 1.1975956961995646,
+          "kd_loss": 6.628313414176503,
+          "lr": 0.0005934454822439811,
+          "weight_zero_fraction": 0.8030382309959626,
+          "train_batches": 401,
+          "val_batches": 424
+        },
+        {
+          "variant": "W1.58/A1.58",
+          "epoch": 67,
+          "val_miou": 0.14512208104133606,
+          "train_loss": 1.8571862422320016,
+          "task_loss": 1.196047306655351,
+          "kd_loss": 6.6113892422055365,
+          "lr": 0.0005870835254229821,
+          "weight_zero_fraction": 0.8025598791271394,
+          "train_batches": 401,
+          "val_batches": 424
+        },
+        {
+          "variant": "W1.58/A1.58",
+          "epoch": 68,
+          "val_miou": 0.1618833839893341,
+          "train_loss": 1.8638887750240336,
+          "task_loss": 1.1990346536969305,
+          "kd_loss": 6.64854109495358,
+          "lr": 0.0005807138990100624,
+          "weight_zero_fraction": 0.8015520892675798,
+          "train_batches": 401,
+          "val_batches": 424
+        },
+        {
+          "variant": "W1.58/A1.58",
+          "epoch": 69,
+          "val_miou": 0.12792833149433136,
+          "train_loss": 1.860838782460315,
+          "task_loss": 1.195175936394499,
+          "kd_loss": 6.65662831023447,
+          "lr": 0.0005743365000557488,
+          "weight_zero_fraction": 0.8010412280484482,
+          "train_batches": 401,
+          "val_batches": 424
+        },
+        {
+          "variant": "W1.58/A1.58",
+          "epoch": 70,
+          "val_miou": 0.15740831196308136,
+          "train_loss": 1.8616728619149796,
+          "task_loss": 1.1951939078637788,
+          "kd_loss": 6.664789413870719,
+          "lr": 0.0005679512229397437,
+          "weight_zero_fraction": 0.8010350357912466,
+          "train_batches": 401,
+          "val_batches": 424
+        },
+        {
+          "variant": "W1.58/A1.58",
+          "epoch": 71,
+          "val_miou": 0.18272198736667633,
+          "train_loss": 1.856466968160615,
+          "task_loss": 1.1926593197848732,
+          "kd_loss": 6.638076350575968,
+          "lr": 0.0005615579592673594,
+          "weight_zero_fraction": 0.8010334877269463,
+          "train_batches": 401,
+          "val_batches": 424
+        },
+        {
+          "variant": "W1.58/A1.58",
+          "epoch": 72,
+          "val_miou": 0.16332122683525085,
+          "train_loss": 1.854085101451065,
+          "task_loss": 1.191369154804068,
+          "kd_loss": 6.627159299398598,
+          "lr": 0.0005551565977605726,
+          "weight_zero_fraction": 0.8013369083298244,
+          "train_batches": 401,
+          "val_batches": 424
+        },
+        {
+          "variant": "W1.58/A1.58",
+          "epoch": 73,
+          "val_miou": 0.18017910420894623,
+          "train_loss": 1.8538379083547807,
+          "task_loss": 1.1880914455934652,
+          "kd_loss": 6.6574644721357,
+          "lr": 0.0005487470241433482,
+          "weight_zero_fraction": 0.8015482191068288,
+          "train_batches": 401,
+          "val_batches": 424
+        },
+        {
+          "variant": "W1.58/A1.58",
+          "epoch": 74,
+          "val_miou": 0.1450999528169632,
+          "train_loss": 1.8590794079321578,
+          "task_loss": 1.1931203327274085,
+          "kd_loss": 6.659590627189884,
+          "lr": 0.0005423291210208529,
+          "weight_zero_fraction": 0.8017130879548213,
+          "train_batches": 401,
+          "val_batches": 424
+        },
+        {
+          "variant": "W1.58/A1.58",
+          "epoch": 75,
+          "val_miou": 0.14013467729091644,
+          "train_loss": 1.8612490636749457,
+          "task_loss": 1.193601083874405,
+          "kd_loss": 6.676479672553236,
+          "lr": 0.0005359027677521474,
+          "weight_zero_fraction": 0.8021860215985931,
+          "train_batches": 401,
+          "val_batches": 424
+        },
+        {
+          "variant": "W1.58/A1.58",
+          "epoch": 76,
+          "val_miou": 0.17091631889343262,
+          "train_loss": 1.86264893211926,
+          "task_loss": 1.1951626400995135,
+          "kd_loss": 6.674862804555536,
+          "lr": 0.0005294678403159141,
+          "weight_zero_fraction": 0.8024608030119139,
+          "train_batches": 401,
+          "val_batches": 424
+        },
+        {
+          "variant": "W1.58/A1.58",
+          "epoch": 77,
+          "val_miou": 0.18968303501605988,
+          "train_loss": 1.8690267917224,
+          "task_loss": 1.1974689817785324,
+          "kd_loss": 6.715577991228746,
+          "lr": 0.0005230242111687382,
+          "weight_zero_fraction": 0.8032936616055284,
+          "train_batches": 401,
+          "val_batches": 424
+        },
+        {
+          "variant": "W1.58/A1.58",
+          "epoch": 78,
+          "val_miou": 0.19712220132350922,
+          "train_loss": 1.8622779727279397,
+          "task_loss": 1.194035042848373,
+          "kd_loss": 6.682429154317576,
+          "lr": 0.0005165717490954254,
+          "weight_zero_fraction": 0.8038672194288262,
+          "train_batches": 401,
+          "val_batches": 424
+        },
+        {
+          "variant": "W1.58/A1.58",
+          "epoch": 79,
+          "val_miou": 0.20393262803554535,
+          "train_loss": 1.8630779705142737,
+          "task_loss": 1.194942257648097,
+          "kd_loss": 6.681357017479038,
+          "lr": 0.0005101103190507864,
+          "weight_zero_fraction": 0.8043238983974438,
+          "train_batches": 401,
+          "val_batches": 424
+        },
+        {
+          "variant": "W1.58/A1.58",
+          "epoch": 80,
+          "val_miou": 0.18317802250385284,
+          "train_loss": 1.8571366250069063,
+          "task_loss": 1.190467157268762,
+          "kd_loss": 6.666694535281593,
+          "lr": 0.0005036397819922788,
+          "weight_zero_fraction": 0.8049570566963069,
+          "train_batches": 401,
+          "val_batches": 424
+        },
+        {
+          "variant": "W1.58/A1.58",
+          "epoch": 81,
+          "val_miou": 0.1944684535264969,
+          "train_loss": 1.8599910819322392,
+          "task_loss": 1.1891403745237432,
+          "kd_loss": 6.708506964685911,
+          "lr": 0.0004971599947028389,
+          "weight_zero_fraction": 0.8056861949817947,
+          "train_batches": 401,
+          "val_batches": 424
+        },
+        {
+          "variant": "W1.58/A1.58",
+          "epoch": 82,
+          "val_miou": 0.14756841957569122,
+          "train_loss": 1.8641724616214819,
+          "task_loss": 1.1923183266658735,
+          "kd_loss": 6.718541236886955,
+          "lr": 0.000490670809603176,
+          "weight_zero_fraction": 0.8060894657320486,
+          "train_batches": 401,
+          "val_batches": 424
+        },
+        {
+          "variant": "W1.58/A1.58",
+          "epoch": 83,
+          "val_miou": 0.19295461475849152,
+          "train_loss": 1.866663545741702,
+          "task_loss": 1.1943758738011196,
+          "kd_loss": 6.722876664111739,
+          "lr": 0.00048417207455273963,
+          "weight_zero_fraction": 0.8056776806281426,
+          "train_batches": 401,
+          "val_batches": 424
+        },
+        {
+          "variant": "W1.58/A1.58",
+          "epoch": 84,
+          "val_miou": 0.20421314239501953,
+          "train_loss": 1.861163543941374,
+          "task_loss": 1.189168344857984,
+          "kd_loss": 6.719951897190693,
+          "lr": 0.00047766363263849706,
+          "weight_zero_fraction": 0.8058146843187278,
+          "train_batches": 401,
+          "val_batches": 424
+        },
+        {
+          "variant": "W1.58/A1.58",
+          "epoch": 85,
+          "val_miou": 0.15743805468082428,
+          "train_loss": 1.8605805974351497,
+          "task_loss": 1.187421691387966,
+          "kd_loss": 6.731588917777425,
+          "lr": 0.00047114532195057613,
+          "weight_zero_fraction": 0.8058835731800956,
+          "train_batches": 401,
+          "val_batches": 424
+        },
+        {
+          "variant": "W1.58/A1.58",
+          "epoch": 86,
+          "val_miou": 0.18285782635211945,
+          "train_loss": 1.8578355493688226,
+          "task_loss": 1.1844091932672516,
+          "kd_loss": 6.734263427239701,
+          "lr": 0.0004646169753437456,
+          "weight_zero_fraction": 0.8062125368439303,
+          "train_batches": 401,
+          "val_batches": 424
+        },
+        {
+          "variant": "W1.58/A1.58",
+          "epoch": 87,
+          "val_miou": 0.17981697618961334,
+          "train_loss": 1.8598844571006565,
+          "task_loss": 1.1853158430862902,
+          "kd_loss": 6.7456860518514965,
+          "lr": 0.0004580784201835987,
+          "weight_zero_fraction": 0.8057024496569489,
+          "train_batches": 401,
+          "val_batches": 424
+        },
+        {
+          "variant": "W1.58/A1.58",
+          "epoch": 88,
+          "val_miou": 0.19782738387584686,
+          "train_loss": 1.8573725574331688,
+          "task_loss": 1.1804458053034736,
+          "kd_loss": 6.769267446085105,
+          "lr": 0.00045152947807620383,
+          "weight_zero_fraction": 0.8060631486389419,
+          "train_batches": 401,
+          "val_batches": 424
+        },
+        {
+          "variant": "W1.58/A1.58",
+          "epoch": 89,
+          "val_miou": 0.18384796380996704,
+          "train_loss": 1.8601320137704103,
+          "task_loss": 1.1822492752289238,
+          "kd_loss": 6.778827285528777,
+          "lr": 0.0004449699645798606,
+          "weight_zero_fraction": 0.8059973559061749,
+          "train_batches": 401,
+          "val_batches": 424
+        },
+        {
+          "variant": "W1.58/A1.58",
+          "epoch": 90,
+          "val_miou": 0.18266673386096954,
+          "train_loss": 1.855332475647962,
+          "task_loss": 1.1795155892051068,
+          "kd_loss": 6.758168696168058,
+          "lr": 0.0004383996888974615,
+          "weight_zero_fraction": 0.8060383796101355,
+          "train_batches": 401,
+          "val_batches": 424
+        },
+        {
+          "variant": "W1.58/A1.58",
+          "epoch": 91,
+          "val_miou": 0.16196390986442566,
+          "train_loss": 1.8597088109822641,
+          "task_loss": 1.1798187714265171,
+          "kd_loss": 6.798900241566418,
+          "lr": 0.0004318184535478115,
+          "weight_zero_fraction": 0.8064006266564288,
+          "train_batches": 401,
+          "val_batches": 424
+        },
+        {
+          "variant": "W1.58/A1.58",
+          "epoch": 92,
+          "val_miou": 0.19909833371639252,
+          "train_loss": 1.861889811228041,
+          "task_loss": 1.1804165822312125,
+          "kd_loss": 6.814732142517395,
+          "lr": 0.00042522605401408326,
+          "weight_zero_fraction": 0.8065832982438759,
+          "train_batches": 401,
+          "val_batches": 424
+        },
+        {
+          "variant": "W1.58/A1.58",
+          "epoch": 93,
+          "val_miou": 0.1957450658082962,
+          "train_loss": 1.8596134028232603,
+          "task_loss": 1.1784987344111588,
+          "kd_loss": 6.811146566100846,
+          "lr": 0.000418622278367395,
+          "weight_zero_fraction": 0.8070066938300349,
+          "train_batches": 401,
+          "val_batches": 424
+        },
+        {
+          "variant": "W1.58/A1.58",
+          "epoch": 94,
+          "val_miou": 0.20583248138427734,
+          "train_loss": 1.8620881088951282,
+          "task_loss": 1.1817760680084515,
+          "kd_loss": 6.803120299170439,
+          "lr": 0.0004120069068632848,
+          "weight_zero_fraction": 0.8070515876947465,
+          "train_batches": 401,
+          "val_batches": 424
+        },
+        {
+          "variant": "W1.58/A1.58",
+          "epoch": 95,
+          "val_miou": 0.20154058933258057,
+          "train_loss": 1.8572454262255433,
+          "task_loss": 1.1768200821115489,
+          "kd_loss": 6.804253354631458,
+          "lr": 0.00040537971150860646,
+          "weight_zero_fraction": 0.8074935600525104,
+          "train_batches": 401,
+          "val_batches": 424
+        },
+        {
+          "variant": "W1.58/A1.58",
+          "epoch": 96,
+          "val_miou": 0.2060784548521042,
+          "train_loss": 1.8646884722602635,
+          "task_loss": 1.180626880795581,
+          "kd_loss": 6.840615813571616,
+          "lr": 0.0003987404555961057,
+          "weight_zero_fraction": 0.8076700393827558,
+          "train_batches": 401,
+          "val_batches": 424
+        },
+        {
+          "variant": "W1.58/A1.58",
+          "epoch": 97,
+          "val_miou": 0.22321242094039917,
+          "train_loss": 1.8600774251314767,
+          "task_loss": 1.1795468416594508,
+          "kd_loss": 6.805305758022014,
+          "lr": 0.00039208889320361563,
+          "weight_zero_fraction": 0.8076506885790008,
+          "train_batches": 401,
+          "val_batches": 424
+        },
+        {
+          "variant": "W1.58/A1.58",
+          "epoch": 98,
+          "val_miou": 0.21240460872650146,
+          "train_loss": 1.8581459260640893,
+          "task_loss": 1.1785668717358178,
+          "kd_loss": 6.795790434478227,
+          "lr": 0.00038542476865446667,
+          "weight_zero_fraction": 0.8077993027518391,
+          "train_batches": 401,
+          "val_batches": 424
+        },
+        {
+          "variant": "W1.58/A1.58",
+          "epoch": 99,
+          "val_miou": 0.20082473754882812,
+          "train_loss": 1.8546067889491815,
+          "task_loss": 1.1756573240655914,
+          "kd_loss": 6.789494557273655,
+          "lr": 0.00037874781593530063,
+          "weight_zero_fraction": 0.8079610754712307,
+          "train_batches": 401,
+          "val_batches": 424
+        },
+        {
+          "variant": "W1.58/A1.58",
+          "epoch": 100,
+          "val_miou": 0.18700234591960907,
+          "train_loss": 1.8587207930938263,
+          "task_loss": 1.178197218592922,
+          "kd_loss": 6.805235577343111,
+          "lr": 0.0003720577580670232,
+          "weight_zero_fraction": 0.8082126359200456,
+          "train_batches": 401,
+          "val_batches": 424
+        },
+        {
+          "variant": "W1.58/A1.58",
+          "epoch": 101,
+          "val_miou": 0.17956940829753876,
+          "train_loss": 1.8599442906510504,
+          "task_loss": 1.178345077204288,
+          "kd_loss": 6.815992011690972,
+          "lr": 0.00036535430642411,
+          "weight_zero_fraction": 0.8086414497312561,
+          "train_batches": 401,
+          "val_batches": 424
+        },
+        {
+          "variant": "W1.58/A1.58",
+          "epoch": 102,
+          "val_miou": 0.21380138397216797,
+          "train_loss": 1.8683341069709036,
+          "task_loss": 1.185756105288603,
+          "kd_loss": 6.825779858967312,
+          "lr": 0.0003586371599968829,
+          "weight_zero_fraction": 0.8085385034552796,
+          "train_batches": 401,
+          "val_batches": 424
+        },
+        {
+          "variant": "W1.58/A1.58",
+          "epoch": 103,
+          "val_miou": 0.19548380374908447,
+          "train_loss": 1.8608415210038944,
+          "task_loss": 1.1798117755357167,
+          "kd_loss": 6.810297311987366,
+          "lr": 0.0003519060045906882,
+          "weight_zero_fraction": 0.8088837217942685,
+          "train_batches": 401,
+          "val_batches": 424
+        },
+        {
+          "variant": "W1.58/A1.58",
+          "epoch": 104,
+          "val_miou": 0.184792160987854,
+          "train_loss": 1.867555469646121,
+          "task_loss": 1.1826446436884397,
+          "kd_loss": 6.849108126395361,
+          "lr": 0.00034516051195512153,
+          "weight_zero_fraction": 0.8086577044064103,
+          "train_batches": 401,
+          "val_batches": 424
+        },
+        {
+          "variant": "W1.58/A1.58",
+          "epoch": 105,
+          "val_miou": 0.20271515846252441,
+          "train_loss": 1.8602379622899385,
+          "task_loss": 1.178393469041125,
+          "kd_loss": 6.818444828737406,
+          "lr": 0.0003384003388355307,
+          "weight_zero_fraction": 0.8083984036360934,
+          "train_batches": 401,
+          "val_batches": 424
+        },
+        {
+          "variant": "W1.58/A1.58",
+          "epoch": 106,
+          "val_miou": 0.1901381015777588,
+          "train_loss": 1.866704074819189,
+          "task_loss": 1.1807139453447966,
+          "kd_loss": 6.859901107160231,
+          "lr": 0.0003316251259379751,
+          "weight_zero_fraction": 0.8079146335422188,
+          "train_batches": 401,
+          "val_batches": 424
+        },
+        {
+          "variant": "W1.58/A1.58",
+          "epoch": 107,
+          "val_miou": 0.19921261072158813,
+          "train_loss": 1.860197226900115,
+          "task_loss": 1.1763478698873162,
+          "kd_loss": 6.838493424460775,
+          "lr": 0.0003248344967975973,
+          "weight_zero_fraction": 0.8077482166299259,
+          "train_batches": 401,
+          "val_batches": 424
+        },
+        {
+          "variant": "W1.58/A1.58",
+          "epoch": 108,
+          "val_miou": 0.20941264927387238,
+          "train_loss": 1.8568490517704266,
+          "task_loss": 1.1718769124023931,
+          "kd_loss": 6.849721289037766,
+          "lr": 0.0003180280565389278,
+          "weight_zero_fraction": 0.8074525363485497,
+          "train_batches": 401,
+          "val_batches": 424
+        },
+        {
+          "variant": "W1.58/A1.58",
+          "epoch": 109,
+          "val_miou": 0.21069477498531342,
+          "train_loss": 1.8628143779654753,
+          "task_loss": 1.175734133494465,
+          "kd_loss": 6.870802316879691,
+          "lr": 0.00031120539051498434,
+          "weight_zero_fraction": 0.8072288410571421,
+          "train_batches": 401,
+          "val_batches": 424
+        },
+        {
+          "variant": "W1.58/A1.58",
+          "epoch": 110,
+          "val_miou": 0.20925278961658478,
+          "train_loss": 1.860123923889122,
+          "task_loss": 1.1730919345061381,
+          "kd_loss": 6.870319731514948,
+          "lr": 0.00030436606281005894,
+          "weight_zero_fraction": 0.8071769809030788,
+          "train_batches": 401,
+          "val_batches": 424
+        },
+        {
+          "variant": "W1.58/A1.58",
+          "epoch": 111,
+          "val_miou": 0.1909581869840622,
+          "train_loss": 1.8665737127722648,
+          "task_loss": 1.177039858854917,
+          "kd_loss": 6.895338421153308,
+          "lr": 0.00029750961458878487,
+          "weight_zero_fraction": 0.8070136601193867,
+          "train_batches": 401,
+          "val_batches": 424
+        },
+        {
+          "variant": "W1.58/A1.58",
+          "epoch": 112,
+          "val_miou": 0.1967688798904419,
+          "train_loss": 1.868554265719102,
+          "task_loss": 1.1781575480601436,
+          "kd_loss": 6.903967079676297,
+          "lr": 0.00029063556227134464,
+          "weight_zero_fraction": 0.807096481559458,
+          "train_batches": 401,
+          "val_batches": 424
+        },
+        {
+          "variant": "W1.58/A1.58",
+          "epoch": 113,
+          "val_miou": 0.17682449519634247,
+          "train_loss": 1.8690818628468122,
+          "task_loss": 1.1785025094215411,
+          "kd_loss": 6.905793468256544,
+          "lr": 0.0002837433955114395,
+          "weight_zero_fraction": 0.8069238723899635,
+          "train_batches": 401,
+          "val_batches": 424
+        },
+        {
+          "variant": "W1.58/A1.58",
+          "epoch": 114,
+          "val_miou": 0.18581436574459076,
+          "train_loss": 1.8728898888514227,
+          "task_loss": 1.1814441367277777,
+          "kd_loss": 6.914457402027159,
+          "lr": 0.00027683257494978426,
+          "weight_zero_fraction": 0.8066591533945954,
+          "train_batches": 401,
+          "val_batches": 424
+        },
+        {
+          "variant": "W1.58/A1.58",
+          "epoch": 115,
+          "val_miou": 0.18643037974834442,
+          "train_loss": 1.8704652477083659,
+          "task_loss": 1.179660714029374,
+          "kd_loss": 6.908045249092312,
+          "lr": 0.0002699025297112586,
+          "weight_zero_fraction": 0.8070817749486042,
+          "train_batches": 401,
+          "val_batches": 424
+        },
+        {
+          "variant": "W1.58/A1.58",
+          "epoch": 116,
+          "val_miou": 0.20269708335399628,
+          "train_loss": 1.869051691302635,
+          "task_loss": 1.179218140772156,
+          "kd_loss": 6.89833539977038,
+          "lr": 0.0002629526546082857,
+          "weight_zero_fraction": 0.8068356327248408,
+          "train_batches": 401,
+          "val_batches": 424
+        },
+        {
+          "variant": "W1.58/A1.58",
+          "epoch": 117,
+          "val_miou": 0.19473028182983398,
+          "train_loss": 1.8662601825305054,
+          "task_loss": 1.1767796833913522,
+          "kd_loss": 6.894804855831841,
+          "lr": 0.00025598230700627644,
+          "weight_zero_fraction": 0.8067744841849751,
+          "train_batches": 401,
+          "val_batches": 424
+        },
+        {
+          "variant": "W1.58/A1.58",
+          "epoch": 118,
+          "val_miou": 0.18757431209087372,
+          "train_loss": 1.8858403068528211,
+          "task_loss": 1.1910286835601502,
+          "kd_loss": 6.948116162174063,
+          "lr": 0.00024899080329879276,
+          "weight_zero_fraction": 0.8069811507690784,
+          "train_batches": 401,
+          "val_batches": 424
+        },
+        {
+          "variant": "W1.58/A1.58",
+          "epoch": 119,
+          "val_miou": 0.20172624289989471,
+          "train_loss": 1.8862906153362589,
+          "task_loss": 1.191814611974797,
+          "kd_loss": 6.944759918269968,
+          "lr": 0.00024197741493008272,
+          "weight_zero_fraction": 0.8070005015728333,
+          "train_batches": 401,
+          "val_batches": 424
+        },
+        {
+          "variant": "W1.58/A1.58",
+          "epoch": 120,
+          "val_miou": 0.19535602629184723,
+          "train_loss": 1.8911713540108126,
+          "task_loss": 1.1959194545436678,
+          "kd_loss": 6.952518936404563,
+          "lr": 0.00023494136389033997,
+          "weight_zero_fraction": 0.8069385790008173,
+          "train_batches": 401,
+          "val_batches": 424
+        },
+        {
+          "variant": "W1.58/A1.58",
+          "epoch": 121,
+          "val_miou": 0.1875198632478714,
+          "train_loss": 1.8784249218324771,
+          "task_loss": 1.1885743982476784,
+          "kd_loss": 6.898505051534372,
+          "lr": 0.00022788181759381563,
+          "weight_zero_fraction": 0.8070446214053947,
+          "train_batches": 401,
+          "val_batches": 424
+        },
+        {
+          "variant": "W1.58/A1.58",
+          "epoch": 122,
+          "val_miou": 0.18707484006881714,
+          "train_loss": 1.8889207920231428,
+          "task_loss": 1.1898449275856304,
+          "kd_loss": 6.990758540327115,
+          "lr": 0.00022079788303096062,
+          "weight_zero_fraction": 0.8070252706016398,
+          "train_batches": 401,
+          "val_batches": 424
+        },
+        {
+          "variant": "W1.58/A1.58",
+          "epoch": 123,
+          "val_miou": 0.20031529664993286,
+          "train_loss": 1.8797149741441532,
+          "task_loss": 1.1850783115907797,
+          "kd_loss": 6.946366470650842,
+          "lr": 0.00021368860006198883,
+          "weight_zero_fraction": 0.806735008545315,
+          "train_batches": 401,
+          "val_batches": 424
+        },
+        {
+          "variant": "W1.58/A1.58",
+          "epoch": 124,
+          "val_miou": 0.18844957649707794,
+          "train_loss": 1.8794006085455268,
+          "task_loss": 1.186177646727336,
+          "kd_loss": 6.932229466569097,
+          "lr": 0.0002065529336892026,
+          "weight_zero_fraction": 0.8070523617268966,
+          "train_batches": 401,
+          "val_batches": 424
+        },
+        {
+          "variant": "W1.58/A1.58",
+          "epoch": 125,
+          "val_miou": 0.1800430417060852,
+          "train_loss": 1.8813354713363837,
+          "task_loss": 1.1867604593089096,
+          "kd_loss": 6.945749991552491,
+          "lr": 0.00019938976510713193,
+          "weight_zero_fraction": 0.8069014254576078,
+          "train_batches": 401,
+          "val_batches": 424
+        },
+        {
+          "variant": "W1.58/A1.58",
+          "epoch": 126,
+          "val_miou": 0.18831653892993927,
+          "train_loss": 1.8759629800729918,
+          "task_loss": 1.1818677945030003,
+          "kd_loss": 6.940951713600064,
+          "lr": 0.0001921978812803302,
+          "weight_zero_fraction": 0.8070422993089441,
+          "train_batches": 401,
+          "val_batches": 424
+        },
+        {
+          "variant": "W1.58/A1.58",
+          "epoch": 127,
+          "val_miou": 0.1759929209947586,
+          "train_loss": 1.874559035622271,
+          "task_loss": 1.1809913967910253,
+          "kd_loss": 6.935676235807804,
+          "lr": 0.00018497596273485607,
+          "weight_zero_fraction": 0.8070670683377504,
+          "train_batches": 401,
+          "val_batches": 424
+        },
+        {
+          "variant": "W1.58/A1.58",
+          "epoch": 128,
+          "val_miou": 0.1904311329126358,
+          "train_loss": 1.883574427214644,
+          "task_loss": 1.1856440218012232,
+          "kd_loss": 6.979303926006517,
+          "lr": 0.00017772256916586464,
+          "weight_zero_fraction": 0.80690993981126,
+          "train_batches": 401,
+          "val_batches": 424
+        },
+        {
+          "variant": "W1.58/A1.58",
+          "epoch": 129,
+          "val_miou": 0.19532962143421173,
+          "train_loss": 1.8728960160899935,
+          "task_loss": 1.1782539696467487,
+          "kd_loss": 6.946420328278196,
+          "lr": 0.00017043612235302972,
+          "weight_zero_fraction": 0.8069184541649121,
+          "train_batches": 401,
+          "val_batches": 424
+        },
+        {
+          "variant": "W1.58/A1.58",
+          "epoch": 130,
+          "val_miou": 0.1865595132112503,
+          "train_loss": 1.8728978110667773,
+          "task_loss": 1.1768213477812504,
+          "kd_loss": 6.960764535347423,
+          "lr": 0.00016311488572720828,
+          "weight_zero_fraction": 0.8068704641715998,
+          "train_batches": 401,
+          "val_batches": 424
+        },
+        {
+          "variant": "W1.58/A1.58",
+          "epoch": 131,
+          "val_miou": 0.20294438302516937,
+          "train_loss": 1.8730601408237828,
+          "task_loss": 1.1758720309954331,
+          "kd_loss": 6.971880953210845,
+          "lr": 0.0001557569397305217,
+          "weight_zero_fraction": 0.8068712382037501,
+          "train_batches": 401,
+          "val_batches": 424
+        },
+        {
+          "variant": "W1.58/A1.58",
+          "epoch": 132,
+          "val_miou": 0.2046447992324829,
+          "train_loss": 1.873273504939757,
+          "task_loss": 1.1745730744038436,
+          "kd_loss": 6.987004236092888,
+          "lr": 0.00014836015183518063,
+          "weight_zero_fraction": 0.8070817749486042,
+          "train_batches": 401,
+          "val_batches": 424
+        },
+        {
+          "variant": "W1.58/A1.58",
+          "epoch": 133,
+          "val_miou": 0.20508110523223877,
+          "train_loss": 1.8697783411886923,
+          "task_loss": 1.170574213798504,
+          "kd_loss": 6.992041179961397,
+          "lr": 0.0001409221396996719,
+          "weight_zero_fraction": 0.8068813006217026,
+          "train_batches": 401,
+          "val_batches": 424
+        },
+        {
+          "variant": "W1.58/A1.58",
+          "epoch": 134,
+          "val_miou": 0.18563570082187653,
+          "train_loss": 1.8684553130903743,
+          "task_loss": 1.172723937510255,
+          "kd_loss": 6.957313648185825,
+          "lr": 0.00013344022539164228,
+          "weight_zero_fraction": 0.8069393530329676,
+          "train_batches": 401,
+          "val_batches": 424
+        },
+        {
+          "variant": "W1.58/A1.58",
+          "epoch": 135,
+          "val_miou": 0.18634045124053955,
+          "train_loss": 1.8761229711280498,
+          "task_loss": 1.1763653848831195,
+          "kd_loss": 6.997575743240014,
+          "lr": 0.0001259113778120483,
+          "weight_zero_fraction": 0.8070252706016398,
+          "train_batches": 401,
+          "val_batches": 424
+        },
+        {
+          "variant": "W1.58/A1.58",
+          "epoch": 136,
+          "val_miou": 0.17753398418426514,
+          "train_loss": 1.8711880332513937,
+          "task_loss": 1.1737203760040074,
+          "kd_loss": 6.974676456831935,
+          "lr": 0.00011833213928118776,
+          "weight_zero_fraction": 0.8069679922225249,
+          "train_batches": 401,
+          "val_batches": 424
+        },
+        {
+          "variant": "W1.58/A1.58",
+          "epoch": 137,
+          "val_miou": 0.17361575365066528,
+          "train_loss": 1.8711791389303611,
+          "task_loss": 1.1728537512241755,
+          "kd_loss": 6.983253762014489,
+          "lr": 0.00011069853047268995,
+          "weight_zero_fraction": 0.8069184541649121,
+          "train_batches": 401,
+          "val_batches": 424
+        },
+        {
+          "variant": "W1.58/A1.58",
+          "epoch": 138,
+          "val_miou": 0.16238844394683838,
+          "train_loss": 1.8685746849920981,
+          "task_loss": 1.1722600567073298,
+          "kd_loss": 6.963146165719353,
+          "lr": 0.00010300592512828055,
+          "weight_zero_fraction": 0.8070051457657346,
+          "train_batches": 401,
+          "val_batches": 424
+        },
+        {
+          "variant": "W1.58/A1.58",
+          "epoch": 139,
+          "val_miou": 0.1898319274187088,
+          "train_loss": 1.8711517481435267,
+          "task_loss": 1.1735830642933263,
+          "kd_loss": 6.975686724941035,
+          "lr": 9.524888158571802e-05,
+          "weight_zero_fraction": 0.8072211007356401,
+          "train_batches": 401,
+          "val_batches": 424
+        },
+        {
+          "variant": "W1.58/A1.58",
+          "epoch": 140,
+          "val_miou": 0.18686480820178986,
+          "train_loss": 1.8642952424332389,
+          "task_loss": 1.1688814255364814,
+          "kd_loss": 6.954138038758923,
+          "lr": 8.742091087546612e-05,
+          "weight_zero_fraction": 0.8070678423699007,
+          "train_batches": 401,
+          "val_batches": 424
+        },
+        {
+          "variant": "W1.58/A1.58",
+          "epoch": 141,
+          "val_miou": 0.19325391948223114,
+          "train_loss": 1.8614420522180877,
+          "task_loss": 1.1663520987194376,
+          "kd_loss": 6.950899435694973,
+          "lr": 7.951414862202304e-05,
+          "weight_zero_fraction": 0.8071878173531816,
+          "train_batches": 401,
+          "val_batches": 424
+        },
+        {
+          "variant": "W1.58/A1.58",
+          "epoch": 142,
+          "val_miou": 0.17584645748138428,
+          "train_loss": 1.8647194640000264,
+          "task_loss": 1.1690250269492666,
+          "kd_loss": 6.956944261108551,
+          "lr": 7.151887541786292e-05,
+          "weight_zero_fraction": 0.8071104141381616,
+          "train_batches": 401,
+          "val_batches": 424
+        },
+        {
+          "variant": "W1.58/A1.58",
+          "epoch": 143,
+          "val_miou": 0.19423867762088776,
+          "train_loss": 1.8633057559814834,
+          "task_loss": 1.1661063508499887,
+          "kd_loss": 6.971993902972215,
+          "lr": 6.342278732208405e-05,
+          "weight_zero_fraction": 0.8070856451093552,
+          "train_batches": 401,
+          "val_batches": 424
+        },
+        {
+          "variant": "W1.58/A1.58",
+          "epoch": 144,
+          "val_miou": 0.17747116088867188,
+          "train_loss": 1.8614544217425986,
+          "task_loss": 1.164554039290421,
+          "kd_loss": 6.969003689259365,
+          "lr": 5.5209830363582926e-05,
+          "weight_zero_fraction": 0.8070802268843039,
+          "train_batches": 401,
+          "val_batches": 424
+        },
+        {
+          "variant": "W1.58/A1.58",
+          "epoch": 145,
+          "val_miou": 0.18639981746673584,
+          "train_loss": 1.860745844103749,
+          "task_loss": 1.1661430797969314,
+          "kd_loss": 6.946027490563523,
+          "lr": 4.685821786887853e-05,
+          "weight_zero_fraction": 0.8071444715527705,
+          "train_batches": 401,
+          "val_batches": 424
+        },
+        {
+          "variant": "W1.58/A1.58",
+          "epoch": 146,
+          "val_miou": 0.1822434663772583,
+          "train_loss": 1.8608151596977824,
+          "task_loss": 1.1654826262942573,
+          "kd_loss": 6.953325195502759,
+          "lr": 3.8336765164842775e-05,
+          "weight_zero_fraction": 0.807255158150249,
+          "train_batches": 401,
+          "val_batches": 424
+        },
+        {
+          "variant": "W1.58/A1.58",
+          "epoch": 147,
+          "val_miou": 0.17059369385242462,
+          "train_loss": 1.8616453593508562,
+          "task_loss": 1.1665761695241095,
+          "kd_loss": 6.9506918081916185,
+          "lr": 2.959727786265262e-05,
+          "weight_zero_fraction": 0.8071390533277191,
+          "train_batches": 401,
+          "val_batches": 424
+        },
+        {
+          "variant": "W1.58/A1.58",
+          "epoch": 148,
+          "val_miou": 0.1765391081571579,
+          "train_loss": 1.854590216182414,
+          "task_loss": 1.1612648905958618,
+          "kd_loss": 6.933253115846629,
+          "lr": 2.0555683504617175e-05,
+          "weight_zero_fraction": 0.8072211007356401,
+          "train_batches": 401,
+          "val_batches": 424
+        },
+        {
+          "variant": "W1.58/A1.58",
+          "epoch": 149,
+          "val_miou": 0.1824818104505539,
+          "train_loss": 1.8579068745758172,
+          "task_loss": 1.1631984452059738,
+          "kd_loss": 6.947084204514425,
+          "lr": 1.1027863433569247e-05,
+          "weight_zero_fraction": 0.8072520620216481,
+          "train_batches": 401,
+          "val_batches": 424
+        },
+        {
+          "variant": "W1.58/A1.58",
+          "epoch": 150,
+          "val_miou": 0.17709209024906158,
+          "train_loss": 1.849201111722171,
+          "task_loss": 1.157034369329562,
+          "kd_loss": 6.921667334444802,
+          "lr": 4.9967535707481485e-08,
+          "weight_zero_fraction": 0.8074254452232928,
+          "train_batches": 401,
+          "val_batches": 424
+        }
+      ],
+      "training_summary": [
+        {
+          "variant": "W1.58/A4",
+          "epochs": 150,
+          "best_epoch": 150,
+          "best_val_miou": 0.5910084843635559,
+          "final_val_miou": 0.5910084843635559,
+          "last10_mean": 0.5367652595043182,
+          "last10_std": 0.026126815180177152,
+          "elapsed_hours": 11.134365706843221,
+          "zero_fraction_start": 0.8187743046095163,
+          "zero_fraction_best": 0.8620411537413618,
+          "zero_fraction_final": 0.8620411537413618
+        },
+        {
+          "variant": "W1.58/A1.58",
+          "epochs": 150,
+          "best_epoch": 97,
+          "best_val_miou": 0.22321242094039917,
+          "final_val_miou": 0.17709209024906158,
+          "last10_mean": 0.18161602020263673,
+          "last10_std": 0.0073280321144215755,
+          "elapsed_hours": 12.497358821366086,
+          "zero_fraction_start": 0.7785091521561439,
+          "zero_fraction_best": 0.8076506885790008,
+          "zero_fraction_final": 0.8074254452232928
+        }
+      ]
+    }
+  },
+  "sources": [
+    {
+      "id": "unified_comparison",
+      "label": "统一精度评估结果",
+      "query": {
+        "engine": "repository JSON",
+        "executed_at": "2026-07-30T08:18:15.854890+00:00",
+        "description": "读取统一评估输出；四个模型均在 UDD val_patches.txt 上，以 batch size 20、T=1、完整 424 batches 计算六类 mean IoU。",
+        "sql": "SELECT * FROM read_json_auto('ternary_QAT_checkpoint/comparison_seed1234/comparison.json');",
+        "tables_used": [
+          "ternary_QAT_checkpoint/comparison_seed1234/comparison.json"
+        ],
+        "filters": [
+          "dataset = UDD val_patches.txt",
+          "evaluated_batches = 424",
+          "classes = background, facade, road, vegetation, vehicle, roof"
+        ],
+        "metric_definitions": [
+          "mIoU = 六个类别 IoU（含 background）的算术平均值。",
+          "W4 优势（pp） = 100 × (W4/A4 mIoU − W1.58/A4 mIoU)。",
+          "保留率 = 100 × 候选模型 mIoU ÷ 参考模型 mIoU。",
+          "理论权重位宽仅比较码字位数，不计比例因子、封装开销或硬件实现。"
+        ]
+      }
+    },
+    {
+      "id": "ternary_training",
+      "label": "三元 QAT 训练曲线与最佳指标",
+      "query": {
+        "engine": "repository CSV/JSON",
+        "executed_at": "2026-07-30T08:18:15.854890+00:00",
+        "description": "读取两个 seed=1234 三元 QAT 运行的 150 轮 metrics.csv 与 best_metrics.json，并复核轮次连续性和数值有限性。",
+        "sql": "SELECT 'W1.58/A4' AS variant, * FROM read_csv_auto('ternary_QAT_checkpoint/udd/SpikingLETNet_shallow_max_w1p58_a4_bs64_seed1234/metrics.csv') UNION ALL SELECT 'W1.58/A1.58' AS variant, * FROM read_csv_auto('ternary_QAT_checkpoint/udd/SpikingLETNet_shallow_max_w1p58_a1p58_bs64_seed1234/metrics.csv');",
+        "tables_used": [
+          "ternary_QAT_checkpoint/udd/SpikingLETNet_shallow_max_w1p58_a4_bs64_seed1234/metrics.csv",
+          "ternary_QAT_checkpoint/udd/SpikingLETNet_shallow_max_w1p58_a1p58_bs64_seed1234/metrics.csv"
+        ],
+        "filters": [
+          "seed = 1234",
+          "epochs = 1..150",
+          "batch_size = 64"
+        ],
+        "metric_definitions": [
+          "末 10 轮均值/标准差基于各运行 metrics.csv 中 epoch 141–150 的 val_miou。",
+          "权重零值率 = 三元量化权重中码字 0 的数量 ÷ 量化权重总数。"
+        ]
+      }
+    },
+    {
+      "id": "pipeline_manifest",
+      "label": "实验流水线完成清单",
+      "query": {
+        "engine": "repository JSON",
+        "executed_at": "2026-07-30T08:18:15.854890+00:00",
+        "description": "实验预注册判据、阶段状态、主种子、可选复现实验种子以及完成时间。",
+        "tables_used": [
+          "ternary_QAT_checkpoint/pipeline_manifest.json"
+        ],
+        "metric_definitions": [
+          "预注册判据：W4/A4 − W1.58/A4 ≥ 2.0 个绝对 mIoU 百分点，则支持 4-bit 的精度价值；否则追加两个种子。"
+        ]
+      }
+    },
+    {
+      "id": "w4_training_log",
+      "label": "历史 W4/A4 QAT 训练日志",
+      "query": {
+        "engine": "repository log",
+        "description": "历史 W4/A4 日志声明 max_epochs=150，但包含 epoch 0–126 共 127 个训练轮次；统一比较使用已保存的最佳量化权重。",
+        "tables_used": [
+          "QAT_checkpoint/udd/SpikingLETNet_shallow_maxbs64gpu1_trainval20260612-135249/log.txt"
+        ],
+        "filters": [
+          "seed = 1234",
+          "quant_bits = 4",
+          "activation_quant = true"
+        ]
+      }
+    }
+  ],
+  "package_info": {
+    "audience": "technical",
+    "language": "zh-CN",
+    "artifact_kind": "experiment-analysis"
+  }
+}

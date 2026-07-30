@@ -10,12 +10,23 @@
   "formal_latency_iterations": 200,
   "auxiliary_end_to_end_iterations": 20,
   "energy_duration_seconds": 60.0,
+  "hwinfo_energy_duration_seconds": 180.0,
+  "hwinfo_polling_period_seconds": 1.0,
   "energy_trials": 5,
   "idle_trials": 3,
   "maximum_extra_trials": 3,
   "maximum_cv": 0.05,
   "minimum_thermal_headroom_c": 2.0,
+  "maximum_temperature_c": 98.0,
   "maximum_background_cpu_percent": 10.0,
+  "minimum_hwinfo_sample_completeness": 0.99,
+  "minimum_hwinfo_median_interval_seconds": 0.8,
+  "maximum_hwinfo_median_interval_seconds": 1.2,
+  "maximum_hwinfo_sampling_gap_seconds": 2.5,
+  "maximum_hwinfo_integration_method_spread": 0.01,
   "measurement_boundary": "session.run only",
-  "energy_domain": "Intel RAPL CPU package via Intel PCM"
+  "energy_backends": {
+    "pcm": "Intel RAPL CPU package counter delta via Intel PCM",
+    "hwinfo": "HWiNFO CPU Package Power sensor telemetry integrated over time; not a PCM/RAPL counter delta"
+  }
 }

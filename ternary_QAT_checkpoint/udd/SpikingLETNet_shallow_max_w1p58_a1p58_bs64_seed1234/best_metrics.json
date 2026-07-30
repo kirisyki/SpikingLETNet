@@ -1,0 +1,21 @@
+{
+  "epoch": 97,
+  "val_miou": 0.22321242094039917,
+  "per_class_iou": [
+    0.1910058856010437,
+    0.12137587368488312,
+    0.16031914949417114,
+    0.5302098393440247,
+    3.277008727309294e-05,
+    0.33633098006248474
+  ],
+  "ternary_stats": {
+    "layer_count": 71,
+    "weight_count": 1291936,
+    "negative_count": 124632,
+    "zero_count": 1043433,
+    "positive_count": 123871,
+    "zero_fraction": 0.8076506885790008,
+    "theoretical_bits_per_weight": 1.584962500721156
+  }
+}

@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Keep warmed ORT sessions resident while PCM measures triggered trials."""
+"""Keep warmed ORT sessions resident while an energy backend measures trials."""
 
 from __future__ import annotations
 
@@ -58,13 +58,17 @@ class State:
             raise ValueError("duration must be positive")
         if action == "idle":
             started_utc = utc_now()
+            started_epoch_ns = time.time_ns()
             started = time.perf_counter()
             time.sleep(duration)
             elapsed = time.perf_counter() - started
+            ended_epoch_ns = time.time_ns()
             return {
                 "action": "idle",
                 "started_at_utc": started_utc,
                 "ended_at_utc": utc_now(),
+                "started_epoch_ns": started_epoch_ns,
+                "ended_epoch_ns": ended_epoch_ns,
                 "elapsed_seconds": elapsed,
                 "iterations": 0,
             }
@@ -75,6 +79,7 @@ class State:
             raise ValueError(f"Unsupported model: {label}")
         session = self.sessions[label]
         started_utc = utc_now()
+        started_epoch_ns = time.time_ns()
         started = time.perf_counter()
         index = 0
         checksum = 0.0
@@ -83,11 +88,14 @@ class State:
             checksum += float(output.reshape(-1)[0])
             index += 1
         elapsed = time.perf_counter() - started
+        ended_epoch_ns = time.time_ns()
         return {
             "action": "run",
             "model": label,
             "started_at_utc": started_utc,
             "ended_at_utc": utc_now(),
+            "started_epoch_ns": started_epoch_ns,
+            "ended_epoch_ns": ended_epoch_ns,
             "elapsed_seconds": elapsed,
             "iterations": index,
             "mean_seconds_per_image": elapsed / index,

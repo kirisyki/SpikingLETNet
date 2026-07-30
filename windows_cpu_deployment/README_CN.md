@@ -23,25 +23,34 @@ Set-ExecutionPolicy -Scope Process Bypass
 .\setup_windows.ps1 -InstallPython
 ```
 
-准备 Intel PCM，详见 [PCM_SETUP_CN.md](PCM_SETUP_CN.md)，然后在管理员 PowerShell 中验证：
+能耗提供两条互斥路径：HWiNFO 功率日志积分适用于保持 Secure Boot/HVCI 开启的机器；Intel PCM 路径继续保留。两者的测量方法和字段名称不同，不能混合。
+
+### HWiNFO 路径（当前受限 Windows PC 推荐）
+
+详见 [HWINFO_SETUP_CN.md](HWINFO_SETUP_CN.md)。先完成延迟测试：
+
+```powershell
+.\run_all.ps1 -SkipEnergy
+```
+
+在 HWiNFO Sensors-only 中以 1000 ms 周期开始 CSV 日志，然后依次执行：
+
+```powershell
+.\run_hwinfo_energy.ps1 -Mode Record -HwinfoExe "C:\Tools\HWiNFO64\HWiNFO64.exe"
+# Record 完成后停止 HWiNFO 日志
+.\run_hwinfo_energy.ps1 -Mode Analyze -HwinfoLog "D:\logs\hwinfo_energy.csv" -HwinfoExe "C:\Tools\HWiNFO64\HWiNFO64.exe"
+```
+
+### Intel PCM 路径
+
+详见 [PCM_SETUP_CN.md](PCM_SETUP_CN.md)。驱动满足当前 Windows 签名策略时，在管理员 PowerShell 中运行：
 
 ```powershell
 .\check_pcm.ps1 -PcmExe "C:\Tools\pcm\pcm.exe"
-```
-
-运行默认 CPU EP 正式测试：
-
-```powershell
 .\run_all.ps1 -PcmExe "C:\Tools\pcm\pcm.exe"
 ```
 
-同时测试可选 OpenVINO EP：
-
-```powershell
-.\run_all.ps1 -PcmExe "C:\Tools\pcm\pcm.exe" -IncludeOpenVino
-```
-
-只测试延迟、跳过能耗：
+双后端测试在相应命令加入 `-IncludeOpenVino`。只测试延迟、跳过能耗：
 
 ```powershell
 .\run_all.ps1 -SkipEnergy
@@ -55,10 +64,10 @@ Set-ExecutionPolicy -Scope Process Bypass
 - 同时输出 20 次辅助端到端计时，覆盖 PNG 解码、RGB 转换、缩放、归一化和 `session.run()`；该结果不作为主性能口径。
 - 先扫描 P 核/E 核、SMT 和线程数；同一后端内 FP32/W8A8 使用同一个主配置。
 - 正式延迟测试预热 30 秒并至少执行 200 次，报告 median/P90/P95/P99。
-- 能耗测试先完成会话创建和预热，再由 PCM 精确包围 60 秒推理触发过程。
-- 每个模型 5 次能耗试验，FP32/W8A8 交替；另有 3 次同环境空闲基线。
-- 报告原始 Package J/image、平均 Package W 和扣除空闲功率后的 Dynamic J/image。
-- 变异系数超过 5%、热余量不大于 2°C 或测试前后台 CPU 超过 10% 时，试验会标记无效并最多补跑 3 次。
+- PCM 使用 60 秒计数器差值窗口；HWiNFO 使用连续 1000 ms 功率日志和服务端 epoch 时间标记，对 180 秒窗口做梯形积分。
+- 每个模型至少 5 次能耗试验并交替执行，另有 3 次空闲基线；HWiNFO 还连续预采集每模型 3 个补测储备窗口。
+- PCM 指标保持原字段；HWiNFO 指标必须保留 `HWiNFO`/`hwinfo_` 标签，并报告积分 Package J/image、平均 Package W 和扣除空闲功率后的 Dynamic J/image。
+- CV 超过 5%、热余量不大于 2°C、温度达到 98°C、发生热降频或测试前后台 CPU 超过 10% 时标记不稳定/无效；HWiNFO 另要求完整率至少 99%、中位采样间隔 0.8–1.2 秒、最大缺口 2.5 秒、积分方法跨度不超过 1%。
 - 脚本临时切换 Windows“高性能”电源计划，并在正常或异常退出时恢复原计划。
 - 本任务不设 mIoU 或量化精度门槛；只检查可加载、固定形状、有限输出和量化/内核覆盖。
 
@@ -70,8 +79,10 @@ Set-ExecutionPolicy -Scope Process Bypass
 - `results/latency_<provider>.json`：正式延迟统计。
 - `results/provider_profile_<provider>.json`：ORT provider 节点分配。
 - `results/openvino_runtime_precision.json`：OpenVINO CPU 实际执行精度与实现。
-- `results/energy_<provider>.json`、`energy_trials_<provider>.csv`：能耗汇总与逐次结果。
-- `results/raw_pcm/`：原始 PCM CSV、命令和诊断日志。
+- `results/energy_<provider>.json`、`energy_trials_<provider>.csv`：PCM 能耗结果。
+- `results/energy_hwinfo_<provider>.json`、`energy_trials_hwinfo_<provider>.csv`：HWiNFO 功率积分结果。
+- `results/raw_pcm/`：原始 PCM 证据。
+- `results/raw_hwinfo/`：原始 HWiNFO CSV 及其 SHA-256。
 - `results/result_summary.md`：最终中文摘要。
 
 ## 数据与追溯
@@ -84,4 +95,4 @@ Set-ExecutionPolicy -Scope Process Bypass
 
 ## 注意
 
-CPU Package 能耗包含测量窗口内整颗 CPU package 上的其他活动，不等于墙上插座的整机能耗。关闭浏览器、同步软件、游戏启动器和其他监控工具，保持散热稳定后再运行。不要把 CPU EP 的 FP32 结果与 OpenVINO EP 的 W8A8 结果拼成一组对比。
+CPU Package 能耗包含测量窗口内整颗 CPU package 上的其他活动，不等于墙上插座的整机能耗。关闭浏览器、同步软件和游戏启动器；PCM 路径关闭其他 PMU 监控工具，HWiNFO 路径只保留用于采集的单个 HWiNFO Sensors 实例。保持散热稳定后再运行。不要把 CPU EP 的 FP32 结果与 OpenVINO EP 的 W8A8 结果拼成一组对比。

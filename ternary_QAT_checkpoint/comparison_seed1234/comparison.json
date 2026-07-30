@@ -1,0 +1,159 @@
+{
+  "protocol": {
+    "dataset": "UDD val_patches.txt",
+    "classes": [
+      "background",
+      "facade",
+      "road",
+      "vegetation",
+      "vehicle",
+      "roof"
+    ],
+    "T": 1,
+    "batch_size": 20,
+    "max_val_iters": 0
+  },
+  "results": {
+    "FP32": {
+      "miou": 0.6785023808479309,
+      "per_class_iou": [
+        0.5449322462081909,
+        0.6293352842330933,
+        0.6390929818153381,
+        0.8897508978843689,
+        0.5456108450889587,
+        0.8222922086715698
+      ],
+      "evaluated_batches": 424,
+      "elapsed_seconds": 20.717823781073093,
+      "weight_bits": 32.0,
+      "activation_bits": 32.0,
+      "checkpoint": {
+        "path": "/root/autodl-tmp/LETNet/checkpoint/udd/SpikingLETNet_shallow_maxbs64gpu1_trainval20260611-003821/model_best.pth",
+        "epoch": 286,
+        "best_miou_recorded": null,
+        "quantization_metadata": null
+      }
+    },
+    "W4/A4": {
+      "miou": 0.6195473074913025,
+      "per_class_iou": [
+        0.49017009139060974,
+        0.5768358111381531,
+        0.5958941578865051,
+        0.8745988607406616,
+        0.39856165647506714,
+        0.7812234163284302
+      ],
+      "evaluated_batches": 424,
+      "elapsed_seconds": 33.829287722706795,
+      "weight_bits": 4.0,
+      "activation_bits": 4.0,
+      "checkpoint": {
+        "path": "/root/autodl-tmp/LETNet/QAT_checkpoint/udd/SpikingLETNet_shallow_maxbs64gpu1_trainval20260612-135249/model_q_best.pth",
+        "epoch": 119,
+        "best_miou_recorded": null,
+        "quantization_metadata": null
+      }
+    },
+    "W1.58/A4": {
+      "miou": 0.5910900235176086,
+      "per_class_iou": [
+        0.4546132981777191,
+        0.5618504285812378,
+        0.5394566655158997,
+        0.858834445476532,
+        0.36513060331344604,
+        0.7666549682617188
+      ],
+      "evaluated_batches": 424,
+      "elapsed_seconds": 33.442559683695436,
+      "weight_bits": 1.584962500721156,
+      "activation_bits": 4.0,
+      "checkpoint": {
+        "path": "/root/autodl-tmp/LETNet/ternary_QAT_checkpoint/udd/SpikingLETNet_shallow_max_w1p58_a4_bs64_seed1234/model_q_best.pth",
+        "epoch": 150,
+        "best_miou_recorded": 0.5910084843635559,
+        "quantization_metadata": {
+          "format_version": 1,
+          "quantization": "ternary_weight_qat",
+          "weight_codes": [
+            -1,
+            0,
+            1
+          ],
+          "weight_scale": "per_output_channel_absmean",
+          "activation_mode": "a4",
+          "activation_scale": "per_tensor_dynamic",
+          "theoretical_weight_bits": 1.584962500721156,
+          "seed": 1234,
+          "T": 1,
+          "source_fp_checkpoint": "/root/autodl-tmp/LETNet/checkpoint/udd/SpikingLETNet_shallow_maxbs64gpu1_trainval20260611-003821/model_best.pth",
+          "ternary_stats": {
+            "layer_count": 71,
+            "weight_count": 1291936,
+            "negative_count": 91926,
+            "zero_count": 1113702,
+            "positive_count": 86308,
+            "zero_fraction": 0.8620411537413618,
+            "theoretical_bits_per_weight": 1.584962500721156
+          }
+        }
+      },
+      "weight_zero_fraction": 0.8620411537413618
+    },
+    "W1.58/A1.58": {
+      "miou": 0.2232590764760971,
+      "per_class_iou": [
+        0.1910414695739746,
+        0.1211031824350357,
+        0.16026027500629425,
+        0.5298978686332703,
+        3.211122748325579e-05,
+        0.3372195363044739
+      ],
+      "evaluated_batches": 424,
+      "elapsed_seconds": 41.01552480459213,
+      "weight_bits": 1.584962500721156,
+      "activation_bits": 1.584962500721156,
+      "checkpoint": {
+        "path": "/root/autodl-tmp/LETNet/ternary_QAT_checkpoint/udd/SpikingLETNet_shallow_max_w1p58_a1p58_bs64_seed1234/model_q_best.pth",
+        "epoch": 97,
+        "best_miou_recorded": 0.22321242094039917,
+        "quantization_metadata": {
+          "format_version": 1,
+          "quantization": "ternary_weight_qat",
+          "weight_codes": [
+            -1,
+            0,
+            1
+          ],
+          "weight_scale": "per_output_channel_absmean",
+          "activation_mode": "ternary",
+          "activation_scale": "per_tensor_dynamic",
+          "theoretical_weight_bits": 1.584962500721156,
+          "seed": 1234,
+          "T": 1,
+          "source_fp_checkpoint": "/root/autodl-tmp/LETNet/checkpoint/udd/SpikingLETNet_shallow_maxbs64gpu1_trainval20260611-003821/model_best.pth",
+          "ternary_stats": {
+            "layer_count": 71,
+            "weight_count": 1291936,
+            "negative_count": 124632,
+            "zero_count": 1043433,
+            "positive_count": 123871,
+            "zero_fraction": 0.8076506885790008,
+            "theoretical_bits_per_weight": 1.584962500721156
+          }
+        }
+      },
+      "weight_zero_fraction": 0.8076506885790008
+    }
+  },
+  "decision": {
+    "primary_gap_miou_points_w4_minus_w1p58_a4": 2.8457283973693848,
+    "threshold_miou_points": 2.0,
+    "verdict": "supports_w4_accuracy_value",
+    "explanation": "W4/A4 exceeds W1.58/A4 by at least 2 absolute mIoU points.",
+    "secondary_activation_penalty_miou_points": 36.783094704151154
+  }
+}

@@ -1,5 +1,7 @@
 # Intel PCM（Windows 11）准备说明
 
+若当前 Windows 因 PCM 驱动签名而受阻，请保持 Secure Boot/HVCI 开启，改用 [HWINFO_SETUP_CN.md](HWINFO_SETUP_CN.md)；本文件只描述仍可合法加载 PCM 驱动时的可选路径。
+
 本部署包使用 Intel Performance Counter Monitor（PCM）的 `pcm.exe` 读取 RAPL CPU Package 能量。正式能耗测试必须在原生 Windows 11 的管理员 PowerShell 中运行，WSL 不参与测量。
 
 ## 获取与安装

@@ -1,0 +1,39 @@
+{
+  "status": "complete",
+  "started_at": "2026-07-29T08:37:47.774254+00:00",
+  "primary_seed": 1234,
+  "replication_seeds_if_ambiguous": [
+    4321,
+    2026
+  ],
+  "arguments": {
+    "gpu": "0",
+    "output_root": "/root/autodl-tmp/LETNet/ternary_QAT_checkpoint",
+    "max_epochs": 150,
+    "batch_size": 64,
+    "num_workers": 6,
+    "log_interval": 50
+  },
+  "stages": [
+    {
+      "stage": "train_w1p58_a4_seed1234",
+      "status": "complete"
+    },
+    {
+      "stage": "train_w1p58_a1p58_seed1234",
+      "status": "complete"
+    },
+    {
+      "stage": "unified_comparison_seed1234",
+      "status": "complete"
+    }
+  ],
+  "primary_decision": {
+    "primary_gap_miou_points_w4_minus_w1p58_a4": 2.8457283973693848,
+    "threshold_miou_points": 2.0,
+    "verdict": "supports_w4_accuracy_value",
+    "explanation": "W4/A4 exceeds W1.58/A4 by at least 2 absolute mIoU points.",
+    "secondary_activation_penalty_miou_points": 36.783094704151154
+  },
+  "completed_at": "2026-07-30T08:18:15.854890+00:00"
+}
