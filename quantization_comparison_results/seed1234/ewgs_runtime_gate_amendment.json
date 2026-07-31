@@ -1,0 +1,29 @@
+{
+  "status": "completed",
+  "original_protocol": {
+    "run_epochs": 127,
+    "projected_ewgs_hessian_gpu_hours": 406.69774817432176,
+    "gate_gpu_hours": 72.0,
+    "passed": false
+  },
+  "amended_protocol": {
+    "run_epochs": 16,
+    "hessian_update_epochs": 15,
+    "hessian_batches_per_update": 10,
+    "hutchinson_max_iterations": 50,
+    "learning_rate_schedule_epochs": 150
+  },
+  "observed_resume_hessian_timing": {
+    "updates_observed": 5,
+    "mean_seconds_per_update": 813.8541341330856,
+    "min_seconds_per_update": 808.9790317956358,
+    "max_seconds_per_update": 830.4175736363977,
+    "estimated_total_hessian_gpu_hours_for_15_updates": 3.39105889222119
+  },
+  "completion": {
+    "checkpoint_epoch": 16,
+    "best_validation_miou": 0.4725943061565003,
+    "full_validation_miou": 0.47283653532246334
+  },
+  "interpretation": "The original gate record is retained for audit. The user later shortened all comparison baselines to 16 epochs, and the EWGS run completed under that amended budget."
+}

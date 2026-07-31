@@ -1,0 +1,2 @@
+epoch,train_loss,miou,iou_background,iou_facade,iou_road,iou_vegetation,iou_vehicle,iou_roof,model_lr,quantizer_lr,train_batches,validation_batches,train_seconds,validation_seconds
+1,1.4001826047897339,0.09137450301985632,0.1707175667841056,3.257637378131277e-05,0.06399241950316577,0.20671813593324967,0.0,0.10678631952483551,0.001,0.001,1,1,6.771403651684523,1.3809732627123594

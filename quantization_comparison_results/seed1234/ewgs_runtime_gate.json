@@ -1,0 +1,6 @@
+{
+  "projected_ewgs_hessian_gpu_hours": 406.69774817432176,
+  "gate_gpu_hours": 72.0,
+  "passed": false,
+  "action": "pause for explicit user approval; do not reduce Hessian settings"
+}
