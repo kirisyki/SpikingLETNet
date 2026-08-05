@@ -1,0 +1,123 @@
+from __future__ import annotations
+
+import copy
+import sys
+from pathlib import Path
+
+import pytest
+import torch
+import torch.nn as nn
+
+
+REPO_ROOT = Path(__file__).resolve().parents[2]
+NETWORK_ROOT = REPO_ROOT / "Network"
+if str(NETWORK_ROOT) not in sys.path:
+    sys.path.insert(0, str(NETWORK_ROOT))
+
+from quantization_distortion_probe.factorized_quantization import (  # noqa: E402
+    FactorizedQuantizedLayer,
+    build_probe_model,
+)
+from quantization_distortion_probe.qif_capture import (  # noqa: E402
+    QIFCapture,
+    compare_qif_captures,
+)
+from run_quantization_distortion_probe import source_id_from_path  # noqa: E402
+from model.module.neuron import QIFNode  # noqa: E402
+
+
+class TinyQIFModel(nn.Module):
+    def __init__(self) -> None:
+        super().__init__()
+        self.conv = nn.Conv2d(1, 1, 1, bias=True)
+        self.qif = QIFNode(T=8, bin=False)
+
+    def forward(self, x: torch.Tensor) -> torch.Tensor:
+        time_steps, batch_size = x.shape[:2]
+        convolved = self.conv(x.flatten(0, 1)).unflatten(
+            0, (time_steps, batch_size)
+        )
+        return self.qif(convolved)
+
+
+def test_probe_conversion_is_non_mutating_and_factorized():
+    source = TinyQIFModel()
+    before = copy.deepcopy(source.state_dict())
+    modes = {
+        "w4_qif": (True, False),
+        "a4_input_qif": (False, True),
+        "w4a4_input_qif": (True, True),
+    }
+    for mode, switches in modes.items():
+        converted = build_probe_model(source, mode, expected_layer_count=1)
+        wrapper = converted.conv
+        assert isinstance(wrapper, FactorizedQuantizedLayer)
+        assert wrapper.quantize_weight_enabled is switches[0]
+        assert wrapper.quantize_input_enabled is switches[1]
+    for key, value in source.state_dict().items():
+        torch.testing.assert_close(value, before[key])
+
+
+def test_historical_integer_plus8_bypass_is_preserved():
+    wrapper = FactorizedQuantizedLayer(
+        nn.Conv2d(1, 1, 1, bias=False),
+        "conv",
+        quantize_weight=False,
+        quantize_input=True,
+    )
+    x = torch.tensor([[[[-8.0, 0.0, 7.0, 8.0]]]])
+    torch.testing.assert_close(wrapper.quantized_input(x), x)
+    assert wrapper.audit.integer_bypass_calls == 1
+    assert wrapper.audit.plus8_bypass_calls == 1
+    assert wrapper.audit.plus8_values == 1
+
+
+def test_noninteger_input_uses_historical_per_tensor_codes():
+    wrapper = FactorizedQuantizedLayer(
+        nn.Conv2d(1, 1, 1, bias=False),
+        "conv",
+        quantize_weight=False,
+        quantize_input=True,
+    )
+    x = torch.tensor([[[[-9.0, -1.2, 0.2, 9.0]]]])
+    scale = 9.0 / 8.0
+    expected = torch.clamp(torch.round(x / scale), -8, 7) * scale
+    torch.testing.assert_close(wrapper.quantized_input(x), expected)
+    assert wrapper.audit.integer_bypass_calls == 0
+
+
+def test_qif_capture_returns_exact_per_sample_counts():
+    reference = TinyQIFModel()
+    variant = copy.deepcopy(reference)
+    with torch.no_grad():
+        reference.conv.weight.fill_(1.0)
+        reference.conv.bias.zero_()
+        variant.conv.weight.fill_(1.0)
+        variant.conv.bias.fill_(1.0)
+    reference_capture = QIFCapture(reference)
+    variant_capture = QIFCapture(variant)
+    x = torch.tensor([0.2, 1.2, 2.2, 8.2]).reshape(1, 2, 1, 1, 2)
+    reference(x)
+    variant(x)
+    rows = compare_qif_captures(reference_capture, variant_capture, batch_size=2)
+    assert len(rows) == 1
+    row = rows[0]
+    assert row["layer"] == "qif"
+    assert row["count"].tolist() == [2, 2]
+    assert row["disagreement_count"].tolist() == [2, 1]
+    assert row["abs_error_sum"].tolist() == [2, 1]
+    assert row["signed_error_sum"].tolist() == [2, 1]
+    reference_capture.close()
+    variant_capture.close()
+
+
+@pytest.mark.parametrize(
+    "path,expected",
+    [
+        ("/tmp/000061_1760_3696_img.png", "000061"),
+        ("/tmp/0119_3img2031_0_0_img.png", "0119_3img2031"),
+        ("/tmp/DJI_0031_200_400_img.png", "DJI_0031"),
+    ],
+)
+def test_source_id_from_path(path: str, expected: str):
+    assert source_id_from_path(path) == expected

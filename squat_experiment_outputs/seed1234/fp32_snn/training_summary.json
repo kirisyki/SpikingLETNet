@@ -1,0 +1,11 @@
+{
+  "best_miou": 0.6895255085768875,
+  "effective_batch": 64,
+  "elapsed_seconds": 20382.579973336076,
+  "epochs": 100,
+  "global_step": 40200,
+  "peak_memory_bytes": 60274845184,
+  "physical_batch": 16,
+  "stage": "fp32_lif_snn_amended_100_epochs",
+  "updates_per_epoch": 402
+}

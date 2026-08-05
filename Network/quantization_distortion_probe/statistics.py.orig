@@ -1,0 +1,253 @@
+"""Aggregation, cluster bootstrap, and preregistered decisions for the probe."""
+
+from __future__ import annotations
+
+from collections import defaultdict
+from typing import Iterable
+
+import numpy as np
+
+
+CLASS_NAMES = ("background", "facade", "road", "vegetation", "vehicle", "roof")
+VARIANT_MODES = ("w4_qif", "a4_input_qif", "w4a4_input_qif")
+
+
+def stage_for_layer(name: str) -> str:
+    if name.startswith("init_conv"):
+        return "stem"
+    if name.startswith(("downsample_1", "DAB_Block_1", "bn_prelu_2")):
+        return "encoder_1"
+    if name.startswith(("downsample_2", "DAB_Block_2", "bn_prelu_3")):
+        return "encoder_2"
+    if name.startswith(("downsample_3", "DAB_Block_3", "bn_prelu_4")):
+        return "encoder_3"
+    if name.startswith(("DAB_Block_4", "upsample_1", "bn_prelu_5", "LC3")):
+        return "decoder_4"
+    if name.startswith(("DAB_Block_5", "upsample_2", "bn_prelu_6", "LC2")):
+        return "decoder_5"
+    if name.startswith(("DAB_Block_6", "upsample_3", "bn_prelu_7", "LC1")):
+        return "decoder_6"
+    return "other"
+
+
+def confusion_result(matrix: np.ndarray) -> dict[str, object]:
+    matrix = matrix.astype(np.float64, copy=False)
+    diagonal = np.diag(matrix)
+    union = matrix.sum(0) + matrix.sum(1) - diagonal
+    iou = np.divide(
+        diagonal,
+        union,
+        out=np.full_like(diagonal, np.nan),
+        where=union != 0,
+    )
+    pixel_accuracy = diagonal.sum() / matrix.sum() if matrix.sum() else np.nan
+    return {
+        "miou": float(np.nanmean(iou)),
+        "pixel_accuracy": float(pixel_accuracy),
+        "per_class_iou": {
+            name: float(value) for name, value in zip(CLASS_NAMES, iou)
+        },
+    }
+
+
+def percentile_ci(values: np.ndarray) -> list[float]:
+    low, high = np.percentile(values, [2.5, 97.5])
+    return [float(low), float(high)]
+
+
+def _source_layer_metrics(
+    source_layer: dict[tuple[str, str, str], dict[str, int]],
+    sources: list[str],
+    active_layers: list[str],
+) -> dict[str, dict[str, dict[str, float]]]:
+    metrics: dict[str, dict[str, dict[str, float]]] = defaultdict(dict)
+    for mode in VARIANT_MODES:
+        for source in sources:
+            disagreement_rates: list[float] = []
+            mae_values: list[float] = []
+            signed_values: list[float] = []
+            for layer in active_layers:
+                raw = source_layer[(mode, source, layer)]
+                count = raw["count"]
+                if count <= 0:
+                    raise ValueError(f"empty aggregate for {mode}/{source}/{layer}")
+                disagreement_rates.append(raw["disagreement_count"] / count)
+                mae_values.append(raw["abs_error_sum"] / count)
+                signed_values.append(raw["signed_error_sum"] / count)
+            metrics[mode][source] = {
+                "macro_disagreement": float(np.mean(disagreement_rates)),
+                "macro_mae": float(np.mean(mae_values)),
+                "macro_signed_error": float(np.mean(signed_values)),
+            }
+    return metrics
+
+
+def _bootstrap_source_means(
+    source_values: np.ndarray,
+    rng: np.random.Generator,
+    replicates: int,
+) -> np.ndarray:
+    source_count = source_values.shape[0]
+    indices = rng.integers(0, source_count, size=(replicates, source_count))
+    return source_values[indices].mean(axis=1)
+
+
+def summarize_probe(
+    *,
+    source_layer: dict[tuple[str, str, str], dict[str, int]],
+    source_confusion: dict[tuple[str, str], np.ndarray],
+    source_prediction_flip: dict[tuple[str, str], dict[str, int]],
+    sources: Iterable[str],
+    active_layers: list[str],
+    bootstrap_replicates: int,
+    bootstrap_seed: int,
+) -> dict[str, object]:
+    sources = sorted(sources)
+    rng = np.random.default_rng(bootstrap_seed)
+    source_metrics = _source_layer_metrics(source_layer, sources, active_layers)
+
+    representation: dict[str, object] = {}
+    bootstrap_by_mode: dict[str, dict[str, np.ndarray]] = {}
+    for mode in VARIANT_MODES:
+        mode_rows = [source_metrics[mode][source] for source in sources]
+        bootstrap_by_mode[mode] = {}
+        representation[mode] = {}
+        for metric in ("macro_disagreement", "macro_mae", "macro_signed_error"):
+            values = np.asarray([row[metric] for row in mode_rows], dtype=np.float64)
+            boot = _bootstrap_source_means(values, rng, bootstrap_replicates)
+            bootstrap_by_mode[mode][metric] = boot
+            representation[mode][metric] = {
+                "source_balanced_mean": float(values.mean()),
+                "source_standard_deviation": float(values.std(ddof=1)),
+                "cluster_bootstrap_95ci": percentile_ci(boot),
+            }
+
+    full_d = np.asarray(
+        [source_metrics["w4a4_input_qif"][s]["macro_disagreement"] for s in sources]
+    )
+    weight_d = np.asarray(
+        [source_metrics["w4_qif"][s]["macro_disagreement"] for s in sources]
+    )
+    activation_d = np.asarray(
+        [source_metrics["a4_input_qif"][s]["macro_disagreement"] for s in sources]
+    )
+    full_mae = np.asarray(
+        [source_metrics["w4a4_input_qif"][s]["macro_mae"] for s in sources]
+    )
+    weight_mae = np.asarray(
+        [source_metrics["w4_qif"][s]["macro_mae"] for s in sources]
+    )
+    activation_mae = np.asarray(
+        [source_metrics["a4_input_qif"][s]["macro_mae"] for s in sources]
+    )
+
+    contrasts = {
+        "w4a4_minus_w4_disagreement": full_d - weight_d,
+        "w4a4_minus_a4input_disagreement": full_d - activation_d,
+        "mae_interaction_w4a4_minus_w4_minus_a4input": (
+            full_mae - weight_mae - activation_mae
+        ),
+    }
+    contrast_summary: dict[str, object] = {}
+    for name, values in contrasts.items():
+        boot = _bootstrap_source_means(values, rng, bootstrap_replicates)
+        contrast_summary[name] = {
+            "source_balanced_mean": float(values.mean()),
+            "cluster_bootstrap_95ci": percentile_ci(boot),
+            "positive_in_all_sources": bool(np.all(values > 0)),
+            "positive_source_count": int(np.sum(values > 0)),
+            "source_count": len(sources),
+        }
+
+    stage_layers: dict[str, list[str]] = defaultdict(list)
+    for layer in active_layers:
+        stage_layers[stage_for_layer(layer)].append(layer)
+    stage_summary: dict[str, object] = {}
+    for mode in VARIANT_MODES:
+        stage_summary[mode] = {}
+        for stage, layers in sorted(stage_layers.items()):
+            per_source = []
+            for source in sources:
+                rates = []
+                for layer in layers:
+                    raw = source_layer[(mode, source, layer)]
+                    rates.append(raw["disagreement_count"] / raw["count"])
+                per_source.append(float(np.mean(rates)))
+            values = np.asarray(per_source)
+            boot = _bootstrap_source_means(values, rng, bootstrap_replicates)
+            stage_summary[mode][stage] = {
+                "active_layer_count": len(layers),
+                "source_balanced_mean_disagreement": float(values.mean()),
+                "cluster_bootstrap_95ci": percentile_ci(boot),
+            }
+
+    task: dict[str, object] = {}
+    for mode in ("fp_qif", *VARIANT_MODES):
+        total = sum((source_confusion[(mode, s)] for s in sources), np.zeros((6, 6), dtype=np.int64))
+        task[mode] = confusion_result(total)
+        if mode != "fp_qif":
+            flip = sum(source_prediction_flip[(mode, s)]["flip_count"] for s in sources)
+            valid = sum(source_prediction_flip[(mode, s)]["valid_count"] for s in sources)
+            task[mode]["prediction_flip_rate_vs_fp_qif"] = float(flip / valid)
+
+    source_count = len(sources)
+    sample_indices = rng.integers(
+        0, source_count, size=(bootstrap_replicates, source_count)
+    )
+    task_delta = np.empty(bootstrap_replicates, dtype=np.float64)
+    for index, sampled in enumerate(sample_indices):
+        fp_matrix = sum(
+            (source_confusion[("fp_qif", sources[i])] for i in sampled),
+            np.zeros((6, 6), dtype=np.int64),
+        )
+        full_matrix = sum(
+            (source_confusion[("w4a4_input_qif", sources[i])] for i in sampled),
+            np.zeros((6, 6), dtype=np.int64),
+        )
+        task_delta[index] = (
+            confusion_result(full_matrix)["miou"]
+            - confusion_result(fp_matrix)["miou"]
+        )
+    task_contrast = {
+        "w4a4_minus_fp_miou": (
+            task["w4a4_input_qif"]["miou"] - task["fp_qif"]["miou"]
+        ),
+        "cluster_bootstrap_95ci": percentile_ci(task_delta),
+    }
+
+    w_minus = contrast_summary["w4a4_minus_w4_disagreement"]
+    a_minus = contrast_summary["w4a4_minus_a4input_disagreement"]
+    interaction = contrast_summary["mae_interaction_w4a4_minus_w4_minus_a4input"]
+    task_drop = task_contrast["cluster_bootstrap_95ci"][1] < 0
+    observable = (
+        w_minus["cluster_bootstrap_95ci"][0] > 0
+        and a_minus["cluster_bootstrap_95ci"][0] > 0
+        and task_drop
+    )
+    coupled = observable and interaction["cluster_bootstrap_95ci"][0] > 0
+
+    return {
+        "source_count": len(sources),
+        "active_layer_count": len(active_layers),
+        "representation": representation,
+        "contrasts": contrast_summary,
+        "stage_summary": stage_summary,
+        "task": task,
+        "task_contrast": task_contrast,
+        "preregistered_decision": {
+            "observable_w4a4_distortion": bool(observable),
+            "coupled_superadditive_distortion": bool(coupled),
+            "criteria": {
+                "w4a4_minus_w4_disagreement_ci_lower_gt_zero": bool(
+                    w_minus["cluster_bootstrap_95ci"][0] > 0
+                ),
+                "w4a4_minus_a4input_disagreement_ci_lower_gt_zero": bool(
+                    a_minus["cluster_bootstrap_95ci"][0] > 0
+                ),
+                "w4a4_minus_fp_miou_ci_upper_lt_zero": bool(task_drop),
+                "mae_interaction_ci_lower_gt_zero": bool(
+                    interaction["cluster_bootstrap_95ci"][0] > 0
+                ),
+            },
+        },
+    }

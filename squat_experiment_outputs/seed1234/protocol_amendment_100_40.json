@@ -1,0 +1,18 @@
+{
+  "approval": "user explicitly requested training with the 100+40 plan",
+  "approved_at": "2026-08-05T08:42:48.219033+00:00",
+  "format": "qad-vs-squat-protocol-amendment-v1",
+  "overrides": {
+    "accepted_estimated_hours": 81.12569356267858,
+    "formal_training_allowed": true,
+    "fp32_epochs": 100,
+    "squat_epochs": 40
+  },
+  "unchanged": {
+    "effective_batch": 64,
+    "full_validation_each_epoch": true,
+    "historical_qad_compute": false,
+    "physical_batch": 16,
+    "time_steps": 8
+  }
+}

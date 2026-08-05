@@ -1,0 +1,99 @@
+{
+  "data": {
+    "augmentation": [
+      "HorizontalFlip",
+      "VerticalFlip",
+      "RandomRotate90",
+      "Resize(400,400)"
+    ],
+    "train_list": "/root/autodl-tmp/UDD/UDD6/preprocessed/train_patches.txt",
+    "train_samples": 25700,
+    "validation_list": "/root/autodl-tmp/UDD/UDD6/preprocessed/val_patches.txt",
+    "validation_samples": 8478
+  },
+  "git_commit": "b0abc50add8c46c07ae5627962c9c70b07d9fec0",
+  "git_status": "?? Network/squat_comparison/\n?? docs/qad_vs_squat_experiment_plan.md\n?? docs/quantization_experiment_handoff_summary.md\n?? tests/squat_comparison/",
+  "gpu": {
+    "name": "NVIDIA RTX PRO 6000 Blackwell Server Edition",
+    "total_memory_bytes": 101974081536
+  },
+  "historical": {
+    "execution_policy": "read frozen metrics only; no QAD train/eval/convert",
+    "fp32_qif": {
+      "miou": 0.6785024141945621,
+      "per_class_iou": {
+        "background": 0.5449321807875185,
+        "facade": 0.6293353007030607,
+        "road": 0.6390930014582594,
+        "roof": 0.8222921977622362,
+        "vegetation": 0.8897509022147535,
+        "vehicle": 0.5456109022415445
+      }
+    },
+    "qad": {
+      "miou": 0.6195473169172718,
+      "per_class_iou": {
+        "background": 0.4901700688908935,
+        "facade": 0.5768358315111254,
+        "road": 0.5958942730379632,
+        "roof": 0.7812233261973497,
+        "vegetation": 0.8745987569537662,
+        "vehicle": 0.39856164491253276
+      }
+    },
+    "source": "/root/autodl-tmp/LETNet/quantization_comparison_results/seed1234/comparison.json",
+    "source_sha256": "67daba5d843da84b28006466b83cb303ec06d919468f4b74600732afa676e1a8"
+  },
+  "pipeline_policy": [
+    "unit_tests",
+    "preflight",
+    "train_fp32_lif_from_random_init",
+    "train_w4m4s1_squat_from_best_fp32_lif",
+    "evaluate_new_models_and_read_frozen_qad_json"
+  ],
+  "prohibited_pipeline_nodes": [
+    "qad_train",
+    "qad_eval",
+    "qad_convert"
+  ],
+  "protocol": {
+    "adam_beta1": 0.9,
+    "adam_beta2": 0.999,
+    "adam_eps": 1e-08,
+    "classes": 6,
+    "comparable_band": 0.005,
+    "effective_train_batch": 64,
+    "eta_min": 1e-06,
+    "expected_validation_samples": 8478,
+    "expected_weight_layers": 71,
+    "fp32_learning_rate": 0.001,
+    "fp32_max_epochs": 300,
+    "fp32_min_epochs": 100,
+    "historical_fp32_qif_miou": 0.6785024141945621,
+    "historical_qad_miou": 0.6195473169172718,
+    "input_height": 400,
+    "input_width": 400,
+    "seed": 1234,
+    "squat_learning_rate": 0.0003,
+    "squat_max_epochs": 127,
+    "squat_min_epochs": 40,
+    "time_steps": 8,
+    "validation_batch": 20,
+    "weight_decay": 0.0001,
+    "workers": 8
+  },
+  "software": {
+    "amp": false,
+    "cuda_runtime": "12.8",
+    "cudnn": 90701,
+    "python": "3.12.3 | packaged by Anaconda, Inc. | (main, May  6 2024, 19:46:43) [GCC 11.2.0]",
+    "torch": "2.7.0+cu128"
+  },
+  "source_sha256": {
+    "/root/autodl-tmp/LETNet/Network/configs/SpikingLETNet_shallow/1.3M.yaml": "ab1008283b7f2f539d17654ae30861c5a794145ac3aaa1d4b5f02fc1589becb8",
+    "/root/autodl-tmp/LETNet/Network/model/SpikingLETNet_shallow_max.py": "44ec0db9fb8044373bb0073a312af39dfb22a54faee5ad64ade6540936b1a907",
+    "/root/autodl-tmp/LETNet/Network/model/module/neuron.py": "8ec9d7f748d96c859bce3ddd03d2745fe27b5b8ed7ab3b18e514edb8c325c9d5",
+    "/root/autodl-tmp/LETNet/Network/squat_comparison/preflight.py": "b068d9e4b097bebb2303ff156c0ed69250048c199ef975ae7b9b6a6d5427d814",
+    "/root/autodl-tmp/LETNet/quantization_comparison_results/seed1234/comparison.json": "67daba5d843da84b28006466b83cb303ec06d919468f4b74600732afa676e1a8"
+  }
+}

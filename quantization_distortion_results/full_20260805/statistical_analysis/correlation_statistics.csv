@@ -1,0 +1,9 @@
+x,x_label,y,y_label,method,coefficient,p_value,bootstrap_ci_low,bootstrap_ci_high,source_count
+d_w4a4,W4A4 code disagreement,prediction_flip_w4a4,prediction-flip rate,spearman,0.8728291317,8.189900443e-12,0.7641573033,0.9274977957,35
+d_w4a4,W4A4 code disagreement,prediction_flip_w4a4,prediction-flip rate,pearson,0.8558345343,5.684406473e-11,0.7774532386,0.9206790202,35
+d_w4a4,W4A4 code disagreement,miou_drop_w4a4,per-source mIoU drop,spearman,0.7425770308,3.268927677e-07,0.5096442637,0.8744409088,35
+d_w4a4,W4A4 code disagreement,miou_drop_w4a4,per-source mIoU drop,pearson,0.797416098,9.80710154e-09,0.6416077195,0.8989553704,35
+mae_w4a4,W4A4 code MAE,prediction_flip_w4a4,prediction-flip rate,spearman,0.8705882353,1.073757421e-11,0.7446871159,0.9243127632,35
+mae_w4a4,W4A4 code MAE,prediction_flip_w4a4,prediction-flip rate,pearson,0.8458723328,1.583569414e-10,0.7625600958,0.917327764,35
+mae_w4a4,W4A4 code MAE,miou_drop_w4a4,per-source mIoU drop,spearman,0.7394957983,3.878126107e-07,0.4895914613,0.8830495655,35
+mae_w4a4,W4A4 code MAE,miou_drop_w4a4,per-source mIoU drop,pearson,0.8061812419,5.071022871e-09,0.6557549828,0.9056145564,35

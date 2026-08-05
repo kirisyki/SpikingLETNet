@@ -1,0 +1,2031 @@
+{
+  "surface": "report",
+  "manifest": {
+    "version": 1,
+    "surface": "report",
+    "title": "W4A4 Integer-LIF 量化失真的统计审计",
+    "description": "Frozen-checkpoint statistical decomposition of QIF code distortion and semantic-segmentation degradation.",
+    "generatedAt": "2026-08-05T14:40:10.371100Z",
+    "sources": [
+      {
+        "id": "derived-analysis",
+        "label": "Frozen probe derived statistical analysis",
+        "path": "quantization_distortion_results/full_20260805/statistical_analysis/analysis_summary.json",
+        "query": {
+          "description": "Source-balanced aggregation, paired cluster bootstrap, layer/stage decomposition, and source-level correlation computed from the frozen probe counts.",
+          "engine": "DuckDB",
+          "language": "sql",
+          "sql": "SELECT * FROM read_json_auto('quantization_distortion_results/full_20260805/statistical_analysis/analysis_summary.json', format = 'unstructured');",
+          "query": "The SQL loads the reviewed derived snapshot; run build_analysis.py to reproduce its Python statistics from raw counts.",
+          "tables_used": [
+            "quantization_distortion_results/full_20260805/source_layer_aggregates.json",
+            "quantization_distortion_results/full_20260805/source_confusion.json",
+            "quantization_distortion_results/full_20260805/per_patch_task_counts.csv.gz",
+            "quantization_distortion_results/full_20260805/summary.json"
+          ],
+          "filters": [
+            "UDD6 validation only",
+            "35 original source-image clusters",
+            "78 active QIF layers",
+            "frozen checkpoint; T=1"
+          ],
+          "metric_definitions": [
+            "Code disagreement D_l = count(q_variant != q_reference) / element count.",
+            "Source-balanced macro D = equal-weight mean over active layers within source, then equal-weight mean over 35 sources.",
+            "Code MAE = sum(abs(q_variant - q_reference)) / element count.",
+            "Zero/saturation deltas = variant rate minus FP-QIF reference rate.",
+            "All reported uncertainty intervals resample the 35 source-image clusters with replacement."
+          ],
+          "executed_at": "2026-08-05T14:40:10.371100Z"
+        }
+      }
+    ],
+    "cards": [
+      {
+        "id": "card-disagreement",
+        "description": "Equal-weight mean over 78 active QIF layers and 35 source images.",
+        "dataset": "headline",
+        "sourceId": "derived-analysis",
+        "metrics": [
+          {
+            "label": "W4A4 code disagreement",
+            "field": "full_disagreement",
+            "format": "percent"
+          }
+        ]
+      },
+      {
+        "id": "card-step",
+        "description": "Micro average absolute code-level movement, conditional on a changed code.",
+        "dataset": "headline",
+        "sourceId": "derived-analysis",
+        "metrics": [
+          {
+            "label": "Code steps per changed value",
+            "field": "conditional_step",
+            "format": "number"
+          },
+          {
+            "label": "At least one-step flips",
+            "field": "single_step_lower_bound",
+            "format": "percent"
+          }
+        ]
+      },
+      {
+        "id": "card-task",
+        "description": "Aggregate validation mIoU loss relative to FP-QIF.",
+        "dataset": "headline",
+        "sourceId": "derived-analysis",
+        "metrics": [
+          {
+            "label": "W4A4 mIoU change",
+            "field": "miou_drop",
+            "format": "percent",
+            "signed": true
+          }
+        ]
+      },
+      {
+        "id": "card-correlation",
+        "description": "Spearman correlation across the 35 original source images.",
+        "dataset": "headline",
+        "sourceId": "derived-analysis",
+        "metrics": [
+          {
+            "label": "D vs prediction-flip rho",
+            "field": "rho_flip",
+            "format": "number"
+          }
+        ]
+      }
+    ],
+    "charts": [
+      {
+        "id": "chart-stage",
+        "title": "Stage-level QIF code disagreement",
+        "subtitle": "W4A4 distortion peaks at Decoder 6; W4 is the dominant single perturbation.",
+        "intent": "comparison",
+        "question": "Where in the network is discrete-code distortion concentrated?",
+        "rationale": "Grouped stage comparison separates depth effects from quantization mode effects.",
+        "comparisonContext": {
+          "baseline": "FP-QIF",
+          "grain": "stage",
+          "unit": "rate"
+        },
+        "type": "bar",
+        "dataset": "stage_chart",
+        "sourceId": "derived-analysis",
+        "encodings": {
+          "x": {
+            "field": "stage_label",
+            "type": "ordinal",
+            "label": "Network stage"
+          },
+          "y": {
+            "field": "disagreement",
+            "type": "quantitative",
+            "format": "percent",
+            "label": "Code disagreement"
+          },
+          "color": {
+            "field": "mode_label",
+            "type": "nominal",
+            "label": "Perturbation"
+          },
+          "tooltip": [
+            {
+              "field": "disagreement_ci_low",
+              "type": "quantitative",
+              "format": "percent",
+              "label": "95% CI low"
+            },
+            {
+              "field": "disagreement_ci_high",
+              "type": "quantitative",
+              "format": "percent",
+              "label": "95% CI high"
+            },
+            {
+              "field": "layer_count",
+              "type": "quantitative",
+              "label": "Layers"
+            }
+          ]
+        },
+        "legend": {
+          "position": "bottom",
+          "title": "Perturbation"
+        },
+        "settings": {
+          "groupMode": "grouped",
+          "sort": "none"
+        },
+        "valueFormat": "percent",
+        "layout": "full"
+      },
+      {
+        "id": "chart-source",
+        "title": "Source-level code disagreement and prediction change",
+        "subtitle": "The association is strong across 35 source images (Spearman rho = 0.873), but is descriptive rather than causal.",
+        "intent": "relationship",
+        "question": "Does greater representation distortion co-occur with greater output instability?",
+        "rationale": "One point per independent source-image cluster preserves the inferential unit.",
+        "comparisonContext": {
+          "baseline": "FP-QIF",
+          "grain": "source image",
+          "unit": "rate"
+        },
+        "type": "scatter",
+        "dataset": "source_scatter",
+        "sourceId": "derived-analysis",
+        "encodings": {
+          "x": {
+            "field": "d_w4a4",
+            "type": "quantitative",
+            "format": "percent",
+            "label": "W4A4 code disagreement"
+          },
+          "y": {
+            "field": "prediction_flip_w4a4",
+            "type": "quantitative",
+            "format": "percent",
+            "label": "Prediction-flip rate"
+          },
+          "label": {
+            "field": "source_id",
+            "type": "text",
+            "label": "Source"
+          },
+          "tooltip": [
+            {
+              "field": "source_id",
+              "type": "text",
+              "label": "Source"
+            },
+            {
+              "field": "miou_drop_w4a4",
+              "type": "quantitative",
+              "format": "percent",
+              "label": "Per-source mIoU drop"
+            },
+            {
+              "field": "mae_w4a4",
+              "type": "quantitative",
+              "label": "Code MAE"
+            }
+          ]
+        },
+        "valueFormat": "percent",
+        "layout": "full"
+      },
+      {
+        "id": "chart-class",
+        "title": "Per-class IoU under frozen quantization perturbations",
+        "subtitle": "Road and vehicle are most sensitive, while vegetation is comparatively robust.",
+        "intent": "comparison",
+        "question": "Is the task degradation uniform across semantic classes?",
+        "rationale": "Grouped class comparison exposes content-specific downstream sensitivity.",
+        "comparisonContext": {
+          "baseline": "FP-QIF",
+          "grain": "semantic class",
+          "unit": "IoU"
+        },
+        "type": "bar",
+        "dataset": "class_long",
+        "sourceId": "derived-analysis",
+        "encodings": {
+          "x": {
+            "field": "class",
+            "type": "nominal",
+            "label": "Class"
+          },
+          "y": {
+            "field": "iou",
+            "type": "quantitative",
+            "format": "percent",
+            "label": "IoU"
+          },
+          "color": {
+            "field": "mode_label",
+            "type": "nominal",
+            "label": "Mode"
+          },
+          "tooltip": [
+            {
+              "field": "full_drop",
+              "type": "quantitative",
+              "format": "percent",
+              "label": "FP-to-W4A4 drop"
+            },
+            {
+              "field": "relative_full_drop",
+              "type": "quantitative",
+              "format": "percent",
+              "label": "Relative drop"
+            }
+          ]
+        },
+        "legend": {
+          "position": "bottom",
+          "title": "Mode"
+        },
+        "settings": {
+          "groupMode": "grouped",
+          "sort": "none"
+        },
+        "valueFormat": "percent",
+        "layout": "full"
+      }
+    ],
+    "tables": [
+      {
+        "id": "table-stage-shape",
+        "title": "W4A4 stage-level distortion morphology",
+        "subtitle": "Positive signed error means codes increase; positive zero delta means more zero outputs.",
+        "dataset": "full_stage",
+        "defaultSort": {
+          "field": "disagreement",
+          "direction": "desc"
+        },
+        "density": "dense",
+        "sourceId": "derived-analysis",
+        "layout": "full",
+        "columns": [
+          {
+            "field": "stage_label",
+            "label": "Stage",
+            "type": "text"
+          },
+          {
+            "field": "layer_count",
+            "label": "Layers",
+            "format": "number"
+          },
+          {
+            "field": "disagreement",
+            "label": "D",
+            "format": "percent"
+          },
+          {
+            "field": "mae",
+            "label": "MAE",
+            "format": "number"
+          },
+          {
+            "field": "signed_error",
+            "label": "Signed error",
+            "format": "number",
+            "movement": true
+          },
+          {
+            "field": "zero_delta",
+            "label": "Zero-rate delta",
+            "format": "percent",
+            "movement": true
+          },
+          {
+            "field": "saturation_delta",
+            "label": "Saturation delta",
+            "format": "percent",
+            "movement": true
+          },
+          {
+            "field": "distortion_contribution_share",
+            "label": "Share of macro distortion",
+            "format": "percent"
+          }
+        ]
+      },
+      {
+        "id": "table-layers",
+        "title": "Highest-distortion active QIF layers",
+        "subtitle": "Ranked by source-balanced W4A4 code disagreement.",
+        "dataset": "top_layers",
+        "defaultSort": {
+          "field": "d_w4a4",
+          "direction": "desc"
+        },
+        "density": "dense",
+        "sourceId": "derived-analysis",
+        "layout": "full",
+        "columns": [
+          {
+            "field": "layer",
+            "label": "Layer",
+            "type": "text"
+          },
+          {
+            "field": "stage",
+            "label": "Stage",
+            "type": "text"
+          },
+          {
+            "field": "d_w4",
+            "label": "W4 D",
+            "format": "percent"
+          },
+          {
+            "field": "d_a4",
+            "label": "A4 D",
+            "format": "percent"
+          },
+          {
+            "field": "d_w4a4",
+            "label": "W4A4 D",
+            "format": "percent"
+          },
+          {
+            "field": "delta_d_full_minus_w4",
+            "label": "W4A4 - W4",
+            "format": "percent",
+            "movement": true
+          },
+          {
+            "field": "signed_w4a4",
+            "label": "Signed error",
+            "format": "number",
+            "movement": true
+          },
+          {
+            "field": "zero_delta_w4a4",
+            "label": "Zero delta",
+            "format": "percent",
+            "movement": true
+          }
+        ]
+      }
+    ],
+    "blocks": [
+      {
+        "id": "title",
+        "type": "markdown",
+        "body": "# W4A4 Integer-LIF 量化失真的统计审计"
+      },
+      {
+        "id": "summary",
+        "type": "markdown",
+        "sourceId": "derived-analysis",
+        "body": "## 结论：失真是后段集中的离散码扰动，不是全局 collapse 或饱和\n\nW4A4-input 使源平衡的 QIF 整数码不一致率达到 **11.38%**；变化位置的微平均绝对位移为 **1.10 个码级**，由整数性可推出至少 **90.25%** 的变化是单码级跳变。全网 signed error 接近零、零值率没有整体上升、饱和值也极少，因此证据不支持全局 firing collapse 或 saturation。相反，Decoder 6 同时出现最高不一致率、负向码偏移和零值率上升，说明主要风险是具有层级方向差异的 near-threshold code flipping。"
+      },
+      {
+        "id": "metrics",
+        "type": "metric-strip",
+        "cardIds": [
+          "card-disagreement",
+          "card-step",
+          "card-task",
+          "card-correlation"
+        ]
+      },
+      {
+        "id": "stage-heading",
+        "type": "markdown",
+        "sourceId": "derived-analysis",
+        "body": "## Decoder 5–6 占据 55.5% 的等层权失真\n\n两段仅包含 26/78 个活跃层，却贡献 **55.5%** 的 W4A4 宏平均 disagreement。Decoder 6 的 D 为 **24.02%**，约为全网宏平均的 2.11 倍；最高单层达到 **42.56%**。"
+      },
+      {
+        "id": "stage-chart-block",
+        "type": "chart",
+        "chartId": "chart-stage",
+        "layout": "full"
+      },
+      {
+        "id": "stage-table-block",
+        "type": "table",
+        "tableId": "table-stage-shape",
+        "layout": "full"
+      },
+      {
+        "id": "shape-heading",
+        "type": "markdown",
+        "sourceId": "derived-analysis",
+        "body": "## 误差方向在网络中发生反转\n\nStem 和 Decoder 5 的码值平均上移，零输出分别下降约 **2.42** 和 **1.40 个百分点**；Decoder 6 则平均下移 **0.058 个码级**，零输出上升约 **1.76 个百分点**。这种符号反转会在全网汇总时互相抵消，因此单看接近零的全网 signed error 会漏掉真正的局部结构。"
+      },
+      {
+        "id": "layer-table-block",
+        "type": "table",
+        "tableId": "table-layers",
+        "layout": "full"
+      },
+      {
+        "id": "association-heading",
+        "type": "markdown",
+        "sourceId": "derived-analysis",
+        "body": "## 失真率与输出变化强相关，但同样的失真率不等价于同样的任务损失\n\n跨 35 个 source，W4A4 D 与 prediction-flip rate 的 Spearman ρ 为 **0.873**，与 per-source mIoU drop 的 ρ 为 **0.743**。然而 D 只在 **9.30%–12.96%** 间变化，per-source mIoU 损失却在 **12.71–49.90 个百分点**间变化，说明翻转发生的位置和语义内容比单纯数量同样重要。"
+      },
+      {
+        "id": "source-chart-block",
+        "type": "chart",
+        "chartId": "chart-source",
+        "layout": "full"
+      },
+      {
+        "id": "task-heading",
+        "type": "markdown",
+        "sourceId": "derived-analysis",
+        "body": "## Road 与 vehicle 对冻结量化扰动最敏感\n\nW4A4 相对 FP-QIF 的整体 mIoU 下降 **33.26 个百分点**。Road IoU 下降 **53.65 个百分点（相对下降 84.0%）**，vehicle 下降 **38.82 个百分点（71.1%）**；vegetation 的相对下降仅 **15.5%**。"
+      },
+      {
+        "id": "class-chart-block",
+        "type": "chart",
+        "chartId": "chart-class",
+        "layout": "full"
+      },
+      {
+        "id": "scope",
+        "type": "markdown",
+        "sourceId": "derived-analysis",
+        "body": "## 口径与统计方法\n\n分析覆盖 UDD6 validation 的 8,478 个 patch、35 个原始 source cluster、78 个实际触发的 QIF 层。主指标先在每个 source 内对层等权平均，再对 source 等权平均；95% CI 通过按 source 聚类重采样 10,000 次获得。微平均只用于说明逐元素扰动形态，不能替代预注册的等层权宏平均。A4-input 是历史 operator-input fake quantization，并不等价于将 Integer-LIF 输出改为连续 A32。"
+      },
+      {
+        "id": "limitations",
+        "type": "markdown",
+        "sourceId": "derived-analysis",
+        "body": "## 限制与稳健性边界\n\n这是单个冻结 checkpoint、单数据集、T=1 的干预式诊断，不是经过独立训练的 W32A32/W4A32/W32A4/W4A4 比较。35 个 source 上，W4A4 D 均高于 W4 和 A4-input；但 MAE 的联合交互项为负，且所有 source 均为负，因此不能声称 superadditive coupled distortion。相关性在同一批 source 上计算，可能受类别组成和场景难度混杂，只能解释为共变。零值与饱和统计能够排除若干候选机制，但还不能单独证明 QAD 修复了 Decoder 6。"
+      },
+      {
+        "id": "next",
+        "type": "markdown",
+        "sourceId": "derived-analysis",
+        "body": "## 下一步：用相同 probe 比较训练后的 QAT、KD 与 QAD\n\n最有信息量的后续不是继续扩大位宽扫描，而是固定初始化、训练预算和 teacher，对 task-only STE-QAT、generic KD 和 QAD 的 checkpoint 重复本统计。预先指定三个共同终点：全网 D/MAE、Decoder 6 的 signed error 与 zero-rate delta、以及 road/vehicle IoU。只有 QAD 同时修复局部统计和任务指标，才可把当前 distortion 提升为方法特异性的证据链。"
+      },
+      {
+        "id": "questions",
+        "type": "markdown",
+        "body": "## 仍待回答的问题\n\n- Decoder 6 的负向漂移是由上采样、skip fusion、局部阈值，还是权重误差累积触发？\n- QAD 是否减少的是翻转数量，还是优先修复语义敏感位置？\n- 该层级方向反转能否在第二 seed 或第二模型复现？"
+      }
+    ]
+  },
+  "snapshot": {
+    "version": 1,
+    "generatedAt": "2026-08-05T14:40:10.371100Z",
+    "status": "ready",
+    "datasets": {
+      "headline": [
+        {
+          "full_disagreement": 0.1138079271,
+          "conditional_step": 1.0975199435,
+          "single_step_lower_bound": 0.9024800565,
+          "miou_drop": -0.3325640461,
+          "rho_flip": 0.8728291317
+        }
+      ],
+      "stage_chart": [
+        {
+          "mode_label": "A4-input",
+          "stage_label": "Stem",
+          "stage_order": 0,
+          "layer_count": 3,
+          "disagreement": 0.0740102239,
+          "disagreement_ci_low": 0.069987207,
+          "disagreement_ci_high": 0.0781600482,
+          "mae": 0.0747544114,
+          "signed_error": 0.0040422314,
+          "zero_delta": -0.0016259577,
+          "saturation_delta": 1.188e-07,
+          "distortion_contribution_share": null
+        },
+        {
+          "mode_label": "W4",
+          "stage_label": "Stem",
+          "stage_order": 0,
+          "layer_count": 3,
+          "disagreement": 0.103813456,
+          "disagreement_ci_low": 0.0988186259,
+          "disagreement_ci_high": 0.108862525,
+          "mae": 0.1050167876,
+          "signed_error": 0.0286811059,
+          "zero_delta": -0.0228260819,
+          "saturation_delta": 1.6064e-06,
+          "distortion_contribution_share": null
+        },
+        {
+          "mode_label": "W4A4-input",
+          "stage_label": "Stem",
+          "stage_order": 0,
+          "layer_count": 3,
+          "disagreement": 0.1228975468,
+          "disagreement_ci_low": 0.1180884551,
+          "disagreement_ci_high": 0.1278024231,
+          "mae": 0.1250000295,
+          "signed_error": 0.0316852404,
+          "zero_delta": -0.0241538724,
+          "saturation_delta": 1.9965e-06,
+          "distortion_contribution_share": 0.0415333873
+        },
+        {
+          "mode_label": "A4-input",
+          "stage_label": "Encoder 1",
+          "stage_order": 1,
+          "layer_count": 12,
+          "disagreement": 0.0857225132,
+          "disagreement_ci_low": 0.081913226,
+          "disagreement_ci_high": 0.0894801843,
+          "mae": 0.0926636733,
+          "signed_error": 0.0057027466,
+          "zero_delta": -0.0044820525,
+          "saturation_delta": 2.6719e-06,
+          "distortion_contribution_share": null
+        },
+        {
+          "mode_label": "W4",
+          "stage_label": "Encoder 1",
+          "stage_order": 1,
+          "layer_count": 12,
+          "disagreement": 0.1064009095,
+          "disagreement_ci_low": 0.1036479612,
+          "disagreement_ci_high": 0.109104593,
+          "mae": 0.1162040616,
+          "signed_error": 0.0043784988,
+          "zero_delta": -0.0057204795,
+          "saturation_delta": -2.1468e-06,
+          "distortion_contribution_share": null
+        },
+        {
+          "mode_label": "W4A4-input",
+          "stage_label": "Encoder 1",
+          "stage_order": 1,
+          "layer_count": 12,
+          "disagreement": 0.1116781624,
+          "disagreement_ci_low": 0.1086331321,
+          "disagreement_ci_high": 0.1146654977,
+          "mae": 0.1224249512,
+          "signed_error": 0.0066167641,
+          "zero_delta": -0.007503546,
+          "saturation_delta": -1.9525e-06,
+          "distortion_contribution_share": 0.1509671266
+        },
+        {
+          "mode_label": "A4-input",
+          "stage_label": "Encoder 2",
+          "stage_order": 2,
+          "layer_count": 12,
+          "disagreement": 0.0356887243,
+          "disagreement_ci_low": 0.0332572744,
+          "disagreement_ci_high": 0.0380744734,
+          "mae": 0.0365962854,
+          "signed_error": 0.0012189887,
+          "zero_delta": -0.0012124977,
+          "saturation_delta": -2.6e-09,
+          "distortion_contribution_share": null
+        },
+        {
+          "mode_label": "W4",
+          "stage_label": "Encoder 2",
+          "stage_order": 2,
+          "layer_count": 12,
+          "disagreement": 0.0460290339,
+          "disagreement_ci_low": 0.0439437968,
+          "disagreement_ci_high": 0.0481241738,
+          "mae": 0.0476941805,
+          "signed_error": 0.0049947359,
+          "zero_delta": -0.0048840148,
+          "saturation_delta": -4.5e-09,
+          "distortion_contribution_share": null
+        },
+        {
+          "mode_label": "W4A4-input",
+          "stage_label": "Encoder 2",
+          "stage_order": 2,
+          "layer_count": 12,
+          "disagreement": 0.0473190311,
+          "disagreement_ci_low": 0.04514917,
+          "disagreement_ci_high": 0.0495448977,
+          "mae": 0.0491566814,
+          "signed_error": 0.0044945867,
+          "zero_delta": -0.0044559413,
+          "saturation_delta": -4.7e-09,
+          "distortion_contribution_share": 0.0639661149
+        },
+        {
+          "mode_label": "A4-input",
+          "stage_label": "Encoder 3",
+          "stage_order": 3,
+          "layer_count": 12,
+          "disagreement": 0.0655015225,
+          "disagreement_ci_low": 0.0595148687,
+          "disagreement_ci_high": 0.0714525825,
+          "mae": 0.0682190271,
+          "signed_error": 9.6615e-06,
+          "zero_delta": -0.0003798891,
+          "saturation_delta": -9.969e-07,
+          "distortion_contribution_share": null
+        },
+        {
+          "mode_label": "W4",
+          "stage_label": "Encoder 3",
+          "stage_order": 3,
+          "layer_count": 12,
+          "disagreement": 0.091820833,
+          "disagreement_ci_low": 0.0874739817,
+          "disagreement_ci_high": 0.0962134236,
+          "mae": 0.0970290839,
+          "signed_error": 0.0133482127,
+          "zero_delta": -0.013850773,
+          "saturation_delta": -2.5129e-06,
+          "distortion_contribution_share": null
+        },
+        {
+          "mode_label": "W4A4-input",
+          "stage_label": "Encoder 3",
+          "stage_order": 3,
+          "layer_count": 12,
+          "disagreement": 0.0930582565,
+          "disagreement_ci_low": 0.0882665041,
+          "disagreement_ci_high": 0.0979585645,
+          "mae": 0.0984138608,
+          "signed_error": 0.010553308,
+          "zero_delta": -0.0117538679,
+          "saturation_delta": -2.8486e-06,
+          "distortion_contribution_share": 0.12579664
+        },
+        {
+          "mode_label": "A4-input",
+          "stage_label": "Decoder 4",
+          "stage_order": 4,
+          "layer_count": 13,
+          "disagreement": 0.0297541733,
+          "disagreement_ci_low": 0.028078382,
+          "disagreement_ci_high": 0.031405645,
+          "mae": 0.031460203,
+          "signed_error": 0.0001392366,
+          "zero_delta": -0.0005411979,
+          "saturation_delta": -7.33e-08,
+          "distortion_contribution_share": null
+        },
+        {
+          "mode_label": "W4",
+          "stage_label": "Decoder 4",
+          "stage_order": 4,
+          "layer_count": 13,
+          "disagreement": 0.0413965842,
+          "disagreement_ci_low": 0.0402100557,
+          "disagreement_ci_high": 0.0426235632,
+          "mae": 0.0455890013,
+          "signed_error": 0.0059220163,
+          "zero_delta": -0.0052467112,
+          "saturation_delta": -5.9e-09,
+          "distortion_contribution_share": null
+        },
+        {
+          "mode_label": "W4A4-input",
+          "stage_label": "Decoder 4",
+          "stage_order": 4,
+          "layer_count": 13,
+          "disagreement": 0.043142001,
+          "disagreement_ci_low": 0.0421098664,
+          "disagreement_ci_high": 0.0441892408,
+          "mae": 0.0477176456,
+          "signed_error": 0.0054593636,
+          "zero_delta": -0.0050120084,
+          "saturation_delta": -1.035e-07,
+          "distortion_contribution_share": 0.0631795489
+        },
+        {
+          "mode_label": "A4-input",
+          "stage_label": "Decoder 5",
+          "stage_order": 5,
+          "layer_count": 13,
+          "disagreement": 0.1088060301,
+          "disagreement_ci_low": 0.1025407536,
+          "disagreement_ci_high": 0.1149848058,
+          "mae": 0.1255078741,
+          "signed_error": 0.0133731054,
+          "zero_delta": -0.0093210671,
+          "saturation_delta": 3.51367e-05,
+          "distortion_contribution_share": null
+        },
+        {
+          "mode_label": "W4",
+          "stage_label": "Decoder 5",
+          "stage_order": 5,
+          "layer_count": 13,
+          "disagreement": 0.1302076643,
+          "disagreement_ci_low": 0.1256933772,
+          "disagreement_ci_high": 0.1347840761,
+          "mae": 0.1578441488,
+          "signed_error": 0.0063185914,
+          "zero_delta": -0.0068290505,
+          "saturation_delta": -3.13287e-05,
+          "distortion_contribution_share": null
+        },
+        {
+          "mode_label": "W4A4-input",
+          "stage_label": "Decoder 5",
+          "stage_order": 5,
+          "layer_count": 13,
+          "disagreement": 0.1385191799,
+          "disagreement_ci_low": 0.1344134676,
+          "disagreement_ci_high": 0.1428329858,
+          "mae": 0.1698721336,
+          "signed_error": 0.0172405398,
+          "zero_delta": -0.0140100674,
+          "saturation_delta": -2.37721e-05,
+          "distortion_contribution_share": 0.2028552014
+        },
+        {
+          "mode_label": "A4-input",
+          "stage_label": "Decoder 6",
+          "stage_order": 6,
+          "layer_count": 13,
+          "disagreement": 0.1943702375,
+          "disagreement_ci_low": 0.1884618422,
+          "disagreement_ci_high": 0.2003605967,
+          "mae": 0.2411960244,
+          "signed_error": 0.0013497126,
+          "zero_delta": -0.0022102688,
+          "saturation_delta": -3.6855e-06,
+          "distortion_contribution_share": null
+        },
+        {
+          "mode_label": "W4",
+          "stage_label": "Decoder 6",
+          "stage_order": 6,
+          "layer_count": 13,
+          "disagreement": 0.2307869231,
+          "disagreement_ci_low": 0.2255548218,
+          "disagreement_ci_high": 0.2357355214,
+          "mae": 0.2991371819,
+          "signed_error": -0.0564183901,
+          "zero_delta": 0.0174989661,
+          "saturation_delta": -0.0003406836,
+          "distortion_contribution_share": null
+        },
+        {
+          "mode_label": "W4A4-input",
+          "stage_label": "Decoder 6",
+          "stage_order": 6,
+          "layer_count": 13,
+          "disagreement": 0.2401588405,
+          "disagreement_ci_low": 0.234987088,
+          "disagreement_ci_high": 0.2450050745,
+          "mae": 0.3149533083,
+          "signed_error": -0.0583252998,
+          "zero_delta": 0.0175656645,
+          "saturation_delta": -0.0003477355,
+          "distortion_contribution_share": 0.3517019809
+        }
+      ],
+      "full_stage": [
+        {
+          "stage_label": "Stem",
+          "stage_order": 0,
+          "layer_count": 3,
+          "disagreement": 0.1228975468,
+          "disagreement_ci_low": 0.1180884551,
+          "disagreement_ci_high": 0.1278024231,
+          "mae": 0.1250000295,
+          "signed_error": 0.0316852404,
+          "zero_reference": 0.8362802186,
+          "zero_variant": 0.8121263462,
+          "zero_delta": -0.0241538724,
+          "saturation_reference": 3.01216e-05,
+          "saturation_variant": 3.21181e-05,
+          "saturation_delta": 1.9965e-06,
+          "distortion_contribution_share": 0.0415333873
+        },
+        {
+          "stage_label": "Encoder 1",
+          "stage_order": 1,
+          "layer_count": 12,
+          "disagreement": 0.1116781624,
+          "disagreement_ci_low": 0.1086331321,
+          "disagreement_ci_high": 0.1146654977,
+          "mae": 0.1224249512,
+          "signed_error": 0.0066167641,
+          "zero_reference": 0.9020873586,
+          "zero_variant": 0.8945838126,
+          "zero_delta": -0.007503546,
+          "saturation_reference": 2.4981e-06,
+          "saturation_variant": 5.456e-07,
+          "saturation_delta": -1.9525e-06,
+          "distortion_contribution_share": 0.1509671266
+        },
+        {
+          "stage_label": "Encoder 2",
+          "stage_order": 2,
+          "layer_count": 12,
+          "disagreement": 0.0473190311,
+          "disagreement_ci_low": 0.04514917,
+          "disagreement_ci_high": 0.0495448977,
+          "mae": 0.0491566814,
+          "signed_error": 0.0044945867,
+          "zero_reference": 0.9658514731,
+          "zero_variant": 0.9613955318,
+          "zero_delta": -0.0044559413,
+          "saturation_reference": 5.2e-09,
+          "saturation_variant": 4e-10,
+          "saturation_delta": -4.7e-09,
+          "distortion_contribution_share": 0.0639661149
+        },
+        {
+          "stage_label": "Encoder 3",
+          "stage_order": 3,
+          "layer_count": 12,
+          "disagreement": 0.0930582565,
+          "disagreement_ci_low": 0.0882665041,
+          "disagreement_ci_high": 0.0979585645,
+          "mae": 0.0984138608,
+          "signed_error": 0.010553308,
+          "zero_reference": 0.9353957288,
+          "zero_variant": 0.9236418609,
+          "zero_delta": -0.0117538679,
+          "saturation_reference": 3.1703e-06,
+          "saturation_variant": 3.216e-07,
+          "saturation_delta": -2.8486e-06,
+          "distortion_contribution_share": 0.12579664
+        },
+        {
+          "stage_label": "Decoder 4",
+          "stage_order": 4,
+          "layer_count": 13,
+          "disagreement": 0.043142001,
+          "disagreement_ci_low": 0.0421098664,
+          "disagreement_ci_high": 0.0441892408,
+          "mae": 0.0477176456,
+          "signed_error": 0.0054593636,
+          "zero_reference": 0.9666048858,
+          "zero_variant": 0.9615928774,
+          "zero_delta": -0.0050120084,
+          "saturation_reference": 1.778e-07,
+          "saturation_variant": 7.42e-08,
+          "saturation_delta": -1.035e-07,
+          "distortion_contribution_share": 0.0631795489
+        },
+        {
+          "stage_label": "Decoder 5",
+          "stage_order": 5,
+          "layer_count": 13,
+          "disagreement": 0.1385191799,
+          "disagreement_ci_low": 0.1344134676,
+          "disagreement_ci_high": 0.1428329858,
+          "mae": 0.1698721336,
+          "signed_error": 0.0172405398,
+          "zero_reference": 0.8973776147,
+          "zero_variant": 0.8833675473,
+          "zero_delta": -0.0140100674,
+          "saturation_reference": 0.0001264312,
+          "saturation_variant": 0.0001026591,
+          "saturation_delta": -2.37721e-05,
+          "distortion_contribution_share": 0.2028552014
+        },
+        {
+          "stage_label": "Decoder 6",
+          "stage_order": 6,
+          "layer_count": 13,
+          "disagreement": 0.2401588405,
+          "disagreement_ci_low": 0.234987088,
+          "disagreement_ci_high": 0.2450050745,
+          "mae": 0.3149533083,
+          "signed_error": -0.0583252998,
+          "zero_reference": 0.7807835887,
+          "zero_variant": 0.7983492532,
+          "zero_delta": 0.0175656645,
+          "saturation_reference": 0.0003819976,
+          "saturation_variant": 3.42621e-05,
+          "saturation_delta": -0.0003477355,
+          "distortion_contribution_share": 0.3517019809
+        }
+      ],
+      "top_layers": [
+        {
+          "layer": "DAB_Block_6.DAB_Module_6_0.bn_relu.acti",
+          "stage": "decoder_6",
+          "d_w4": 0.4001109585,
+          "d_a4": 0.3477836467,
+          "d_w4a4": 0.4256192975,
+          "mae_w4": 0.5369781282,
+          "mae_a4": 0.4269495913,
+          "mae_w4a4": 0.5831733156,
+          "signed_w4": -0.1205703867,
+          "signed_a4": 0.0161041119,
+          "signed_w4a4": -0.0861661087,
+          "zero_delta_w4": 0.043883305,
+          "zero_delta_a4": -0.0188587864,
+          "zero_delta_w4a4": 0.0252410574,
+          "sat_delta_w4": -0.0001675546,
+          "sat_delta_a4": -2.4064e-05,
+          "sat_delta_w4a4": -0.000163249,
+          "delta_d_full_minus_w4": 0.025508339,
+          "delta_d_full_minus_a4": 0.0778356509,
+          "mae_interaction": -0.3807544039,
+          "w4a4_distortion_contribution_share": 0.0479462002,
+          "layer_short": "B6.M6_0.bn_relu.acti"
+        },
+        {
+          "layer": "upsample_3.relu",
+          "stage": "decoder_6",
+          "d_w4": 0.3224165152,
+          "d_a4": 0.2547505018,
+          "d_w4a4": 0.342946882,
+          "mae_w4": 0.3870615301,
+          "mae_a4": 0.285213961,
+          "mae_w4a4": 0.4176673477,
+          "signed_w4": -0.059673969,
+          "signed_a4": -0.02079964,
+          "signed_w4a4": -0.0520249518,
+          "zero_delta_w4": 0.0104687642,
+          "zero_delta_a4": 0.0084239661,
+          "zero_delta_w4a4": 0.0074339867,
+          "sat_delta_w4": -6.0836e-06,
+          "sat_delta_a4": -1.9547e-06,
+          "sat_delta_w4a4": -7.1605e-06,
+          "delta_d_full_minus_w4": 0.0205303669,
+          "delta_d_full_minus_a4": 0.0881963802,
+          "mae_interaction": -0.2546081434,
+          "w4a4_distortion_contribution_share": 0.0386331164,
+          "layer_short": "upsample_3.relu"
+        },
+        {
+          "layer": "DAB_Block_6.DAB_Module_6_0.conv1x1_in.bn_prelu.acti",
+          "stage": "decoder_6",
+          "d_w4": 0.3080001008,
+          "d_a4": 0.2565080679,
+          "d_w4a4": 0.3225349476,
+          "mae_w4": 0.3319603197,
+          "mae_a4": 0.2696252544,
+          "mae_w4a4": 0.3511293376,
+          "signed_w4": -0.0079574853,
+          "signed_a4": 0.0197047473,
+          "signed_w4a4": -0.0045150528,
+          "zero_delta_w4": -0.0035539565,
+          "zero_delta_a4": -0.0137935027,
+          "zero_delta_w4a4": -0.0039737212,
+          "sat_delta_w4": -1.329e-07,
+          "sat_delta_a4": -5.53e-08,
+          "sat_delta_w4a4": -1.381e-07,
+          "delta_d_full_minus_w4": 0.0145348469,
+          "delta_d_full_minus_a4": 0.0660268797,
+          "mae_interaction": -0.2504562365,
+          "w4a4_distortion_contribution_share": 0.0363337031,
+          "layer_short": "B6.M6_0.conv1x1_in.bn_prelu.acti"
+        },
+        {
+          "layer": "DAB_Block_6.DAB_Module_6_0.conv3x1.bn_prelu.acti",
+          "stage": "decoder_6",
+          "d_w4": 0.3036052651,
+          "d_a4": 0.2554058204,
+          "d_w4a4": 0.3127391912,
+          "mae_w4": 0.3300741952,
+          "mae_a4": 0.270266646,
+          "mae_w4a4": 0.3426965372,
+          "signed_w4": -0.0223282316,
+          "signed_a4": 0.004048029,
+          "signed_w4a4": -0.0300433269,
+          "zero_delta_w4": 0.0060832431,
+          "zero_delta_a4": -0.0018598845,
+          "zero_delta_w4a4": 0.0132171819,
+          "sat_delta_w4": -5.104e-07,
+          "sat_delta_a4": -3.874e-07,
+          "sat_delta_w4a4": -5.104e-07,
+          "delta_d_full_minus_w4": 0.0091339261,
+          "delta_d_full_minus_a4": 0.0573333708,
+          "mae_interaction": -0.2576443041,
+          "w4a4_distortion_contribution_share": 0.0352302068,
+          "layer_short": "B6.M6_0.conv3x1.bn_prelu.acti"
+        },
+        {
+          "layer": "DAB_Block_6.DAB_Module_6_0.conv1x3.bn_prelu.acti",
+          "stage": "decoder_6",
+          "d_w4": 0.2916267674,
+          "d_a4": 0.2467459867,
+          "d_w4a4": 0.2964172453,
+          "mae_w4": 0.3245737262,
+          "mae_a4": 0.2661098322,
+          "mae_w4a4": 0.3314470335,
+          "signed_w4": -0.0158144026,
+          "signed_a4": 0.0074480196,
+          "signed_w4a4": -0.0357538329,
+          "zero_delta_w4": 0.0050821581,
+          "zero_delta_a4": -0.0050227794,
+          "zero_delta_w4a4": 0.0155526162,
+          "sat_delta_w4": 0.0,
+          "sat_delta_a4": 0.0,
+          "sat_delta_w4a4": 0.0,
+          "delta_d_full_minus_w4": 0.0047904779,
+          "delta_d_full_minus_a4": 0.0496712586,
+          "mae_interaction": -0.2592365249,
+          "w4a4_distortion_contribution_share": 0.0333915325,
+          "layer_short": "B6.M6_0.conv1x3.bn_prelu.acti"
+        },
+        {
+          "layer": "upsample_2.relu",
+          "stage": "decoder_5",
+          "d_w4": 0.2706648759,
+          "d_a4": 0.2144464146,
+          "d_w4a4": 0.291682033,
+          "mae_w4": 0.3156160351,
+          "mae_a4": 0.2358727181,
+          "mae_w4a4": 0.3491313142,
+          "signed_w4": -0.0160179236,
+          "signed_a4": 0.0209039412,
+          "signed_w4a4": 0.0103482464,
+          "zero_delta_w4": 0.0152060418,
+          "zero_delta_a4": -0.008419777,
+          "zero_delta_w4a4": 0.0052025818,
+          "sat_delta_w4": -5.37248e-05,
+          "sat_delta_a4": -1.34684e-05,
+          "sat_delta_w4a4": -6.26061e-05,
+          "delta_d_full_minus_w4": 0.0210171571,
+          "delta_d_full_minus_a4": 0.0772356184,
+          "mae_interaction": -0.202357439,
+          "w4a4_distortion_contribution_share": 0.0328581087,
+          "layer_short": "upsample_2.relu"
+        },
+        {
+          "layer": "DAB_Block_6.DAB_Module_6_0.conv1x1.bn_prelu.acti",
+          "stage": "decoder_6",
+          "d_w4": 0.2712704657,
+          "d_a4": 0.2455531303,
+          "d_w4a4": 0.2886624498,
+          "mae_w4": 0.3246599828,
+          "mae_a4": 0.2781604136,
+          "mae_w4a4": 0.3474530423,
+          "signed_w4": -0.1243152971,
+          "signed_a4": -0.0024962346,
+          "signed_w4a4": -0.1166767614,
+          "zero_delta_w4": 0.0696301097,
+          "zero_delta_a4": -0.0047048645,
+          "zero_delta_w4a4": 0.0606612004,
+          "sat_delta_w4": -3.38655e-05,
+          "sat_delta_a4": -1.22315e-05,
+          "sat_delta_w4a4": -3.39322e-05,
+          "delta_d_full_minus_w4": 0.0173919841,
+          "delta_d_full_minus_a4": 0.0431093195,
+          "mae_interaction": -0.255367354,
+          "w4a4_distortion_contribution_share": 0.0325179514,
+          "layer_short": "B6.M6_0.conv1x1.bn_prelu.acti"
+        },
+        {
+          "layer": "LC1.bn_prelu.acti",
+          "stage": "decoder_6",
+          "d_w4": 0.2654127804,
+          "d_a4": 0.2080276444,
+          "d_w4a4": 0.28515351,
+          "mae_w4": 0.2831344086,
+          "mae_a4": 0.2145479474,
+          "mae_w4a4": 0.3069069136,
+          "signed_w4": -0.0142088891,
+          "signed_a4": -0.0008586354,
+          "signed_w4a4": -0.0065007577,
+          "zero_delta_w4": 0.0158546007,
+          "zero_delta_a4": 0.0033045547,
+          "zero_delta_w4a4": 0.0105798687,
+          "sat_delta_w4": -1.44e-08,
+          "sat_delta_a4": 5.2e-08,
+          "sat_delta_w4a4": -5.9e-09,
+          "delta_d_full_minus_w4": 0.0197407296,
+          "delta_d_full_minus_a4": 0.0771258656,
+          "mae_interaction": -0.1907754424,
+          "w4a4_distortion_contribution_share": 0.0321226677,
+          "layer_short": "LC1.bn_prelu.acti"
+        },
+        {
+          "layer": "DAB_Block_5.DAB_Module_5_0.bn_relu.acti",
+          "stage": "decoder_5",
+          "d_w4": 0.2390520054,
+          "d_a4": 0.1919814613,
+          "d_w4a4": 0.2588236539,
+          "mae_w4": 0.3062442958,
+          "mae_a4": 0.224859703,
+          "mae_w4a4": 0.3334773263,
+          "signed_w4": 0.0283872099,
+          "signed_a4": 0.0191880708,
+          "signed_w4a4": 0.0506777327,
+          "zero_delta_w4": -0.0290136071,
+          "zero_delta_a4": -0.0199788975,
+          "zero_delta_w4a4": -0.0486367509,
+          "sat_delta_w4": -5.10892e-05,
+          "sat_delta_a4": 7.1074e-06,
+          "sat_delta_w4a4": -5.96247e-05,
+          "delta_d_full_minus_w4": 0.0197716485,
+          "delta_d_full_minus_a4": 0.0668421925,
+          "mae_interaction": -0.1976266724,
+          "w4a4_distortion_contribution_share": 0.0291565979,
+          "layer_short": "B5.M5_0.bn_relu.acti"
+        },
+        {
+          "layer": "DAB_Block_6.DAB_Module_6_0.dconv1x3.bn_prelu.acti",
+          "stage": "decoder_6",
+          "d_w4": 0.2535015233,
+          "d_a4": 0.2096643782,
+          "d_w4a4": 0.2575759482,
+          "mae_w4": 0.5072882139,
+          "mae_a4": 0.4269885091,
+          "mae_w4a4": 0.5268638826,
+          "signed_w4": -0.0531986657,
+          "signed_a4": 0.0312278863,
+          "signed_w4a4": -0.0587229552,
+          "zero_delta_w4": -0.0090427592,
+          "zero_delta_a4": -0.0066507684,
+          "zero_delta_w4a4": -0.0127833024,
+          "sat_delta_w4": -0.0034140377,
+          "sat_delta_a4": 7.00287e-05,
+          "sat_delta_w4a4": -0.0034056318,
+          "delta_d_full_minus_w4": 0.0040744249,
+          "delta_d_full_minus_a4": 0.04791157,
+          "mae_interaction": -0.4074128404,
+          "w4a4_distortion_contribution_share": 0.0290160433,
+          "layer_short": "B6.M6_0.dconv1x3.bn_prelu.acti"
+        },
+        {
+          "layer": "DAB_Block_5.DAB_Module_5_0.conv1x1_in.bn_prelu.acti",
+          "stage": "decoder_5",
+          "d_w4": 0.2294195417,
+          "d_a4": 0.1847662076,
+          "d_w4a4": 0.2386804478,
+          "mae_w4": 0.2543383443,
+          "mae_a4": 0.1998819069,
+          "mae_w4a4": 0.2668817455,
+          "signed_w4": 0.0367158723,
+          "signed_a4": 0.0151029778,
+          "signed_w4a4": 0.0485101506,
+          "zero_delta_w4": -0.0341849704,
+          "zero_delta_a4": -0.0114911774,
+          "zero_delta_w4a4": -0.0424993518,
+          "sat_delta_w4": -1.48e-07,
+          "sat_delta_a4": 2.56e-08,
+          "sat_delta_w4a4": -1.309e-07,
+          "delta_d_full_minus_w4": 0.0092609061,
+          "delta_d_full_minus_a4": 0.0539142403,
+          "mae_interaction": -0.1873385056,
+          "w4a4_distortion_contribution_share": 0.0268874569,
+          "layer_short": "B5.M5_0.conv1x1_in.bn_prelu.acti"
+        },
+        {
+          "layer": "LC2.bn_prelu.acti",
+          "stage": "decoder_5",
+          "d_w4": 0.2226554598,
+          "d_a4": 0.1743102156,
+          "d_w4a4": 0.2369115533,
+          "mae_w4": 0.2295534994,
+          "mae_a4": 0.1778305352,
+          "mae_w4a4": 0.2455176214,
+          "signed_w4": 0.0003380256,
+          "signed_a4": 0.0125614429,
+          "signed_w4a4": 0.0069088865,
+          "zero_delta_w4": 0.0009755331,
+          "zero_delta_a4": -0.0103173481,
+          "zero_delta_w4a4": -0.0044377067,
+          "sat_delta_w4": -4.5e-09,
+          "sat_delta_a4": 9e-10,
+          "sat_delta_w4a4": -4.5e-09,
+          "delta_d_full_minus_w4": 0.0142560935,
+          "delta_d_full_minus_a4": 0.0626013376,
+          "mae_interaction": -0.1618664132,
+          "w4a4_distortion_contribution_share": 0.0266881902,
+          "layer_short": "LC2.bn_prelu.acti"
+        }
+      ],
+      "source_scatter": [
+        {
+          "source_id": "000061",
+          "d_w4a4": 0.1264611916,
+          "mae_w4a4": 0.1533526792,
+          "prediction_flip_w4a4": 0.5266636562,
+          "miou_fp": 0.7639076669,
+          "miou_w4a4": 0.3021502032,
+          "miou_drop_w4a4": 0.4617574637,
+          "d_full_minus_w4": 0.0035200856,
+          "d_full_minus_a4": 0.025145028
+        },
+        {
+          "source_id": "000161",
+          "d_w4a4": 0.1254685248,
+          "mae_w4a4": 0.1513192489,
+          "prediction_flip_w4a4": 0.4515756562,
+          "miou_fp": 0.7837202848,
+          "miou_w4a4": 0.3463543851,
+          "miou_drop_w4a4": 0.4373658997,
+          "d_full_minus_w4": 0.0033606842,
+          "d_full_minus_a4": 0.0250252574
+        },
+        {
+          "source_id": "000261",
+          "d_w4a4": 0.1269799418,
+          "mae_w4a4": 0.1530910493,
+          "prediction_flip_w4a4": 0.565950875,
+          "miou_fp": 0.6949110092,
+          "miou_w4a4": 0.2756175866,
+          "miou_drop_w4a4": 0.4192934225,
+          "d_full_minus_w4": 0.0040417027,
+          "d_full_minus_a4": 0.0242891131
+        },
+        {
+          "source_id": "000361",
+          "d_w4a4": 0.1265319978,
+          "mae_w4a4": 0.1538006138,
+          "prediction_flip_w4a4": 0.5019013125,
+          "miou_fp": 0.7045849602,
+          "miou_w4a4": 0.3125930247,
+          "miou_drop_w4a4": 0.3919919354,
+          "d_full_minus_w4": 0.0059479153,
+          "d_full_minus_a4": 0.0255415086
+        },
+        {
+          "source_id": "001261",
+          "d_w4a4": 0.1288806416,
+          "mae_w4a4": 0.1581769089,
+          "prediction_flip_w4a4": 0.6234989688,
+          "miou_fp": 0.6976170353,
+          "miou_w4a4": 0.1985864618,
+          "miou_drop_w4a4": 0.4990305735,
+          "d_full_minus_w4": 0.0057356018,
+          "d_full_minus_a4": 0.0241183164
+        },
+        {
+          "source_id": "001361",
+          "d_w4a4": 0.1237969217,
+          "mae_w4a4": 0.1502466252,
+          "prediction_flip_w4a4": 0.4916633125,
+          "miou_fp": 0.7459125621,
+          "miou_w4a4": 0.2914178646,
+          "miou_drop_w4a4": 0.4544946974,
+          "d_full_minus_w4": 0.0046872065,
+          "d_full_minus_a4": 0.0229879518
+        },
+        {
+          "source_id": "001461",
+          "d_w4a4": 0.1295771425,
+          "mae_w4a4": 0.1586324872,
+          "prediction_flip_w4a4": 0.641720125,
+          "miou_fp": 0.5985429101,
+          "miou_w4a4": 0.1680801006,
+          "miou_drop_w4a4": 0.4304628095,
+          "d_full_minus_w4": 0.0065502837,
+          "d_full_minus_a4": 0.0243314598
+        },
+        {
+          "source_id": "001561",
+          "d_w4a4": 0.1283127958,
+          "mae_w4a4": 0.1573610951,
+          "prediction_flip_w4a4": 0.58415175,
+          "miou_fp": 0.6856764277,
+          "miou_w4a4": 0.2363318739,
+          "miou_drop_w4a4": 0.4493445537,
+          "d_full_minus_w4": 0.0030390743,
+          "d_full_minus_a4": 0.0239310088
+        },
+        {
+          "source_id": "0119_3img2031",
+          "d_w4a4": 0.1194724037,
+          "mae_w4a4": 0.1415160975,
+          "prediction_flip_w4a4": 0.5253838487,
+          "miou_fp": 0.4864855586,
+          "miou_w4a4": 0.1984482929,
+          "miou_drop_w4a4": 0.2880372657,
+          "d_full_minus_w4": 0.0085609222,
+          "d_full_minus_a4": 0.0170983219
+        },
+        {
+          "source_id": "0119_4img1001",
+          "d_w4a4": 0.1207345354,
+          "mae_w4a4": 0.1448173391,
+          "prediction_flip_w4a4": 0.4992972039,
+          "miou_fp": 0.4473601839,
+          "miou_w4a4": 0.2498891048,
+          "miou_drop_w4a4": 0.197471079,
+          "d_full_minus_w4": 0.008157109,
+          "d_full_minus_a4": 0.0198760688
+        },
+        {
+          "source_id": "0119_4img3041",
+          "d_w4a4": 0.1157003631,
+          "mae_w4a4": 0.1377746625,
+          "prediction_flip_w4a4": 0.5267795395,
+          "miou_fp": 0.3432309957,
+          "miou_w4a4": 0.1796314192,
+          "miou_drop_w4a4": 0.1635995765,
+          "d_full_minus_w4": 0.0097448067,
+          "d_full_minus_a4": 0.0234071413
+        },
+        {
+          "source_id": "0119_5img3001",
+          "d_w4a4": 0.1144411472,
+          "mae_w4a4": 0.1352373995,
+          "prediction_flip_w4a4": 0.5243763816,
+          "miou_fp": 0.484229954,
+          "miou_w4a4": 0.2418204436,
+          "miou_drop_w4a4": 0.2424095105,
+          "d_full_minus_w4": 0.0087125792,
+          "d_full_minus_a4": 0.0186537852
+        },
+        {
+          "source_id": "DJI_0031",
+          "d_w4a4": 0.1126281691,
+          "mae_w4a4": 0.1328150428,
+          "prediction_flip_w4a4": 0.4893395207,
+          "miou_fp": 0.5719968419,
+          "miou_w4a4": 0.2155287937,
+          "miou_drop_w4a4": 0.3564680482,
+          "d_full_minus_w4": 0.0070687006,
+          "d_full_minus_a4": 0.0260422173
+        },
+        {
+          "source_id": "DJI_00528",
+          "d_w4a4": 0.1193059055,
+          "mae_w4a4": 0.142403859,
+          "prediction_flip_w4a4": 0.4465663534,
+          "miou_fp": 0.6398287063,
+          "miou_w4a4": 0.2234966946,
+          "miou_drop_w4a4": 0.4163320117,
+          "d_full_minus_w4": 0.0028402199,
+          "d_full_minus_a4": 0.0256953514
+        },
+        {
+          "source_id": "DJI_00581",
+          "d_w4a4": 0.120878126,
+          "mae_w4a4": 0.1436640484,
+          "prediction_flip_w4a4": 0.6973827303,
+          "miou_fp": 0.5961738998,
+          "miou_w4a4": 0.1283690824,
+          "miou_drop_w4a4": 0.4678048174,
+          "d_full_minus_w4": 0.0042959995,
+          "d_full_minus_a4": 0.0267924422
+        },
+        {
+          "source_id": "DJI_00591",
+          "d_w4a4": 0.1188051762,
+          "mae_w4a4": 0.1410283093,
+          "prediction_flip_w4a4": 0.695206438,
+          "miou_fp": 0.539807088,
+          "miou_w4a4": 0.1492808304,
+          "miou_drop_w4a4": 0.3905262576,
+          "d_full_minus_w4": 0.0057258229,
+          "d_full_minus_a4": 0.0264800912
+        },
+        {
+          "source_id": "DJI_0291",
+          "d_w4a4": 0.0993451567,
+          "mae_w4a4": 0.1139680476,
+          "prediction_flip_w4a4": 0.2284465226,
+          "miou_fp": 0.5789909875,
+          "miou_w4a4": 0.384217428,
+          "miou_drop_w4a4": 0.1947735595,
+          "d_full_minus_w4": 0.0047033675,
+          "d_full_minus_a4": 0.0255095504
+        },
+        {
+          "source_id": "DJI_0303",
+          "d_w4a4": 0.1108817866,
+          "mae_w4a4": 0.1311186905,
+          "prediction_flip_w4a4": 0.3427473919,
+          "miou_fp": 0.6095461681,
+          "miou_w4a4": 0.421695432,
+          "miou_drop_w4a4": 0.1878507362,
+          "d_full_minus_w4": 0.0060837385,
+          "d_full_minus_a4": 0.0251410393
+        },
+        {
+          "source_id": "DJI_0316",
+          "d_w4a4": 0.1046211705,
+          "mae_w4a4": 0.123110626,
+          "prediction_flip_w4a4": 0.2242877585,
+          "miou_fp": 0.6789506656,
+          "miou_w4a4": 0.4282933715,
+          "miou_drop_w4a4": 0.2506572941,
+          "d_full_minus_w4": 0.0056428232,
+          "d_full_minus_a4": 0.0287772744
+        },
+        {
+          "source_id": "DJI_0373_heda",
+          "d_w4a4": 0.1037048779,
+          "mae_w4a4": 0.1203833917,
+          "prediction_flip_w4a4": 0.2117433976,
+          "miou_fp": 0.4390419218,
+          "miou_w4a4": 0.2441163184,
+          "miou_drop_w4a4": 0.1949256034,
+          "d_full_minus_w4": 0.0022137793,
+          "d_full_minus_a4": 0.0351843077
+        },
+        {
+          "source_id": "DJI_0388",
+          "d_w4a4": 0.1018314598,
+          "mae_w4a4": 0.1182610965,
+          "prediction_flip_w4a4": 0.2648900846,
+          "miou_fp": 0.6210234411,
+          "miou_w4a4": 0.4150428166,
+          "miou_drop_w4a4": 0.2059806246,
+          "d_full_minus_w4": 0.0053833762,
+          "d_full_minus_a4": 0.0278765092
+        },
+        {
+          "source_id": "DJI_0397",
+          "d_w4a4": 0.1128192075,
+          "mae_w4a4": 0.1332583787,
+          "prediction_flip_w4a4": 0.2940567669,
+          "miou_fp": 0.6307200188,
+          "miou_w4a4": 0.3648779118,
+          "miou_drop_w4a4": 0.265842107,
+          "d_full_minus_w4": 0.005780599,
+          "d_full_minus_a4": 0.0250422476
+        },
+        {
+          "source_id": "DJI_0406",
+          "d_w4a4": 0.1113434369,
+          "mae_w4a4": 0.1311392456,
+          "prediction_flip_w4a4": 0.2797625,
+          "miou_fp": 0.6060490092,
+          "miou_w4a4": 0.3622746931,
+          "miou_drop_w4a4": 0.2437743161,
+          "d_full_minus_w4": 0.0041734908,
+          "d_full_minus_a4": 0.0271459015
+        },
+        {
+          "source_id": "DJI_0415",
+          "d_w4a4": 0.0930419966,
+          "mae_w4a4": 0.1053208844,
+          "prediction_flip_w4a4": 0.1150762688,
+          "miou_fp": 0.4944495205,
+          "miou_w4a4": 0.3673938584,
+          "miou_drop_w4a4": 0.1270556621,
+          "d_full_minus_w4": 0.0041336602,
+          "d_full_minus_a4": 0.0271312613
+        },
+        {
+          "source_id": "DJI_0431",
+          "d_w4a4": 0.1019027874,
+          "mae_w4a4": 0.1186093412,
+          "prediction_flip_w4a4": 0.1513686795,
+          "miou_fp": 0.7013309292,
+          "miou_w4a4": 0.4755720416,
+          "miou_drop_w4a4": 0.2257588876,
+          "d_full_minus_w4": 0.0044055227,
+          "d_full_minus_a4": 0.0312732456
+        },
+        {
+          "source_id": "DJI_0490",
+          "d_w4a4": 0.1038138543,
+          "mae_w4a4": 0.1210329657,
+          "prediction_flip_w4a4": 0.2843570254,
+          "miou_fp": 0.7218695198,
+          "miou_w4a4": 0.4258777275,
+          "miou_drop_w4a4": 0.2959917923,
+          "d_full_minus_w4": 0.0049551,
+          "d_full_minus_a4": 0.0285734508
+        },
+        {
+          "source_id": "DJI_0499_heda",
+          "d_w4a4": 0.1072121801,
+          "mae_w4a4": 0.1278736272,
+          "prediction_flip_w4a4": 0.3378600564,
+          "miou_fp": 0.609019616,
+          "miou_w4a4": 0.3182738001,
+          "miou_drop_w4a4": 0.2907458159,
+          "d_full_minus_w4": 0.0029781149,
+          "d_full_minus_a4": 0.036960295
+        },
+        {
+          "source_id": "DJI_0511",
+          "d_w4a4": 0.1036553406,
+          "mae_w4a4": 0.1204550761,
+          "prediction_flip_w4a4": 0.2085695724,
+          "miou_fp": 0.7020634875,
+          "miou_w4a4": 0.4923211645,
+          "miou_drop_w4a4": 0.209742323,
+          "d_full_minus_w4": 0.0039211803,
+          "d_full_minus_a4": 0.0288775202
+        },
+        {
+          "source_id": "DJI_0520",
+          "d_w4a4": 0.1075956602,
+          "mae_w4a4": 0.1266418388,
+          "prediction_flip_w4a4": 0.2471924107,
+          "miou_fp": 0.7435942788,
+          "miou_w4a4": 0.4785973838,
+          "miou_drop_w4a4": 0.2649968951,
+          "d_full_minus_w4": 0.0055979174,
+          "d_full_minus_a4": 0.0284329269
+        },
+        {
+          "source_id": "DJI_0532",
+          "d_w4a4": 0.1128899425,
+          "mae_w4a4": 0.1340630294,
+          "prediction_flip_w4a4": 0.3051496006,
+          "miou_fp": 0.6743064683,
+          "miou_w4a4": 0.4056702134,
+          "miou_drop_w4a4": 0.2686362549,
+          "d_full_minus_w4": 0.0073391385,
+          "d_full_minus_a4": 0.02464147
+        },
+        {
+          "source_id": "DJI_0539_heda",
+          "d_w4a4": 0.1070539599,
+          "mae_w4a4": 0.1234949521,
+          "prediction_flip_w4a4": 0.180987641,
+          "miou_fp": 0.4385930729,
+          "miou_w4a4": 0.3006076405,
+          "miou_drop_w4a4": 0.1379854324,
+          "d_full_minus_w4": 0.001653501,
+          "d_full_minus_a4": 0.0375063745
+        },
+        {
+          "source_id": "DJI_0553_heda",
+          "d_w4a4": 0.1103303783,
+          "mae_w4a4": 0.1306974077,
+          "prediction_flip_w4a4": 0.2492921523,
+          "miou_fp": 0.6638106953,
+          "miou_w4a4": 0.303358605,
+          "miou_drop_w4a4": 0.3604520904,
+          "d_full_minus_w4": 0.0022858902,
+          "d_full_minus_a4": 0.0391267122
+        },
+        {
+          "source_id": "DJI_0563_heda",
+          "d_w4a4": 0.1056383445,
+          "mae_w4a4": 0.1241068185,
+          "prediction_flip_w4a4": 0.3884894032,
+          "miou_fp": 0.473508042,
+          "miou_w4a4": 0.241226271,
+          "miou_drop_w4a4": 0.232281771,
+          "d_full_minus_w4": 0.0040425365,
+          "d_full_minus_a4": 0.0327991079
+        },
+        {
+          "source_id": "DJI_0627",
+          "d_w4a4": 0.115913301,
+          "mae_w4a4": 0.1374252372,
+          "prediction_flip_w4a4": 0.5424256344,
+          "miou_fp": 0.4907526552,
+          "miou_w4a4": 0.2508661848,
+          "miou_drop_w4a4": 0.2398864704,
+          "d_full_minus_w4": 0.0072686359,
+          "d_full_minus_a4": 0.0238955796
+        },
+        {
+          "source_id": "DJI_0707",
+          "d_w4a4": 0.1117076251,
+          "mae_w4a4": 0.1323943819,
+          "prediction_flip_w4a4": 0.3671867481,
+          "miou_fp": 0.5751583133,
+          "miou_w4a4": 0.3427109146,
+          "miou_drop_w4a4": 0.2324473987,
+          "d_full_minus_w4": 0.0064991574,
+          "d_full_minus_a4": 0.0217909043
+        }
+      ],
+      "class_long": [
+        {
+          "class": "background",
+          "full_drop": 0.3047439063,
+          "relative_full_drop": 0.5592327212,
+          "mode": "iou_fp",
+          "iou": 0.5449321808,
+          "mode_label": "FP-QIF"
+        },
+        {
+          "class": "facade",
+          "full_drop": 0.2928501091,
+          "relative_full_drop": 0.4653324052,
+          "mode": "iou_fp",
+          "iou": 0.6293353007,
+          "mode_label": "FP-QIF"
+        },
+        {
+          "class": "road",
+          "full_drop": 0.53652236,
+          "relative_full_drop": 0.8395059229,
+          "mode": "iou_fp",
+          "iou": 0.6390930015,
+          "mode_label": "FP-QIF"
+        },
+        {
+          "class": "vegetation",
+          "full_drop": 0.1382575103,
+          "relative_full_drop": 0.1553890082,
+          "mode": "iou_fp",
+          "iou": 0.8897509022,
+          "mode_label": "FP-QIF"
+        },
+        {
+          "class": "vehicle",
+          "full_drop": 0.3881599529,
+          "relative_full_drop": 0.711422648,
+          "mode": "iou_fp",
+          "iou": 0.5456109022,
+          "mode_label": "FP-QIF"
+        },
+        {
+          "class": "roof",
+          "full_drop": 0.3348504381,
+          "relative_full_drop": 0.4072158766,
+          "mode": "iou_fp",
+          "iou": 0.8222921978,
+          "mode_label": "FP-QIF"
+        },
+        {
+          "class": "background",
+          "full_drop": 0.3047439063,
+          "relative_full_drop": 0.5592327212,
+          "mode": "iou_w4",
+          "iou": 0.2869237912,
+          "mode_label": "W4"
+        },
+        {
+          "class": "facade",
+          "full_drop": 0.2928501091,
+          "relative_full_drop": 0.4653324052,
+          "mode": "iou_w4",
+          "iou": 0.361980169,
+          "mode_label": "W4"
+        },
+        {
+          "class": "road",
+          "full_drop": 0.53652236,
+          "relative_full_drop": 0.8395059229,
+          "mode": "iou_w4",
+          "iou": 0.2189744953,
+          "mode_label": "W4"
+        },
+        {
+          "class": "vegetation",
+          "full_drop": 0.1382575103,
+          "relative_full_drop": 0.1553890082,
+          "mode": "iou_w4",
+          "iou": 0.7861828508,
+          "mode_label": "W4"
+        },
+        {
+          "class": "vehicle",
+          "full_drop": 0.3881599529,
+          "relative_full_drop": 0.711422648,
+          "mode": "iou_w4",
+          "iou": 0.2102138261,
+          "mode_label": "W4"
+        },
+        {
+          "class": "roof",
+          "full_drop": 0.3348504381,
+          "relative_full_drop": 0.4072158766,
+          "mode": "iou_w4",
+          "iou": 0.5668321582,
+          "mode_label": "W4"
+        },
+        {
+          "class": "background",
+          "full_drop": 0.3047439063,
+          "relative_full_drop": 0.5592327212,
+          "mode": "iou_a4",
+          "iou": 0.4195188976,
+          "mode_label": "A4-input"
+        },
+        {
+          "class": "facade",
+          "full_drop": 0.2928501091,
+          "relative_full_drop": 0.4653324052,
+          "mode": "iou_a4",
+          "iou": 0.5352896159,
+          "mode_label": "A4-input"
+        },
+        {
+          "class": "road",
+          "full_drop": 0.53652236,
+          "relative_full_drop": 0.8395059229,
+          "mode": "iou_a4",
+          "iou": 0.4742652552,
+          "mode_label": "A4-input"
+        },
+        {
+          "class": "vegetation",
+          "full_drop": 0.1382575103,
+          "relative_full_drop": 0.1553890082,
+          "mode": "iou_a4",
+          "iou": 0.8277849073,
+          "mode_label": "A4-input"
+        },
+        {
+          "class": "vehicle",
+          "full_drop": 0.3881599529,
+          "relative_full_drop": 0.711422648,
+          "mode": "iou_a4",
+          "iou": 0.4130798248,
+          "mode_label": "A4-input"
+        },
+        {
+          "class": "roof",
+          "full_drop": 0.3348504381,
+          "relative_full_drop": 0.4072158766,
+          "mode": "iou_a4",
+          "iou": 0.7487925937,
+          "mode_label": "A4-input"
+        },
+        {
+          "class": "background",
+          "full_drop": 0.3047439063,
+          "relative_full_drop": 0.5592327212,
+          "mode": "iou_w4a4",
+          "iou": 0.2401882745,
+          "mode_label": "W4A4-input"
+        },
+        {
+          "class": "facade",
+          "full_drop": 0.2928501091,
+          "relative_full_drop": 0.4653324052,
+          "mode": "iou_w4a4",
+          "iou": 0.3364851916,
+          "mode_label": "W4A4-input"
+        },
+        {
+          "class": "road",
+          "full_drop": 0.53652236,
+          "relative_full_drop": 0.8395059229,
+          "mode": "iou_w4a4",
+          "iou": 0.1025706415,
+          "mode_label": "W4A4-input"
+        },
+        {
+          "class": "vegetation",
+          "full_drop": 0.1382575103,
+          "relative_full_drop": 0.1553890082,
+          "mode": "iou_w4a4",
+          "iou": 0.751493392,
+          "mode_label": "W4A4-input"
+        },
+        {
+          "class": "vehicle",
+          "full_drop": 0.3881599529,
+          "relative_full_drop": 0.711422648,
+          "mode": "iou_w4a4",
+          "iou": 0.1574509494,
+          "mode_label": "W4A4-input"
+        },
+        {
+          "class": "roof",
+          "full_drop": 0.3348504381,
+          "relative_full_drop": 0.4072158766,
+          "mode": "iou_w4a4",
+          "iou": 0.4874417596,
+          "mode_label": "W4A4-input"
+        }
+      ],
+      "representation": [
+        {
+          "mode": "w4_qif",
+          "mode_label": "W4",
+          "source_count": 35,
+          "layer_count": 78,
+          "macro_disagreement": 0.108635063,
+          "disagreement_ci_low": 0.1056365908,
+          "disagreement_ci_high": 0.1117878742,
+          "source_std_disagreement": 0.0095005866,
+          "source_cv_disagreement": 0.0874541458,
+          "micro_disagreement": 0.1182993402,
+          "macro_mae": 0.1279434948,
+          "mae_ci_low": 0.1236283638,
+          "mae_ci_high": 0.1324366416,
+          "micro_conditional_abs_step": 1.0943523808,
+          "single_step_fraction_lower_bound": 0.9056476192,
+          "macro_signed_error": -0.002764237,
+          "signed_ci_low": -0.0063734574,
+          "signed_ci_high": 0.0009997686,
+          "signed_to_mae_ratio": -0.0216051389,
+          "macro_zero_reference": 0.9042412121,
+          "macro_zero_variant": 0.9005048044,
+          "macro_zero_delta": -0.0037364076,
+          "zero_delta_ci_low": -0.0059818267,
+          "zero_delta_ci_high": -0.0015805162,
+          "macro_saturation_reference": 8.67991e-05,
+          "macro_saturation_variant": 2.41403e-05,
+          "macro_saturation_delta": -6.26588e-05,
+          "saturation_delta_ci_low": -7.34767e-05,
+          "saturation_delta_ci_high": -5.2106e-05
+        },
+        {
+          "mode": "a4_input_qif",
+          "mode_label": "A4-input",
+          "source_count": 35,
+          "layer_count": 78,
+          "macro_disagreement": 0.0870907631,
+          "disagreement_ci_low": 0.0828850604,
+          "disagreement_ci_high": 0.0912657421,
+          "source_std_disagreement": 0.0128066146,
+          "source_cv_disagreement": 0.1470490571,
+          "micro_disagreement": 0.0922137677,
+          "macro_mae": 0.0996172357,
+          "mae_ci_low": 0.094068484,
+          "mae_ci_high": 0.1051565586,
+          "micro_conditional_abs_step": 1.0731223335,
+          "single_step_fraction_lower_bound": 0.9268776665,
+          "macro_signed_error": 0.0036988483,
+          "signed_ci_low": 0.0027883521,
+          "signed_ci_high": 0.0045781395,
+          "signed_to_mae_ratio": 0.0371306057,
+          "macro_zero_reference": 0.9042412121,
+          "macro_zero_variant": 0.9012320571,
+          "macro_zero_delta": -0.0030091549,
+          "zero_delta_ci_low": -0.0035533821,
+          "zero_delta_ci_high": -0.0024693316,
+          "macro_saturation_reference": 8.67991e-05,
+          "macro_saturation_variant": 9.22906e-05,
+          "macro_saturation_delta": 5.4915e-06,
+          "saturation_delta_ci_low": 5.486e-07,
+          "saturation_delta_ci_high": 1.07322e-05
+        },
+        {
+          "mode": "w4a4_input_qif",
+          "mode_label": "W4A4-input",
+          "source_count": 35,
+          "layer_count": 78,
+          "macro_disagreement": 0.1138079271,
+          "disagreement_ci_low": 0.1106639403,
+          "disagreement_ci_high": 0.1169349209,
+          "source_std_disagreement": 0.0096329201,
+          "source_cv_disagreement": 0.0846419079,
+          "micro_disagreement": 0.1313767314,
+          "macro_mae": 0.1351026429,
+          "mae_ci_low": 0.1305457258,
+          "mae_ci_high": 0.1396032024,
+          "micro_conditional_abs_step": 1.0975199435,
+          "single_step_fraction_lower_bound": 0.9024800565,
+          "macro_signed_error": -0.0013858785,
+          "signed_ci_low": -0.005106985,
+          "signed_ci_high": 0.0024140083,
+          "signed_to_mae_ratio": -0.0102579676,
+          "macro_zero_reference": 0.9042412121,
+          "macro_zero_variant": 0.8994212733,
+          "macro_zero_delta": -0.0048199388,
+          "zero_delta_ci_low": -0.0070754521,
+          "zero_delta_ci_high": -0.0026648953,
+          "macro_saturation_reference": 8.67991e-05,
+          "macro_saturation_variant": 2.42014e-05,
+          "macro_saturation_delta": -6.25977e-05,
+          "saturation_delta_ci_low": -7.30042e-05,
+          "saturation_delta_ci_high": -5.26785e-05
+        }
+      ],
+      "correlations": [
+        {
+          "x": "d_w4a4",
+          "x_label": "W4A4 code disagreement",
+          "y": "prediction_flip_w4a4",
+          "y_label": "prediction-flip rate",
+          "method": "spearman",
+          "coefficient": 0.8728291317,
+          "p_value": 0.0,
+          "bootstrap_ci_low": 0.7641573033,
+          "bootstrap_ci_high": 0.9274977957,
+          "source_count": 35
+        },
+        {
+          "x": "d_w4a4",
+          "x_label": "W4A4 code disagreement",
+          "y": "prediction_flip_w4a4",
+          "y_label": "prediction-flip rate",
+          "method": "pearson",
+          "coefficient": 0.8558345343,
+          "p_value": 1e-10,
+          "bootstrap_ci_low": 0.7774532386,
+          "bootstrap_ci_high": 0.9206790202,
+          "source_count": 35
+        },
+        {
+          "x": "d_w4a4",
+          "x_label": "W4A4 code disagreement",
+          "y": "miou_drop_w4a4",
+          "y_label": "per-source mIoU drop",
+          "method": "spearman",
+          "coefficient": 0.7425770308,
+          "p_value": 3.269e-07,
+          "bootstrap_ci_low": 0.5096442637,
+          "bootstrap_ci_high": 0.8744409088,
+          "source_count": 35
+        },
+        {
+          "x": "d_w4a4",
+          "x_label": "W4A4 code disagreement",
+          "y": "miou_drop_w4a4",
+          "y_label": "per-source mIoU drop",
+          "method": "pearson",
+          "coefficient": 0.797416098,
+          "p_value": 9.8e-09,
+          "bootstrap_ci_low": 0.6416077195,
+          "bootstrap_ci_high": 0.8989553704,
+          "source_count": 35
+        },
+        {
+          "x": "mae_w4a4",
+          "x_label": "W4A4 code MAE",
+          "y": "prediction_flip_w4a4",
+          "y_label": "prediction-flip rate",
+          "method": "spearman",
+          "coefficient": 0.8705882353,
+          "p_value": 0.0,
+          "bootstrap_ci_low": 0.7446871159,
+          "bootstrap_ci_high": 0.9243127632,
+          "source_count": 35
+        },
+        {
+          "x": "mae_w4a4",
+          "x_label": "W4A4 code MAE",
+          "y": "prediction_flip_w4a4",
+          "y_label": "prediction-flip rate",
+          "method": "pearson",
+          "coefficient": 0.8458723328,
+          "p_value": 2e-10,
+          "bootstrap_ci_low": 0.7625600958,
+          "bootstrap_ci_high": 0.917327764,
+          "source_count": 35
+        },
+        {
+          "x": "mae_w4a4",
+          "x_label": "W4A4 code MAE",
+          "y": "miou_drop_w4a4",
+          "y_label": "per-source mIoU drop",
+          "method": "spearman",
+          "coefficient": 0.7394957983,
+          "p_value": 3.878e-07,
+          "bootstrap_ci_low": 0.4895914613,
+          "bootstrap_ci_high": 0.8830495655,
+          "source_count": 35
+        },
+        {
+          "x": "mae_w4a4",
+          "x_label": "W4A4 code MAE",
+          "y": "miou_drop_w4a4",
+          "y_label": "per-source mIoU drop",
+          "method": "pearson",
+          "coefficient": 0.8061812419,
+          "p_value": 5.1e-09,
+          "bootstrap_ci_low": 0.6557549828,
+          "bootstrap_ci_high": 0.9056145564,
+          "source_count": 35
+        }
+      ]
+    }
+  },
+  "sources": [
+    {
+      "id": "derived-analysis",
+      "label": "Frozen probe derived statistical analysis",
+      "path": "quantization_distortion_results/full_20260805/statistical_analysis/analysis_summary.json",
+      "query": {
+        "description": "Source-balanced aggregation, paired cluster bootstrap, layer/stage decomposition, and source-level correlation computed from the frozen probe counts.",
+        "engine": "DuckDB",
+        "language": "sql",
+        "sql": "SELECT * FROM read_json_auto('quantization_distortion_results/full_20260805/statistical_analysis/analysis_summary.json', format = 'unstructured');",
+        "query": "The SQL loads the reviewed derived snapshot; run build_analysis.py to reproduce its Python statistics from raw counts.",
+        "tables_used": [
+          "quantization_distortion_results/full_20260805/source_layer_aggregates.json",
+          "quantization_distortion_results/full_20260805/source_confusion.json",
+          "quantization_distortion_results/full_20260805/per_patch_task_counts.csv.gz",
+          "quantization_distortion_results/full_20260805/summary.json"
+        ],
+        "filters": [
+          "UDD6 validation only",
+          "35 original source-image clusters",
+          "78 active QIF layers",
+          "frozen checkpoint; T=1"
+        ],
+        "metric_definitions": [
+          "Code disagreement D_l = count(q_variant != q_reference) / element count.",
+          "Source-balanced macro D = equal-weight mean over active layers within source, then equal-weight mean over 35 sources.",
+          "Code MAE = sum(abs(q_variant - q_reference)) / element count.",
+          "Zero/saturation deltas = variant rate minus FP-QIF reference rate.",
+          "All reported uncertainty intervals resample the 35 source-image clusters with replacement."
+        ],
+        "executed_at": "2026-08-05T14:40:10.371100Z"
+      }
+    }
+  ]
+}

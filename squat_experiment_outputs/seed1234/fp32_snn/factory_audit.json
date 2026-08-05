@@ -1,0 +1,8 @@
+{
+  "direct_lif_count": 85,
+  "output_lif_added": 1,
+  "protocol_amendment": "/root/autodl-tmp/LETNet/squat_experiment_outputs/seed1234/protocol_amendment_100_40.json",
+  "qif_replaced": 84,
+  "weight_layer_names": [],
+  "weight_layers_quantized": 0
+}

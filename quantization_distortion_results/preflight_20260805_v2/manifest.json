@@ -1,0 +1,1484 @@
+{
+  "format": "integer-lif-distortion-probe-v1",
+  "status": "complete",
+  "started_at": "2026-08-05T13:57:44Z",
+  "protocol": {
+    "design": "frozen-checkpoint 2x2 operator quantization probe",
+    "modes": [
+      "fp_qif",
+      "w4_qif",
+      "a4_input_qif",
+      "w4a4_input_qif"
+    ],
+    "model": "SpikingLETNet_shallow_max",
+    "dataset": "UDD6 validation",
+    "expected_validation_patches": 8478,
+    "batch_size": 20,
+    "time_steps": 1,
+    "qif_code_range": [
+      0,
+      8
+    ],
+    "weight_code_range": [
+      -8,
+      7
+    ],
+    "noninteger_operator_input_code_range": [
+      -8,
+      7
+    ],
+    "integer_operator_input_bypass_range": [
+      -8,
+      8
+    ],
+    "activation_scale": "dynamic per-tensor per forward",
+    "bias_precision": "FP32",
+    "primary_metric": "source-balanced macro QIF code disagreement",
+    "statistical_unit": "35 original UDD source images",
+    "bootstrap_replicates": 500,
+    "bootstrap_seed": 20270805,
+    "max_batches": 2
+  },
+  "checkpoint": {
+    "path": "/root/autodl-tmp/LETNet/checkpoint/udd/SpikingLETNet_shallow_maxbs64gpu1_trainval20260611-003821/model_best.pth",
+    "sha256": "2729d27dad82b9ec5124cc6474bcaad5bb3813de30b1875cd39765be1f46c3fb",
+    "epoch": 286
+  },
+  "config": {
+    "path": "/root/autodl-tmp/LETNet/Network/configs/SpikingLETNet_shallow/1.3M.yaml",
+    "sha256": "ab1008283b7f2f539d17654ae30861c5a794145ac3aaa1d4b5f02fc1589becb8"
+  },
+  "split": {
+    "path": "/root/autodl-tmp/UDD/UDD6/preprocessed/val_patches.txt",
+    "sha256": "e535815642b56f6f4d11c3d0ce0ec35914e0861975157d7a3357aa1495261169"
+  },
+  "code_sha256": {
+    "Network/run_quantization_distortion_probe.py": "f556f1bc963a73be5c21668e6678816312c7e17865c2d45aa88e33e4469f76a5",
+    "Network/quantization_distortion_probe/factorized_quantization.py": "fcfe757ca532990e220605e0b42441d975593364de0c4df55949da83454fbe28",
+    "Network/quantization_distortion_probe/qif_capture.py": "2c2b8f4552e441f2ee2a510429b7981e57aeb4e2e1c23a9c1ecb1ffa530f741c",
+    "Network/quantization_distortion_probe/statistics.py": "135226bfbad788f3d0405a5ffd4a3ec7ae09dd205a9ea0b52725e41abbf4a876",
+    "Network/quantization_distortion_probe/reporting.py": "626e0585b905a42271a70ed9d98551957a13e47506f3d4f7b6f5b963f76b7641"
+  },
+  "git": {
+    "commit": "b0abc50add8c46c07ae5627962c9c70b07d9fec0",
+    "status_short": "?? Network/quantization_distortion_probe/\n?? Network/run_quantization_distortion_probe.py\n?? Network/run_quantization_distortion_probe.py.orig\n?? Network/squat_comparison/\n?? docs/integer_lif_distortion_probe_protocol.md\n?? docs/qad_training_and_distillation.md\n?? docs/qad_vs_squat_experiment_plan.md\n?? docs/qad_vs_squat_preflight_status.md\n?? docs/qad_vs_squat_protocol_amendment_100_40.md\n?? docs/quantization_experiment_handoff_summary.md\n?? quantization_distortion_results/\n?? squat_experiment_outputs/\n?? tests/quantization_distortion_probe/\n?? tests/squat_comparison/"
+  },
+  "device": {
+    "requested": "cuda:1",
+    "name": "NVIDIA RTX PRO 6000 Blackwell Server Edition",
+    "total_memory_bytes": 101975851008
+  },
+  "completed_at": "2026-08-05T13:57:48Z",
+  "completed_batches": 2,
+  "completed_patches": 40,
+  "complete_validation": false,
+  "elapsed_seconds": 3.1566083440557122,
+  "declared_qif_count": 84,
+  "active_qif_names": [
+    "init_conv.0.bn_prelu.acti",
+    "init_conv.1.bn_prelu.acti",
+    "init_conv.2.bn_prelu.acti",
+    "downsample_1.conv3x3.bn_prelu.acti",
+    "DAB_Block_1.DAB_Module_1_0.conv1x1_in.bn_prelu.acti",
+    "DAB_Block_1.DAB_Module_1_0.conv3x1.bn_prelu.acti",
+    "DAB_Block_1.DAB_Module_1_0.conv1x3.bn_prelu.acti",
+    "DAB_Block_1.DAB_Module_1_0.dconv3x1.bn_prelu.acti",
+    "DAB_Block_1.DAB_Module_1_0.dconv1x3.bn_prelu.acti",
+    "DAB_Block_1.DAB_Module_1_0.ca11.neuron",
+    "DAB_Block_1.DAB_Module_1_0.ddconv3x1.bn_prelu.acti",
+    "DAB_Block_1.DAB_Module_1_0.ddconv1x3.bn_prelu.acti",
+    "DAB_Block_1.DAB_Module_1_0.ca22.neuron",
+    "DAB_Block_1.DAB_Module_1_0.conv1x1.bn_prelu.acti",
+    "DAB_Block_1.DAB_Module_1_0.bn_relu.acti",
+    "downsample_2.conv3x3.bn_prelu.acti",
+    "DAB_Block_2.DAB_Module_2_0.conv1x1_in.bn_prelu.acti",
+    "DAB_Block_2.DAB_Module_2_0.conv3x1.bn_prelu.acti",
+    "DAB_Block_2.DAB_Module_2_0.conv1x3.bn_prelu.acti",
+    "DAB_Block_2.DAB_Module_2_0.dconv3x1.bn_prelu.acti",
+    "DAB_Block_2.DAB_Module_2_0.dconv1x3.bn_prelu.acti",
+    "DAB_Block_2.DAB_Module_2_0.ca11.neuron",
+    "DAB_Block_2.DAB_Module_2_0.ddconv3x1.bn_prelu.acti",
+    "DAB_Block_2.DAB_Module_2_0.ddconv1x3.bn_prelu.acti",
+    "DAB_Block_2.DAB_Module_2_0.ca22.neuron",
+    "DAB_Block_2.DAB_Module_2_0.conv1x1.bn_prelu.acti",
+    "DAB_Block_2.DAB_Module_2_0.bn_relu.acti",
+    "downsample_3.conv3x3.bn_prelu.acti",
+    "DAB_Block_3.DAB_Module_3_0.conv1x1_in.bn_prelu.acti",
+    "DAB_Block_3.DAB_Module_3_0.conv3x1.bn_prelu.acti",
+    "DAB_Block_3.DAB_Module_3_0.conv1x3.bn_prelu.acti",
+    "DAB_Block_3.DAB_Module_3_0.dconv3x1.bn_prelu.acti",
+    "DAB_Block_3.DAB_Module_3_0.dconv1x3.bn_prelu.acti",
+    "DAB_Block_3.DAB_Module_3_0.ca11.neuron",
+    "DAB_Block_3.DAB_Module_3_0.ddconv3x1.bn_prelu.acti",
+    "DAB_Block_3.DAB_Module_3_0.ddconv1x3.bn_prelu.acti",
+    "DAB_Block_3.DAB_Module_3_0.ca22.neuron",
+    "DAB_Block_3.DAB_Module_3_0.conv1x1.bn_prelu.acti",
+    "DAB_Block_3.DAB_Module_3_0.bn_relu.acti",
+    "DAB_Block_4.DAB_Module_4_0.conv1x1_in.bn_prelu.acti",
+    "DAB_Block_4.DAB_Module_4_0.conv3x1.bn_prelu.acti",
+    "DAB_Block_4.DAB_Module_4_0.conv1x3.bn_prelu.acti",
+    "DAB_Block_4.DAB_Module_4_0.dconv3x1.bn_prelu.acti",
+    "DAB_Block_4.DAB_Module_4_0.dconv1x3.bn_prelu.acti",
+    "DAB_Block_4.DAB_Module_4_0.ca11.neuron",
+    "DAB_Block_4.DAB_Module_4_0.ddconv3x1.bn_prelu.acti",
+    "DAB_Block_4.DAB_Module_4_0.ddconv1x3.bn_prelu.acti",
+    "DAB_Block_4.DAB_Module_4_0.ca22.neuron",
+    "DAB_Block_4.DAB_Module_4_0.conv1x1.bn_prelu.acti",
+    "DAB_Block_4.DAB_Module_4_0.bn_relu.acti",
+    "upsample_1.relu",
+    "DAB_Block_5.DAB_Module_5_0.conv1x1_in.bn_prelu.acti",
+    "DAB_Block_5.DAB_Module_5_0.conv3x1.bn_prelu.acti",
+    "DAB_Block_5.DAB_Module_5_0.conv1x3.bn_prelu.acti",
+    "DAB_Block_5.DAB_Module_5_0.dconv3x1.bn_prelu.acti",
+    "DAB_Block_5.DAB_Module_5_0.dconv1x3.bn_prelu.acti",
+    "DAB_Block_5.DAB_Module_5_0.ca11.neuron",
+    "DAB_Block_5.DAB_Module_5_0.ddconv3x1.bn_prelu.acti",
+    "DAB_Block_5.DAB_Module_5_0.ddconv1x3.bn_prelu.acti",
+    "DAB_Block_5.DAB_Module_5_0.ca22.neuron",
+    "DAB_Block_5.DAB_Module_5_0.conv1x1.bn_prelu.acti",
+    "DAB_Block_5.DAB_Module_5_0.bn_relu.acti",
+    "upsample_2.relu",
+    "DAB_Block_6.DAB_Module_6_0.conv1x1_in.bn_prelu.acti",
+    "DAB_Block_6.DAB_Module_6_0.conv3x1.bn_prelu.acti",
+    "DAB_Block_6.DAB_Module_6_0.conv1x3.bn_prelu.acti",
+    "DAB_Block_6.DAB_Module_6_0.dconv3x1.bn_prelu.acti",
+    "DAB_Block_6.DAB_Module_6_0.dconv1x3.bn_prelu.acti",
+    "DAB_Block_6.DAB_Module_6_0.ca11.neuron",
+    "DAB_Block_6.DAB_Module_6_0.ddconv3x1.bn_prelu.acti",
+    "DAB_Block_6.DAB_Module_6_0.ddconv1x3.bn_prelu.acti",
+    "DAB_Block_6.DAB_Module_6_0.ca22.neuron",
+    "DAB_Block_6.DAB_Module_6_0.conv1x1.bn_prelu.acti",
+    "DAB_Block_6.DAB_Module_6_0.bn_relu.acti",
+    "upsample_3.relu",
+    "LC1.bn_prelu.acti",
+    "LC2.bn_prelu.acti",
+    "LC3.bn_prelu.acti"
+  ],
+  "inactive_qif_names": [
+    "bn_prelu_2.acti",
+    "bn_prelu_3.acti",
+    "bn_prelu_4.acti",
+    "bn_prelu_5.acti",
+    "bn_prelu_6.acti",
+    "bn_prelu_7.acti"
+  ],
+  "integer_bypass_audit": {
+    "w4_qif": {
+      "totals": {
+        "calls": 0,
+        "integer_bypass_calls": 0,
+        "plus8_bypass_calls": 0,
+        "plus8_values": 0
+      },
+      "layers": {
+        "init_conv.0.conv": {
+          "calls": 0,
+          "integer_bypass_calls": 0,
+          "plus8_bypass_calls": 0,
+          "plus8_values": 0
+        },
+        "init_conv.1.conv": {
+          "calls": 0,
+          "integer_bypass_calls": 0,
+          "plus8_bypass_calls": 0,
+          "plus8_values": 0
+        },
+        "init_conv.2.conv": {
+          "calls": 0,
+          "integer_bypass_calls": 0,
+          "plus8_bypass_calls": 0,
+          "plus8_values": 0
+        },
+        "downsample_1.conv3x3.conv": {
+          "calls": 0,
+          "integer_bypass_calls": 0,
+          "plus8_bypass_calls": 0,
+          "plus8_values": 0
+        },
+        "DAB_Block_1.DAB_Module_1_0.conv1x1_in.conv": {
+          "calls": 0,
+          "integer_bypass_calls": 0,
+          "plus8_bypass_calls": 0,
+          "plus8_values": 0
+        },
+        "DAB_Block_1.DAB_Module_1_0.conv3x1.conv": {
+          "calls": 0,
+          "integer_bypass_calls": 0,
+          "plus8_bypass_calls": 0,
+          "plus8_values": 0
+        },
+        "DAB_Block_1.DAB_Module_1_0.conv1x3.conv": {
+          "calls": 0,
+          "integer_bypass_calls": 0,
+          "plus8_bypass_calls": 0,
+          "plus8_values": 0
+        },
+        "DAB_Block_1.DAB_Module_1_0.dconv3x1.conv": {
+          "calls": 0,
+          "integer_bypass_calls": 0,
+          "plus8_bypass_calls": 0,
+          "plus8_values": 0
+        },
+        "DAB_Block_1.DAB_Module_1_0.dconv1x3.conv": {
+          "calls": 0,
+          "integer_bypass_calls": 0,
+          "plus8_bypass_calls": 0,
+          "plus8_values": 0
+        },
+        "DAB_Block_1.DAB_Module_1_0.ddconv3x1.conv": {
+          "calls": 0,
+          "integer_bypass_calls": 0,
+          "plus8_bypass_calls": 0,
+          "plus8_values": 0
+        },
+        "DAB_Block_1.DAB_Module_1_0.ddconv1x3.conv": {
+          "calls": 0,
+          "integer_bypass_calls": 0,
+          "plus8_bypass_calls": 0,
+          "plus8_values": 0
+        },
+        "DAB_Block_1.DAB_Module_1_0.conv1x1.conv": {
+          "calls": 0,
+          "integer_bypass_calls": 0,
+          "plus8_bypass_calls": 0,
+          "plus8_values": 0
+        },
+        "downsample_2.conv3x3.conv": {
+          "calls": 0,
+          "integer_bypass_calls": 0,
+          "plus8_bypass_calls": 0,
+          "plus8_values": 0
+        },
+        "DAB_Block_2.DAB_Module_2_0.conv1x1_in.conv": {
+          "calls": 0,
+          "integer_bypass_calls": 0,
+          "plus8_bypass_calls": 0,
+          "plus8_values": 0
+        },
+        "DAB_Block_2.DAB_Module_2_0.conv3x1.conv": {
+          "calls": 0,
+          "integer_bypass_calls": 0,
+          "plus8_bypass_calls": 0,
+          "plus8_values": 0
+        },
+        "DAB_Block_2.DAB_Module_2_0.conv1x3.conv": {
+          "calls": 0,
+          "integer_bypass_calls": 0,
+          "plus8_bypass_calls": 0,
+          "plus8_values": 0
+        },
+        "DAB_Block_2.DAB_Module_2_0.dconv3x1.conv": {
+          "calls": 0,
+          "integer_bypass_calls": 0,
+          "plus8_bypass_calls": 0,
+          "plus8_values": 0
+        },
+        "DAB_Block_2.DAB_Module_2_0.dconv1x3.conv": {
+          "calls": 0,
+          "integer_bypass_calls": 0,
+          "plus8_bypass_calls": 0,
+          "plus8_values": 0
+        },
+        "DAB_Block_2.DAB_Module_2_0.ddconv3x1.conv": {
+          "calls": 0,
+          "integer_bypass_calls": 0,
+          "plus8_bypass_calls": 0,
+          "plus8_values": 0
+        },
+        "DAB_Block_2.DAB_Module_2_0.ddconv1x3.conv": {
+          "calls": 0,
+          "integer_bypass_calls": 0,
+          "plus8_bypass_calls": 0,
+          "plus8_values": 0
+        },
+        "DAB_Block_2.DAB_Module_2_0.conv1x1.conv": {
+          "calls": 0,
+          "integer_bypass_calls": 0,
+          "plus8_bypass_calls": 0,
+          "plus8_values": 0
+        },
+        "downsample_3.conv3x3.conv": {
+          "calls": 0,
+          "integer_bypass_calls": 0,
+          "plus8_bypass_calls": 0,
+          "plus8_values": 0
+        },
+        "DAB_Block_3.DAB_Module_3_0.conv1x1_in.conv": {
+          "calls": 0,
+          "integer_bypass_calls": 0,
+          "plus8_bypass_calls": 0,
+          "plus8_values": 0
+        },
+        "DAB_Block_3.DAB_Module_3_0.conv3x1.conv": {
+          "calls": 0,
+          "integer_bypass_calls": 0,
+          "plus8_bypass_calls": 0,
+          "plus8_values": 0
+        },
+        "DAB_Block_3.DAB_Module_3_0.conv1x3.conv": {
+          "calls": 0,
+          "integer_bypass_calls": 0,
+          "plus8_bypass_calls": 0,
+          "plus8_values": 0
+        },
+        "DAB_Block_3.DAB_Module_3_0.dconv3x1.conv": {
+          "calls": 0,
+          "integer_bypass_calls": 0,
+          "plus8_bypass_calls": 0,
+          "plus8_values": 0
+        },
+        "DAB_Block_3.DAB_Module_3_0.dconv1x3.conv": {
+          "calls": 0,
+          "integer_bypass_calls": 0,
+          "plus8_bypass_calls": 0,
+          "plus8_values": 0
+        },
+        "DAB_Block_3.DAB_Module_3_0.ddconv3x1.conv": {
+          "calls": 0,
+          "integer_bypass_calls": 0,
+          "plus8_bypass_calls": 0,
+          "plus8_values": 0
+        },
+        "DAB_Block_3.DAB_Module_3_0.ddconv1x3.conv": {
+          "calls": 0,
+          "integer_bypass_calls": 0,
+          "plus8_bypass_calls": 0,
+          "plus8_values": 0
+        },
+        "DAB_Block_3.DAB_Module_3_0.conv1x1.conv": {
+          "calls": 0,
+          "integer_bypass_calls": 0,
+          "plus8_bypass_calls": 0,
+          "plus8_values": 0
+        },
+        "transformer1.atten.reduce": {
+          "calls": 0,
+          "integer_bypass_calls": 0,
+          "plus8_bypass_calls": 0,
+          "plus8_values": 0
+        },
+        "transformer1.atten.qkv": {
+          "calls": 0,
+          "integer_bypass_calls": 0,
+          "plus8_bypass_calls": 0,
+          "plus8_values": 0
+        },
+        "transformer1.atten.proj": {
+          "calls": 0,
+          "integer_bypass_calls": 0,
+          "plus8_bypass_calls": 0,
+          "plus8_values": 0
+        },
+        "transformer1.mlp.fc1": {
+          "calls": 0,
+          "integer_bypass_calls": 0,
+          "plus8_bypass_calls": 0,
+          "plus8_values": 0
+        },
+        "transformer1.mlp.fc2": {
+          "calls": 0,
+          "integer_bypass_calls": 0,
+          "plus8_bypass_calls": 0,
+          "plus8_values": 0
+        },
+        "DAB_Block_4.DAB_Module_4_0.conv1x1_in.conv": {
+          "calls": 0,
+          "integer_bypass_calls": 0,
+          "plus8_bypass_calls": 0,
+          "plus8_values": 0
+        },
+        "DAB_Block_4.DAB_Module_4_0.conv3x1.conv": {
+          "calls": 0,
+          "integer_bypass_calls": 0,
+          "plus8_bypass_calls": 0,
+          "plus8_values": 0
+        },
+        "DAB_Block_4.DAB_Module_4_0.conv1x3.conv": {
+          "calls": 0,
+          "integer_bypass_calls": 0,
+          "plus8_bypass_calls": 0,
+          "plus8_values": 0
+        },
+        "DAB_Block_4.DAB_Module_4_0.dconv3x1.conv": {
+          "calls": 0,
+          "integer_bypass_calls": 0,
+          "plus8_bypass_calls": 0,
+          "plus8_values": 0
+        },
+        "DAB_Block_4.DAB_Module_4_0.dconv1x3.conv": {
+          "calls": 0,
+          "integer_bypass_calls": 0,
+          "plus8_bypass_calls": 0,
+          "plus8_values": 0
+        },
+        "DAB_Block_4.DAB_Module_4_0.ddconv3x1.conv": {
+          "calls": 0,
+          "integer_bypass_calls": 0,
+          "plus8_bypass_calls": 0,
+          "plus8_values": 0
+        },
+        "DAB_Block_4.DAB_Module_4_0.ddconv1x3.conv": {
+          "calls": 0,
+          "integer_bypass_calls": 0,
+          "plus8_bypass_calls": 0,
+          "plus8_values": 0
+        },
+        "DAB_Block_4.DAB_Module_4_0.conv1x1.conv": {
+          "calls": 0,
+          "integer_bypass_calls": 0,
+          "plus8_bypass_calls": 0,
+          "plus8_values": 0
+        },
+        "upsample_1.conv": {
+          "calls": 0,
+          "integer_bypass_calls": 0,
+          "plus8_bypass_calls": 0,
+          "plus8_values": 0
+        },
+        "DAB_Block_5.DAB_Module_5_0.conv1x1_in.conv": {
+          "calls": 0,
+          "integer_bypass_calls": 0,
+          "plus8_bypass_calls": 0,
+          "plus8_values": 0
+        },
+        "DAB_Block_5.DAB_Module_5_0.conv3x1.conv": {
+          "calls": 0,
+          "integer_bypass_calls": 0,
+          "plus8_bypass_calls": 0,
+          "plus8_values": 0
+        },
+        "DAB_Block_5.DAB_Module_5_0.conv1x3.conv": {
+          "calls": 0,
+          "integer_bypass_calls": 0,
+          "plus8_bypass_calls": 0,
+          "plus8_values": 0
+        },
+        "DAB_Block_5.DAB_Module_5_0.dconv3x1.conv": {
+          "calls": 0,
+          "integer_bypass_calls": 0,
+          "plus8_bypass_calls": 0,
+          "plus8_values": 0
+        },
+        "DAB_Block_5.DAB_Module_5_0.dconv1x3.conv": {
+          "calls": 0,
+          "integer_bypass_calls": 0,
+          "plus8_bypass_calls": 0,
+          "plus8_values": 0
+        },
+        "DAB_Block_5.DAB_Module_5_0.ddconv3x1.conv": {
+          "calls": 0,
+          "integer_bypass_calls": 0,
+          "plus8_bypass_calls": 0,
+          "plus8_values": 0
+        },
+        "DAB_Block_5.DAB_Module_5_0.ddconv1x3.conv": {
+          "calls": 0,
+          "integer_bypass_calls": 0,
+          "plus8_bypass_calls": 0,
+          "plus8_values": 0
+        },
+        "DAB_Block_5.DAB_Module_5_0.conv1x1.conv": {
+          "calls": 0,
+          "integer_bypass_calls": 0,
+          "plus8_bypass_calls": 0,
+          "plus8_values": 0
+        },
+        "upsample_2.conv": {
+          "calls": 0,
+          "integer_bypass_calls": 0,
+          "plus8_bypass_calls": 0,
+          "plus8_values": 0
+        },
+        "DAB_Block_6.DAB_Module_6_0.conv1x1_in.conv": {
+          "calls": 0,
+          "integer_bypass_calls": 0,
+          "plus8_bypass_calls": 0,
+          "plus8_values": 0
+        },
+        "DAB_Block_6.DAB_Module_6_0.conv3x1.conv": {
+          "calls": 0,
+          "integer_bypass_calls": 0,
+          "plus8_bypass_calls": 0,
+          "plus8_values": 0
+        },
+        "DAB_Block_6.DAB_Module_6_0.conv1x3.conv": {
+          "calls": 0,
+          "integer_bypass_calls": 0,
+          "plus8_bypass_calls": 0,
+          "plus8_values": 0
+        },
+        "DAB_Block_6.DAB_Module_6_0.dconv3x1.conv": {
+          "calls": 0,
+          "integer_bypass_calls": 0,
+          "plus8_bypass_calls": 0,
+          "plus8_values": 0
+        },
+        "DAB_Block_6.DAB_Module_6_0.dconv1x3.conv": {
+          "calls": 0,
+          "integer_bypass_calls": 0,
+          "plus8_bypass_calls": 0,
+          "plus8_values": 0
+        },
+        "DAB_Block_6.DAB_Module_6_0.ddconv3x1.conv": {
+          "calls": 0,
+          "integer_bypass_calls": 0,
+          "plus8_bypass_calls": 0,
+          "plus8_values": 0
+        },
+        "DAB_Block_6.DAB_Module_6_0.ddconv1x3.conv": {
+          "calls": 0,
+          "integer_bypass_calls": 0,
+          "plus8_bypass_calls": 0,
+          "plus8_values": 0
+        },
+        "DAB_Block_6.DAB_Module_6_0.conv1x1.conv": {
+          "calls": 0,
+          "integer_bypass_calls": 0,
+          "plus8_bypass_calls": 0,
+          "plus8_values": 0
+        },
+        "upsample_3.conv": {
+          "calls": 0,
+          "integer_bypass_calls": 0,
+          "plus8_bypass_calls": 0,
+          "plus8_values": 0
+        },
+        "PA3.conv": {
+          "calls": 0,
+          "integer_bypass_calls": 0,
+          "plus8_bypass_calls": 0,
+          "plus8_values": 0
+        },
+        "LC1.dconv3x1": {
+          "calls": 0,
+          "integer_bypass_calls": 0,
+          "plus8_bypass_calls": 0,
+          "plus8_values": 0
+        },
+        "LC1.dconv1x3": {
+          "calls": 0,
+          "integer_bypass_calls": 0,
+          "plus8_bypass_calls": 0,
+          "plus8_values": 0
+        },
+        "LC2.dconv3x1": {
+          "calls": 0,
+          "integer_bypass_calls": 0,
+          "plus8_bypass_calls": 0,
+          "plus8_values": 0
+        },
+        "LC2.dconv1x3": {
+          "calls": 0,
+          "integer_bypass_calls": 0,
+          "plus8_bypass_calls": 0,
+          "plus8_values": 0
+        },
+        "LC3.dconv3x1": {
+          "calls": 0,
+          "integer_bypass_calls": 0,
+          "plus8_bypass_calls": 0,
+          "plus8_values": 0
+        },
+        "LC3.dconv1x3": {
+          "calls": 0,
+          "integer_bypass_calls": 0,
+          "plus8_bypass_calls": 0,
+          "plus8_values": 0
+        },
+        "final_conv": {
+          "calls": 0,
+          "integer_bypass_calls": 0,
+          "plus8_bypass_calls": 0,
+          "plus8_values": 0
+        },
+        "classifier.0.conv": {
+          "calls": 0,
+          "integer_bypass_calls": 0,
+          "plus8_bypass_calls": 0,
+          "plus8_values": 0
+        }
+      }
+    },
+    "a4_input_qif": {
+      "totals": {
+        "calls": 140,
+        "integer_bypass_calls": 106,
+        "plus8_bypass_calls": 38,
+        "plus8_values": 41485
+      },
+      "layers": {
+        "init_conv.0.conv": {
+          "calls": 2,
+          "integer_bypass_calls": 0,
+          "plus8_bypass_calls": 0,
+          "plus8_values": 0
+        },
+        "init_conv.1.conv": {
+          "calls": 2,
+          "integer_bypass_calls": 2,
+          "plus8_bypass_calls": 2,
+          "plus8_values": 37076
+        },
+        "init_conv.2.conv": {
+          "calls": 2,
+          "integer_bypass_calls": 2,
+          "plus8_bypass_calls": 2,
+          "plus8_values": 6
+        },
+        "downsample_1.conv3x3.conv": {
+          "calls": 2,
+          "integer_bypass_calls": 2,
+          "plus8_bypass_calls": 2,
+          "plus8_values": 14
+        },
+        "DAB_Block_1.DAB_Module_1_0.conv1x1_in.conv": {
+          "calls": 2,
+          "integer_bypass_calls": 2,
+          "plus8_bypass_calls": 2,
+          "plus8_values": 14
+        },
+        "DAB_Block_1.DAB_Module_1_0.conv3x1.conv": {
+          "calls": 2,
+          "integer_bypass_calls": 2,
+          "plus8_bypass_calls": 0,
+          "plus8_values": 0
+        },
+        "DAB_Block_1.DAB_Module_1_0.conv1x3.conv": {
+          "calls": 2,
+          "integer_bypass_calls": 2,
+          "plus8_bypass_calls": 0,
+          "plus8_values": 0
+        },
+        "DAB_Block_1.DAB_Module_1_0.dconv3x1.conv": {
+          "calls": 2,
+          "integer_bypass_calls": 2,
+          "plus8_bypass_calls": 0,
+          "plus8_values": 0
+        },
+        "DAB_Block_1.DAB_Module_1_0.dconv1x3.conv": {
+          "calls": 2,
+          "integer_bypass_calls": 2,
+          "plus8_bypass_calls": 0,
+          "plus8_values": 0
+        },
+        "DAB_Block_1.DAB_Module_1_0.ddconv3x1.conv": {
+          "calls": 2,
+          "integer_bypass_calls": 2,
+          "plus8_bypass_calls": 0,
+          "plus8_values": 0
+        },
+        "DAB_Block_1.DAB_Module_1_0.ddconv1x3.conv": {
+          "calls": 2,
+          "integer_bypass_calls": 2,
+          "plus8_bypass_calls": 0,
+          "plus8_values": 0
+        },
+        "DAB_Block_1.DAB_Module_1_0.conv1x1.conv": {
+          "calls": 2,
+          "integer_bypass_calls": 0,
+          "plus8_bypass_calls": 0,
+          "plus8_values": 0
+        },
+        "downsample_2.conv3x3.conv": {
+          "calls": 2,
+          "integer_bypass_calls": 2,
+          "plus8_bypass_calls": 2,
+          "plus8_values": 57
+        },
+        "DAB_Block_2.DAB_Module_2_0.conv1x1_in.conv": {
+          "calls": 2,
+          "integer_bypass_calls": 2,
+          "plus8_bypass_calls": 0,
+          "plus8_values": 0
+        },
+        "DAB_Block_2.DAB_Module_2_0.conv3x1.conv": {
+          "calls": 2,
+          "integer_bypass_calls": 2,
+          "plus8_bypass_calls": 0,
+          "plus8_values": 0
+        },
+        "DAB_Block_2.DAB_Module_2_0.conv1x3.conv": {
+          "calls": 2,
+          "integer_bypass_calls": 2,
+          "plus8_bypass_calls": 0,
+          "plus8_values": 0
+        },
+        "DAB_Block_2.DAB_Module_2_0.dconv3x1.conv": {
+          "calls": 2,
+          "integer_bypass_calls": 2,
+          "plus8_bypass_calls": 0,
+          "plus8_values": 0
+        },
+        "DAB_Block_2.DAB_Module_2_0.dconv1x3.conv": {
+          "calls": 2,
+          "integer_bypass_calls": 2,
+          "plus8_bypass_calls": 0,
+          "plus8_values": 0
+        },
+        "DAB_Block_2.DAB_Module_2_0.ddconv3x1.conv": {
+          "calls": 2,
+          "integer_bypass_calls": 2,
+          "plus8_bypass_calls": 0,
+          "plus8_values": 0
+        },
+        "DAB_Block_2.DAB_Module_2_0.ddconv1x3.conv": {
+          "calls": 2,
+          "integer_bypass_calls": 2,
+          "plus8_bypass_calls": 0,
+          "plus8_values": 0
+        },
+        "DAB_Block_2.DAB_Module_2_0.conv1x1.conv": {
+          "calls": 2,
+          "integer_bypass_calls": 2,
+          "plus8_bypass_calls": 0,
+          "plus8_values": 0
+        },
+        "downsample_3.conv3x3.conv": {
+          "calls": 2,
+          "integer_bypass_calls": 2,
+          "plus8_bypass_calls": 1,
+          "plus8_values": 1
+        },
+        "DAB_Block_3.DAB_Module_3_0.conv1x1_in.conv": {
+          "calls": 2,
+          "integer_bypass_calls": 2,
+          "plus8_bypass_calls": 0,
+          "plus8_values": 0
+        },
+        "DAB_Block_3.DAB_Module_3_0.conv3x1.conv": {
+          "calls": 2,
+          "integer_bypass_calls": 2,
+          "plus8_bypass_calls": 0,
+          "plus8_values": 0
+        },
+        "DAB_Block_3.DAB_Module_3_0.conv1x3.conv": {
+          "calls": 2,
+          "integer_bypass_calls": 2,
+          "plus8_bypass_calls": 0,
+          "plus8_values": 0
+        },
+        "DAB_Block_3.DAB_Module_3_0.dconv3x1.conv": {
+          "calls": 2,
+          "integer_bypass_calls": 2,
+          "plus8_bypass_calls": 0,
+          "plus8_values": 0
+        },
+        "DAB_Block_3.DAB_Module_3_0.dconv1x3.conv": {
+          "calls": 2,
+          "integer_bypass_calls": 2,
+          "plus8_bypass_calls": 0,
+          "plus8_values": 0
+        },
+        "DAB_Block_3.DAB_Module_3_0.ddconv3x1.conv": {
+          "calls": 2,
+          "integer_bypass_calls": 2,
+          "plus8_bypass_calls": 0,
+          "plus8_values": 0
+        },
+        "DAB_Block_3.DAB_Module_3_0.ddconv1x3.conv": {
+          "calls": 2,
+          "integer_bypass_calls": 2,
+          "plus8_bypass_calls": 0,
+          "plus8_values": 0
+        },
+        "DAB_Block_3.DAB_Module_3_0.conv1x1.conv": {
+          "calls": 2,
+          "integer_bypass_calls": 0,
+          "plus8_bypass_calls": 0,
+          "plus8_values": 0
+        },
+        "transformer1.atten.reduce": {
+          "calls": 2,
+          "integer_bypass_calls": 0,
+          "plus8_bypass_calls": 0,
+          "plus8_values": 0
+        },
+        "transformer1.atten.qkv": {
+          "calls": 2,
+          "integer_bypass_calls": 0,
+          "plus8_bypass_calls": 0,
+          "plus8_values": 0
+        },
+        "transformer1.atten.proj": {
+          "calls": 2,
+          "integer_bypass_calls": 0,
+          "plus8_bypass_calls": 0,
+          "plus8_values": 0
+        },
+        "transformer1.mlp.fc1": {
+          "calls": 2,
+          "integer_bypass_calls": 0,
+          "plus8_bypass_calls": 0,
+          "plus8_values": 0
+        },
+        "transformer1.mlp.fc2": {
+          "calls": 2,
+          "integer_bypass_calls": 0,
+          "plus8_bypass_calls": 0,
+          "plus8_values": 0
+        },
+        "DAB_Block_4.DAB_Module_4_0.conv1x1_in.conv": {
+          "calls": 2,
+          "integer_bypass_calls": 0,
+          "plus8_bypass_calls": 0,
+          "plus8_values": 0
+        },
+        "DAB_Block_4.DAB_Module_4_0.conv3x1.conv": {
+          "calls": 2,
+          "integer_bypass_calls": 2,
+          "plus8_bypass_calls": 0,
+          "plus8_values": 0
+        },
+        "DAB_Block_4.DAB_Module_4_0.conv1x3.conv": {
+          "calls": 2,
+          "integer_bypass_calls": 2,
+          "plus8_bypass_calls": 0,
+          "plus8_values": 0
+        },
+        "DAB_Block_4.DAB_Module_4_0.dconv3x1.conv": {
+          "calls": 2,
+          "integer_bypass_calls": 2,
+          "plus8_bypass_calls": 0,
+          "plus8_values": 0
+        },
+        "DAB_Block_4.DAB_Module_4_0.dconv1x3.conv": {
+          "calls": 2,
+          "integer_bypass_calls": 2,
+          "plus8_bypass_calls": 0,
+          "plus8_values": 0
+        },
+        "DAB_Block_4.DAB_Module_4_0.ddconv3x1.conv": {
+          "calls": 2,
+          "integer_bypass_calls": 2,
+          "plus8_bypass_calls": 0,
+          "plus8_values": 0
+        },
+        "DAB_Block_4.DAB_Module_4_0.ddconv1x3.conv": {
+          "calls": 2,
+          "integer_bypass_calls": 2,
+          "plus8_bypass_calls": 0,
+          "plus8_values": 0
+        },
+        "DAB_Block_4.DAB_Module_4_0.conv1x1.conv": {
+          "calls": 2,
+          "integer_bypass_calls": 2,
+          "plus8_bypass_calls": 0,
+          "plus8_values": 0
+        },
+        "upsample_1.conv": {
+          "calls": 2,
+          "integer_bypass_calls": 2,
+          "plus8_bypass_calls": 1,
+          "plus8_values": 2
+        },
+        "DAB_Block_5.DAB_Module_5_0.conv1x1_in.conv": {
+          "calls": 2,
+          "integer_bypass_calls": 2,
+          "plus8_bypass_calls": 2,
+          "plus8_values": 37
+        },
+        "DAB_Block_5.DAB_Module_5_0.conv3x1.conv": {
+          "calls": 2,
+          "integer_bypass_calls": 2,
+          "plus8_bypass_calls": 2,
+          "plus8_values": 5
+        },
+        "DAB_Block_5.DAB_Module_5_0.conv1x3.conv": {
+          "calls": 2,
+          "integer_bypass_calls": 2,
+          "plus8_bypass_calls": 2,
+          "plus8_values": 4
+        },
+        "DAB_Block_5.DAB_Module_5_0.dconv3x1.conv": {
+          "calls": 2,
+          "integer_bypass_calls": 2,
+          "plus8_bypass_calls": 2,
+          "plus8_values": 24
+        },
+        "DAB_Block_5.DAB_Module_5_0.dconv1x3.conv": {
+          "calls": 2,
+          "integer_bypass_calls": 2,
+          "plus8_bypass_calls": 0,
+          "plus8_values": 0
+        },
+        "DAB_Block_5.DAB_Module_5_0.ddconv3x1.conv": {
+          "calls": 2,
+          "integer_bypass_calls": 2,
+          "plus8_bypass_calls": 2,
+          "plus8_values": 24
+        },
+        "DAB_Block_5.DAB_Module_5_0.ddconv1x3.conv": {
+          "calls": 2,
+          "integer_bypass_calls": 2,
+          "plus8_bypass_calls": 2,
+          "plus8_values": 183
+        },
+        "DAB_Block_5.DAB_Module_5_0.conv1x1.conv": {
+          "calls": 2,
+          "integer_bypass_calls": 0,
+          "plus8_bypass_calls": 0,
+          "plus8_values": 0
+        },
+        "upsample_2.conv": {
+          "calls": 2,
+          "integer_bypass_calls": 0,
+          "plus8_bypass_calls": 0,
+          "plus8_values": 0
+        },
+        "DAB_Block_6.DAB_Module_6_0.conv1x1_in.conv": {
+          "calls": 2,
+          "integer_bypass_calls": 2,
+          "plus8_bypass_calls": 2,
+          "plus8_values": 3112
+        },
+        "DAB_Block_6.DAB_Module_6_0.conv3x1.conv": {
+          "calls": 2,
+          "integer_bypass_calls": 2,
+          "plus8_bypass_calls": 1,
+          "plus8_values": 2
+        },
+        "DAB_Block_6.DAB_Module_6_0.conv1x3.conv": {
+          "calls": 2,
+          "integer_bypass_calls": 2,
+          "plus8_bypass_calls": 2,
+          "plus8_values": 11
+        },
+        "DAB_Block_6.DAB_Module_6_0.dconv3x1.conv": {
+          "calls": 2,
+          "integer_bypass_calls": 2,
+          "plus8_bypass_calls": 0,
+          "plus8_values": 0
+        },
+        "DAB_Block_6.DAB_Module_6_0.dconv1x3.conv": {
+          "calls": 2,
+          "integer_bypass_calls": 2,
+          "plus8_bypass_calls": 0,
+          "plus8_values": 0
+        },
+        "DAB_Block_6.DAB_Module_6_0.ddconv3x1.conv": {
+          "calls": 2,
+          "integer_bypass_calls": 2,
+          "plus8_bypass_calls": 0,
+          "plus8_values": 0
+        },
+        "DAB_Block_6.DAB_Module_6_0.ddconv1x3.conv": {
+          "calls": 2,
+          "integer_bypass_calls": 2,
+          "plus8_bypass_calls": 2,
+          "plus8_values": 750
+        },
+        "DAB_Block_6.DAB_Module_6_0.conv1x1.conv": {
+          "calls": 2,
+          "integer_bypass_calls": 0,
+          "plus8_bypass_calls": 0,
+          "plus8_values": 0
+        },
+        "upsample_3.conv": {
+          "calls": 2,
+          "integer_bypass_calls": 0,
+          "plus8_bypass_calls": 0,
+          "plus8_values": 0
+        },
+        "PA3.conv": {
+          "calls": 0,
+          "integer_bypass_calls": 0,
+          "plus8_bypass_calls": 0,
+          "plus8_values": 0
+        },
+        "LC1.dconv3x1": {
+          "calls": 2,
+          "integer_bypass_calls": 2,
+          "plus8_bypass_calls": 2,
+          "plus8_values": 57
+        },
+        "LC1.dconv1x3": {
+          "calls": 2,
+          "integer_bypass_calls": 0,
+          "plus8_bypass_calls": 0,
+          "plus8_values": 0
+        },
+        "LC2.dconv3x1": {
+          "calls": 2,
+          "integer_bypass_calls": 2,
+          "plus8_bypass_calls": 1,
+          "plus8_values": 1
+        },
+        "LC2.dconv1x3": {
+          "calls": 2,
+          "integer_bypass_calls": 0,
+          "plus8_bypass_calls": 0,
+          "plus8_values": 0
+        },
+        "LC3.dconv3x1": {
+          "calls": 2,
+          "integer_bypass_calls": 2,
+          "plus8_bypass_calls": 2,
+          "plus8_values": 39
+        },
+        "LC3.dconv1x3": {
+          "calls": 2,
+          "integer_bypass_calls": 0,
+          "plus8_bypass_calls": 0,
+          "plus8_values": 0
+        },
+        "final_conv": {
+          "calls": 2,
+          "integer_bypass_calls": 2,
+          "plus8_bypass_calls": 2,
+          "plus8_values": 66
+        },
+        "classifier.0.conv": {
+          "calls": 2,
+          "integer_bypass_calls": 0,
+          "plus8_bypass_calls": 0,
+          "plus8_values": 0
+        }
+      }
+    },
+    "w4a4_input_qif": {
+      "totals": {
+        "calls": 140,
+        "integer_bypass_calls": 112,
+        "plus8_bypass_calls": 23,
+        "plus8_values": 38535
+      },
+      "layers": {
+        "init_conv.0.conv": {
+          "calls": 2,
+          "integer_bypass_calls": 0,
+          "plus8_bypass_calls": 0,
+          "plus8_values": 0
+        },
+        "init_conv.1.conv": {
+          "calls": 2,
+          "integer_bypass_calls": 2,
+          "plus8_bypass_calls": 2,
+          "plus8_values": 38132
+        },
+        "init_conv.2.conv": {
+          "calls": 2,
+          "integer_bypass_calls": 2,
+          "plus8_bypass_calls": 2,
+          "plus8_values": 8
+        },
+        "downsample_1.conv3x3.conv": {
+          "calls": 2,
+          "integer_bypass_calls": 2,
+          "plus8_bypass_calls": 2,
+          "plus8_values": 21
+        },
+        "DAB_Block_1.DAB_Module_1_0.conv1x1_in.conv": {
+          "calls": 2,
+          "integer_bypass_calls": 2,
+          "plus8_bypass_calls": 2,
+          "plus8_values": 19
+        },
+        "DAB_Block_1.DAB_Module_1_0.conv3x1.conv": {
+          "calls": 2,
+          "integer_bypass_calls": 2,
+          "plus8_bypass_calls": 0,
+          "plus8_values": 0
+        },
+        "DAB_Block_1.DAB_Module_1_0.conv1x3.conv": {
+          "calls": 2,
+          "integer_bypass_calls": 2,
+          "plus8_bypass_calls": 0,
+          "plus8_values": 0
+        },
+        "DAB_Block_1.DAB_Module_1_0.dconv3x1.conv": {
+          "calls": 2,
+          "integer_bypass_calls": 2,
+          "plus8_bypass_calls": 0,
+          "plus8_values": 0
+        },
+        "DAB_Block_1.DAB_Module_1_0.dconv1x3.conv": {
+          "calls": 2,
+          "integer_bypass_calls": 2,
+          "plus8_bypass_calls": 0,
+          "plus8_values": 0
+        },
+        "DAB_Block_1.DAB_Module_1_0.ddconv3x1.conv": {
+          "calls": 2,
+          "integer_bypass_calls": 2,
+          "plus8_bypass_calls": 0,
+          "plus8_values": 0
+        },
+        "DAB_Block_1.DAB_Module_1_0.ddconv1x3.conv": {
+          "calls": 2,
+          "integer_bypass_calls": 2,
+          "plus8_bypass_calls": 0,
+          "plus8_values": 0
+        },
+        "DAB_Block_1.DAB_Module_1_0.conv1x1.conv": {
+          "calls": 2,
+          "integer_bypass_calls": 2,
+          "plus8_bypass_calls": 2,
+          "plus8_values": 46
+        },
+        "downsample_2.conv3x3.conv": {
+          "calls": 2,
+          "integer_bypass_calls": 2,
+          "plus8_bypass_calls": 2,
+          "plus8_values": 91
+        },
+        "DAB_Block_2.DAB_Module_2_0.conv1x1_in.conv": {
+          "calls": 2,
+          "integer_bypass_calls": 2,
+          "plus8_bypass_calls": 0,
+          "plus8_values": 0
+        },
+        "DAB_Block_2.DAB_Module_2_0.conv3x1.conv": {
+          "calls": 2,
+          "integer_bypass_calls": 2,
+          "plus8_bypass_calls": 0,
+          "plus8_values": 0
+        },
+        "DAB_Block_2.DAB_Module_2_0.conv1x3.conv": {
+          "calls": 2,
+          "integer_bypass_calls": 2,
+          "plus8_bypass_calls": 0,
+          "plus8_values": 0
+        },
+        "DAB_Block_2.DAB_Module_2_0.dconv3x1.conv": {
+          "calls": 2,
+          "integer_bypass_calls": 2,
+          "plus8_bypass_calls": 0,
+          "plus8_values": 0
+        },
+        "DAB_Block_2.DAB_Module_2_0.dconv1x3.conv": {
+          "calls": 2,
+          "integer_bypass_calls": 2,
+          "plus8_bypass_calls": 0,
+          "plus8_values": 0
+        },
+        "DAB_Block_2.DAB_Module_2_0.ddconv3x1.conv": {
+          "calls": 2,
+          "integer_bypass_calls": 2,
+          "plus8_bypass_calls": 0,
+          "plus8_values": 0
+        },
+        "DAB_Block_2.DAB_Module_2_0.ddconv1x3.conv": {
+          "calls": 2,
+          "integer_bypass_calls": 2,
+          "plus8_bypass_calls": 0,
+          "plus8_values": 0
+        },
+        "DAB_Block_2.DAB_Module_2_0.conv1x1.conv": {
+          "calls": 2,
+          "integer_bypass_calls": 2,
+          "plus8_bypass_calls": 0,
+          "plus8_values": 0
+        },
+        "downsample_3.conv3x3.conv": {
+          "calls": 2,
+          "integer_bypass_calls": 2,
+          "plus8_bypass_calls": 0,
+          "plus8_values": 0
+        },
+        "DAB_Block_3.DAB_Module_3_0.conv1x1_in.conv": {
+          "calls": 2,
+          "integer_bypass_calls": 2,
+          "plus8_bypass_calls": 0,
+          "plus8_values": 0
+        },
+        "DAB_Block_3.DAB_Module_3_0.conv3x1.conv": {
+          "calls": 2,
+          "integer_bypass_calls": 2,
+          "plus8_bypass_calls": 0,
+          "plus8_values": 0
+        },
+        "DAB_Block_3.DAB_Module_3_0.conv1x3.conv": {
+          "calls": 2,
+          "integer_bypass_calls": 2,
+          "plus8_bypass_calls": 0,
+          "plus8_values": 0
+        },
+        "DAB_Block_3.DAB_Module_3_0.dconv3x1.conv": {
+          "calls": 2,
+          "integer_bypass_calls": 2,
+          "plus8_bypass_calls": 0,
+          "plus8_values": 0
+        },
+        "DAB_Block_3.DAB_Module_3_0.dconv1x3.conv": {
+          "calls": 2,
+          "integer_bypass_calls": 2,
+          "plus8_bypass_calls": 0,
+          "plus8_values": 0
+        },
+        "DAB_Block_3.DAB_Module_3_0.ddconv3x1.conv": {
+          "calls": 2,
+          "integer_bypass_calls": 2,
+          "plus8_bypass_calls": 0,
+          "plus8_values": 0
+        },
+        "DAB_Block_3.DAB_Module_3_0.ddconv1x3.conv": {
+          "calls": 2,
+          "integer_bypass_calls": 2,
+          "plus8_bypass_calls": 0,
+          "plus8_values": 0
+        },
+        "DAB_Block_3.DAB_Module_3_0.conv1x1.conv": {
+          "calls": 2,
+          "integer_bypass_calls": 2,
+          "plus8_bypass_calls": 1,
+          "plus8_values": 1
+        },
+        "transformer1.atten.reduce": {
+          "calls": 2,
+          "integer_bypass_calls": 0,
+          "plus8_bypass_calls": 0,
+          "plus8_values": 0
+        },
+        "transformer1.atten.qkv": {
+          "calls": 2,
+          "integer_bypass_calls": 0,
+          "plus8_bypass_calls": 0,
+          "plus8_values": 0
+        },
+        "transformer1.atten.proj": {
+          "calls": 2,
+          "integer_bypass_calls": 0,
+          "plus8_bypass_calls": 0,
+          "plus8_values": 0
+        },
+        "transformer1.mlp.fc1": {
+          "calls": 2,
+          "integer_bypass_calls": 0,
+          "plus8_bypass_calls": 0,
+          "plus8_values": 0
+        },
+        "transformer1.mlp.fc2": {
+          "calls": 2,
+          "integer_bypass_calls": 0,
+          "plus8_bypass_calls": 0,
+          "plus8_values": 0
+        },
+        "DAB_Block_4.DAB_Module_4_0.conv1x1_in.conv": {
+          "calls": 2,
+          "integer_bypass_calls": 0,
+          "plus8_bypass_calls": 0,
+          "plus8_values": 0
+        },
+        "DAB_Block_4.DAB_Module_4_0.conv3x1.conv": {
+          "calls": 2,
+          "integer_bypass_calls": 2,
+          "plus8_bypass_calls": 0,
+          "plus8_values": 0
+        },
+        "DAB_Block_4.DAB_Module_4_0.conv1x3.conv": {
+          "calls": 2,
+          "integer_bypass_calls": 2,
+          "plus8_bypass_calls": 0,
+          "plus8_values": 0
+        },
+        "DAB_Block_4.DAB_Module_4_0.dconv3x1.conv": {
+          "calls": 2,
+          "integer_bypass_calls": 2,
+          "plus8_bypass_calls": 0,
+          "plus8_values": 0
+        },
+        "DAB_Block_4.DAB_Module_4_0.dconv1x3.conv": {
+          "calls": 2,
+          "integer_bypass_calls": 2,
+          "plus8_bypass_calls": 0,
+          "plus8_values": 0
+        },
+        "DAB_Block_4.DAB_Module_4_0.ddconv3x1.conv": {
+          "calls": 2,
+          "integer_bypass_calls": 2,
+          "plus8_bypass_calls": 0,
+          "plus8_values": 0
+        },
+        "DAB_Block_4.DAB_Module_4_0.ddconv1x3.conv": {
+          "calls": 2,
+          "integer_bypass_calls": 2,
+          "plus8_bypass_calls": 0,
+          "plus8_values": 0
+        },
+        "DAB_Block_4.DAB_Module_4_0.conv1x1.conv": {
+          "calls": 2,
+          "integer_bypass_calls": 2,
+          "plus8_bypass_calls": 0,
+          "plus8_values": 0
+        },
+        "upsample_1.conv": {
+          "calls": 2,
+          "integer_bypass_calls": 2,
+          "plus8_bypass_calls": 0,
+          "plus8_values": 0
+        },
+        "DAB_Block_5.DAB_Module_5_0.conv1x1_in.conv": {
+          "calls": 2,
+          "integer_bypass_calls": 2,
+          "plus8_bypass_calls": 0,
+          "plus8_values": 0
+        },
+        "DAB_Block_5.DAB_Module_5_0.conv3x1.conv": {
+          "calls": 2,
+          "integer_bypass_calls": 2,
+          "plus8_bypass_calls": 0,
+          "plus8_values": 0
+        },
+        "DAB_Block_5.DAB_Module_5_0.conv1x3.conv": {
+          "calls": 2,
+          "integer_bypass_calls": 2,
+          "plus8_bypass_calls": 1,
+          "plus8_values": 1
+        },
+        "DAB_Block_5.DAB_Module_5_0.dconv3x1.conv": {
+          "calls": 2,
+          "integer_bypass_calls": 2,
+          "plus8_bypass_calls": 0,
+          "plus8_values": 0
+        },
+        "DAB_Block_5.DAB_Module_5_0.dconv1x3.conv": {
+          "calls": 2,
+          "integer_bypass_calls": 2,
+          "plus8_bypass_calls": 0,
+          "plus8_values": 0
+        },
+        "DAB_Block_5.DAB_Module_5_0.ddconv3x1.conv": {
+          "calls": 2,
+          "integer_bypass_calls": 2,
+          "plus8_bypass_calls": 0,
+          "plus8_values": 0
+        },
+        "DAB_Block_5.DAB_Module_5_0.ddconv1x3.conv": {
+          "calls": 2,
+          "integer_bypass_calls": 2,
+          "plus8_bypass_calls": 2,
+          "plus8_values": 38
+        },
+        "DAB_Block_5.DAB_Module_5_0.conv1x1.conv": {
+          "calls": 2,
+          "integer_bypass_calls": 0,
+          "plus8_bypass_calls": 0,
+          "plus8_values": 0
+        },
+        "upsample_2.conv": {
+          "calls": 2,
+          "integer_bypass_calls": 2,
+          "plus8_bypass_calls": 1,
+          "plus8_values": 7
+        },
+        "DAB_Block_6.DAB_Module_6_0.conv1x1_in.conv": {
+          "calls": 2,
+          "integer_bypass_calls": 2,
+          "plus8_bypass_calls": 2,
+          "plus8_values": 76
+        },
+        "DAB_Block_6.DAB_Module_6_0.conv3x1.conv": {
+          "calls": 2,
+          "integer_bypass_calls": 2,
+          "plus8_bypass_calls": 0,
+          "plus8_values": 0
+        },
+        "DAB_Block_6.DAB_Module_6_0.conv1x3.conv": {
+          "calls": 2,
+          "integer_bypass_calls": 2,
+          "plus8_bypass_calls": 0,
+          "plus8_values": 0
+        },
+        "DAB_Block_6.DAB_Module_6_0.dconv3x1.conv": {
+          "calls": 2,
+          "integer_bypass_calls": 2,
+          "plus8_bypass_calls": 0,
+          "plus8_values": 0
+        },
+        "DAB_Block_6.DAB_Module_6_0.dconv1x3.conv": {
+          "calls": 2,
+          "integer_bypass_calls": 2,
+          "plus8_bypass_calls": 0,
+          "plus8_values": 0
+        },
+        "DAB_Block_6.DAB_Module_6_0.ddconv3x1.conv": {
+          "calls": 2,
+          "integer_bypass_calls": 2,
+          "plus8_bypass_calls": 0,
+          "plus8_values": 0
+        },
+        "DAB_Block_6.DAB_Module_6_0.ddconv1x3.conv": {
+          "calls": 2,
+          "integer_bypass_calls": 2,
+          "plus8_bypass_calls": 0,
+          "plus8_values": 0
+        },
+        "DAB_Block_6.DAB_Module_6_0.conv1x1.conv": {
+          "calls": 2,
+          "integer_bypass_calls": 0,
+          "plus8_bypass_calls": 0,
+          "plus8_values": 0
+        },
+        "upsample_3.conv": {
+          "calls": 2,
+          "integer_bypass_calls": 0,
+          "plus8_bypass_calls": 0,
+          "plus8_values": 0
+        },
+        "PA3.conv": {
+          "calls": 0,
+          "integer_bypass_calls": 0,
+          "plus8_bypass_calls": 0,
+          "plus8_values": 0
+        },
+        "LC1.dconv3x1": {
+          "calls": 2,
+          "integer_bypass_calls": 2,
+          "plus8_bypass_calls": 2,
+          "plus8_values": 91
+        },
+        "LC1.dconv1x3": {
+          "calls": 2,
+          "integer_bypass_calls": 0,
+          "plus8_bypass_calls": 0,
+          "plus8_values": 0
+        },
+        "LC2.dconv3x1": {
+          "calls": 2,
+          "integer_bypass_calls": 2,
+          "plus8_bypass_calls": 0,
+          "plus8_values": 0
+        },
+        "LC2.dconv1x3": {
+          "calls": 2,
+          "integer_bypass_calls": 0,
+          "plus8_bypass_calls": 0,
+          "plus8_values": 0
+        },
+        "LC3.dconv3x1": {
+          "calls": 2,
+          "integer_bypass_calls": 2,
+          "plus8_bypass_calls": 0,
+          "plus8_values": 0
+        },
+        "LC3.dconv1x3": {
+          "calls": 2,
+          "integer_bypass_calls": 0,
+          "plus8_bypass_calls": 0,
+          "plus8_values": 0
+        },
+        "final_conv": {
+          "calls": 2,
+          "integer_bypass_calls": 2,
+          "plus8_bypass_calls": 2,
+          "plus8_values": 4
+        },
+        "classifier.0.conv": {
+          "calls": 2,
+          "integer_bypass_calls": 0,
+          "plus8_bypass_calls": 0,
+          "plus8_values": 0
+        }
+      }
+    }
+  },
+  "artifacts": {
+    "raw_layer_counts": "per_patch_layer_counts.csv.gz",
+    "raw_task_counts": "per_patch_task_counts.csv.gz",
+    "source_layer_aggregates": "source_layer_aggregates.json",
+    "source_confusion": "source_confusion.json",
+    "summary": "summary.json",
+    "summary_csv": "summary.csv",
+    "report": "report.md"
+  }
+}

@@ -1,0 +1,1001 @@
+#!/usr/bin/env python3
+"""Build a reproducible statistical analysis of the frozen QIF distortion probe.
+
+This script is deliberately isolated under the probe result directory. It reads
+the frozen raw aggregates, recomputes source-balanced and micro statistics, and
+writes only derived analysis artifacts next to itself.
+"""
+
+from __future__ import annotations
+
+import json
+from datetime import datetime, timezone
+from pathlib import Path
+
+import nbformat as nbf
+import numpy as np
+import pandas as pd
+from scipy.stats import binomtest, pearsonr, spearmanr
+
+
+HERE = Path(__file__).resolve().parent
+RESULT_DIR = HERE.parent
+BOOTSTRAP_REPLICATES = 10_000
+BOOTSTRAP_SEED = 20_270_805
+CLASS_NAMES = ("background", "facade", "road", "vegetation", "vehicle", "roof")
+VARIANT_MODES = ("w4_qif", "a4_input_qif", "w4a4_input_qif")
+MODE_LABELS = {
+    "fp_qif": "FP-QIF",
+    "w4_qif": "W4",
+    "a4_input_qif": "A4-input",
+    "w4a4_input_qif": "W4A4-input",
+}
+STAGE_ORDER = (
+    "stem",
+    "encoder_1",
+    "encoder_2",
+    "encoder_3",
+    "decoder_4",
+    "decoder_5",
+    "decoder_6",
+)
+STAGE_LABELS = {
+    "stem": "Stem",
+    "encoder_1": "Encoder 1",
+    "encoder_2": "Encoder 2",
+    "encoder_3": "Encoder 3",
+    "decoder_4": "Decoder 4",
+    "decoder_5": "Decoder 5",
+    "decoder_6": "Decoder 6",
+}
+
+
+def stage_for_layer(name: str) -> str:
+    if name.startswith("init_conv"):
+        return "stem"
+    if name.startswith(("downsample_1", "DAB_Block_1", "bn_prelu_2")):
+        return "encoder_1"
+    if name.startswith(("downsample_2", "DAB_Block_2", "bn_prelu_3")):
+        return "encoder_2"
+    if name.startswith(("downsample_3", "DAB_Block_3", "bn_prelu_4")):
+        return "encoder_3"
+    if name.startswith(("DAB_Block_4", "upsample_1", "bn_prelu_5", "LC3")):
+        return "decoder_4"
+    if name.startswith(("DAB_Block_5", "upsample_2", "bn_prelu_6", "LC2")):
+        return "decoder_5"
+    if name.startswith(("DAB_Block_6", "upsample_3", "bn_prelu_7", "LC1")):
+        return "decoder_6"
+    return "other"
+
+
+def confusion_metrics(matrix: np.ndarray) -> tuple[float, float, np.ndarray]:
+    matrix = np.asarray(matrix, dtype=np.float64)
+    diagonal = np.diag(matrix)
+    union = matrix.sum(axis=0) + matrix.sum(axis=1) - diagonal
+    iou = np.divide(
+        diagonal,
+        union,
+        out=np.full_like(diagonal, np.nan),
+        where=union != 0,
+    )
+    miou = float(np.nanmean(iou))
+    pixel_accuracy = float(diagonal.sum() / matrix.sum())
+    return miou, pixel_accuracy, iou
+
+
+def percentile_ci(values: np.ndarray) -> tuple[float, float]:
+    low, high = np.percentile(values, (2.5, 97.5))
+    return float(low), float(high)
+
+
+def bootstrap_mean(
+    values: np.ndarray,
+    rng: np.random.Generator,
+    replicates: int = BOOTSTRAP_REPLICATES,
+) -> tuple[float, float]:
+    values = np.asarray(values, dtype=np.float64)
+    indices = rng.integers(0, values.size, size=(replicates, values.size))
+    return percentile_ci(values[indices].mean(axis=1))
+
+
+def bootstrap_correlation(
+    x: np.ndarray,
+    y: np.ndarray,
+    method: str,
+    rng: np.random.Generator,
+    replicates: int = BOOTSTRAP_REPLICATES,
+) -> tuple[float, float]:
+    x = np.asarray(x, dtype=np.float64)
+    y = np.asarray(y, dtype=np.float64)
+    indices = rng.integers(0, x.size, size=(replicates, x.size))
+    samples: list[float] = []
+    function = spearmanr if method == "spearman" else pearsonr
+    for sample in indices:
+        if np.unique(x[sample]).size < 2 or np.unique(y[sample]).size < 2:
+            continue
+        samples.append(float(function(x[sample], y[sample]).statistic))
+    return percentile_ci(np.asarray(samples, dtype=np.float64))
+
+
+def bootstrap_class_drops(
+    fp: np.ndarray,
+    full: np.ndarray,
+    rng: np.random.Generator,
+    replicates: int = BOOTSTRAP_REPLICATES,
+) -> tuple[np.ndarray, np.ndarray]:
+    source_count = fp.shape[0]
+    samples = rng.integers(0, source_count, size=(replicates, source_count))
+    class_drops = np.empty((replicates, len(CLASS_NAMES)), dtype=np.float64)
+    miou_drops = np.empty(replicates, dtype=np.float64)
+    for index, sample in enumerate(samples):
+        fp_miou, _, fp_iou = confusion_metrics(fp[sample].sum(axis=0))
+        full_miou, _, full_iou = confusion_metrics(full[sample].sum(axis=0))
+        class_drops[index] = fp_iou - full_iou
+        miou_drops[index] = fp_miou - full_miou
+    return class_drops, miou_drops
+
+
+def write_csv(frame: pd.DataFrame, name: str) -> None:
+    frame.to_csv(HERE / name, index=False, float_format="%.10g")
+
+
+def rounded_records(frame: pd.DataFrame) -> list[dict[str, object]]:
+    clean = frame.copy()
+    for column in clean.select_dtypes(include=["float", "float32", "float64"]):
+        clean[column] = clean[column].round(10)
+    # Pandas float columns preserve NaN through ``where(..., None)``. The
+    # JSON round-trip converts missing numeric values to standards-compliant
+    # ``null`` while retaining the reviewed row shape.
+    return json.loads(clean.to_json(orient="records"))
+
+
+def build_notebook() -> None:
+    notebook = nbf.v4.new_notebook()
+    notebook["metadata"] = {
+        "kernelspec": {
+            "display_name": "Python 3",
+            "language": "python",
+            "name": "python3",
+        },
+        "language_info": {"name": "python", "version": "3"},
+    }
+    notebook["cells"] = [
+        nbf.v4.new_markdown_cell(
+            "# Integer-LIF quantization distortion: statistical audit\n\n"
+            "This notebook reruns the frozen aggregate analysis and exposes the "
+            "main audit tables. The statistical unit is the original UDD source "
+            "image (35 clusters), not the 8,478 overlapping patches."
+        ),
+        nbf.v4.new_code_cell(
+            "from pathlib import Path\n"
+            "import subprocess, sys\n"
+            "analysis_dir = Path.cwd()\n"
+            "if not (analysis_dir / 'build_analysis.py').exists():\n"
+            "    analysis_dir = Path('quantization_distortion_results/full_20260805/statistical_analysis')\n"
+            "subprocess.run([sys.executable, str(analysis_dir / 'build_analysis.py'), '--no-notebook'], check=True)"
+        ),
+        nbf.v4.new_code_cell(
+            "import json, pandas as pd\n"
+            "summary = json.loads((analysis_dir / 'analysis_summary.json').read_text())\n"
+            "pd.DataFrame(summary['representation'])"
+        ),
+        nbf.v4.new_code_cell(
+            "stage = pd.read_csv(analysis_dir / 'stage_statistics.csv')\n"
+            "stage.query(\"mode == 'w4a4_input_qif'\")[['stage_label','disagreement','signed_error','zero_delta','saturation_delta','distortion_contribution_share']]"
+        ),
+        nbf.v4.new_code_cell(
+            "layers = pd.read_csv(analysis_dir / 'layer_statistics.csv')\n"
+            "layers.sort_values('d_w4a4', ascending=False).head(12)[['layer','stage','d_w4a4','delta_d_full_minus_w4','signed_w4a4','zero_delta_w4a4']]"
+        ),
+        nbf.v4.new_code_cell(
+            "pd.read_csv(analysis_dir / 'correlation_statistics.csv')"
+        ),
+        nbf.v4.new_markdown_cell(
+            "## Interpretation boundary\n\n"
+            "These are frozen-checkpoint perturbation statistics. They establish "
+            "that the selected checkpoint exhibits observable W4A4 code distortion "
+            "and show where it is concentrated. They do not establish that QAD "
+            "caused a repair; that requires matched trained QAT/KD/QAD checkpoints."
+        ),
+    ]
+    nbf.write(notebook, HERE / "distortion_statistics.ipynb")
+
+
+def build_artifact(
+    representation: pd.DataFrame,
+    stage_stats: pd.DataFrame,
+    layer_stats: pd.DataFrame,
+    source_stats: pd.DataFrame,
+    class_stats: pd.DataFrame,
+    correlations: pd.DataFrame,
+    findings: dict[str, object],
+) -> None:
+    generated_at = datetime.now(timezone.utc).isoformat().replace("+00:00", "Z")
+    headline = pd.DataFrame(
+        [
+            {
+                "full_disagreement": findings["full_macro_disagreement"],
+                "conditional_step": findings["full_conditional_abs_step"],
+                "single_step_lower_bound": findings["full_single_step_lower_bound"],
+                "miou_drop": findings["full_miou_drop"],
+                "rho_flip": findings["rho_disagreement_prediction_flip"],
+            }
+        ]
+    )
+    stage_chart = stage_stats[
+        [
+            "mode_label",
+            "stage_label",
+            "stage_order",
+            "layer_count",
+            "disagreement",
+            "disagreement_ci_low",
+            "disagreement_ci_high",
+            "mae",
+            "signed_error",
+            "zero_delta",
+            "saturation_delta",
+            "distortion_contribution_share",
+        ]
+    ].sort_values(["stage_order", "mode_label"])
+    full_stage = stage_stats.query("mode == 'w4a4_input_qif'")[
+        [
+            "stage_label",
+            "stage_order",
+            "layer_count",
+            "disagreement",
+            "disagreement_ci_low",
+            "disagreement_ci_high",
+            "mae",
+            "signed_error",
+            "zero_reference",
+            "zero_variant",
+            "zero_delta",
+            "saturation_reference",
+            "saturation_variant",
+            "saturation_delta",
+            "distortion_contribution_share",
+        ]
+    ].sort_values("stage_order")
+    top_layers = layer_stats.sort_values("d_w4a4", ascending=False).head(12).copy()
+    top_layers["layer_short"] = top_layers["layer"].str.replace(
+        "DAB_Block_", "B", regex=False
+    ).str.replace("DAB_Module_", "M", regex=False)
+    source_scatter = source_stats[
+        [
+            "source_id",
+            "d_w4a4",
+            "mae_w4a4",
+            "prediction_flip_w4a4",
+            "miou_fp",
+            "miou_w4a4",
+            "miou_drop_w4a4",
+            "d_full_minus_w4",
+            "d_full_minus_a4",
+        ]
+    ]
+    class_long = class_stats.melt(
+        id_vars=["class", "full_drop", "relative_full_drop"],
+        value_vars=["iou_fp", "iou_w4", "iou_a4", "iou_w4a4"],
+        var_name="mode",
+        value_name="iou",
+    )
+    class_long["mode_label"] = class_long["mode"].map(
+        {
+            "iou_fp": "FP-QIF",
+            "iou_w4": "W4",
+            "iou_a4": "A4-input",
+            "iou_w4a4": "W4A4-input",
+        }
+    )
+
+    source = {
+        "id": "derived-analysis",
+        "label": "Frozen probe derived statistical analysis",
+        "path": "quantization_distortion_results/full_20260805/statistical_analysis/analysis_summary.json",
+        "query": {
+            "description": "Source-balanced aggregation, paired cluster bootstrap, layer/stage decomposition, and source-level correlation computed from the frozen probe counts.",
+            "language": "python",
+            "query": "Run build_analysis.py with bootstrap unit=source_id, replicates=10000, seed=20270805.",
+            "tables_used": [
+                "quantization_distortion_results/full_20260805/source_layer_aggregates.json",
+                "quantization_distortion_results/full_20260805/source_confusion.json",
+                "quantization_distortion_results/full_20260805/per_patch_task_counts.csv.gz",
+                "quantization_distortion_results/full_20260805/summary.json",
+            ],
+            "filters": [
+                "UDD6 validation only",
+                "35 original source-image clusters",
+                "78 active QIF layers",
+                "frozen checkpoint; T=1",
+            ],
+            "metric_definitions": [
+                "Code disagreement D_l = count(q_variant != q_reference) / element count.",
+                "Source-balanced macro D = equal-weight mean over active layers within source, then equal-weight mean over 35 sources.",
+                "Code MAE = sum(abs(q_variant - q_reference)) / element count.",
+                "Zero/saturation deltas = variant rate minus FP-QIF reference rate.",
+                "All reported uncertainty intervals resample the 35 source-image clusters with replacement.",
+            ],
+            "executed_at": generated_at,
+        },
+    }
+
+    title = "W4A4 Integer-LIF 量化失真的统计审计"
+    manifest = {
+        "version": 1,
+        "surface": "report",
+        "title": title,
+        "description": "Frozen-checkpoint statistical decomposition of QIF code distortion and semantic-segmentation degradation.",
+        "generatedAt": generated_at,
+        "sources": [source],
+        "cards": [
+            {
+                "id": "card-disagreement",
+                "description": "Equal-weight mean over 78 active QIF layers and 35 source images.",
+                "dataset": "headline",
+                "sourceId": "derived-analysis",
+                "metrics": [
+                    {"label": "W4A4 code disagreement", "field": "full_disagreement", "format": "percent"}
+                ],
+            },
+            {
+                "id": "card-step",
+                "description": "Micro average absolute code-level movement, conditional on a changed code.",
+                "dataset": "headline",
+                "sourceId": "derived-analysis",
+                "metrics": [
+                    {"label": "Code steps per changed value", "field": "conditional_step", "format": "number"},
+                    {"label": "At least one-step flips", "field": "single_step_lower_bound", "format": "percent"},
+                ],
+            },
+            {
+                "id": "card-task",
+                "description": "Aggregate validation mIoU loss relative to FP-QIF.",
+                "dataset": "headline",
+                "sourceId": "derived-analysis",
+                "metrics": [
+                    {"label": "W4A4 mIoU change", "field": "miou_drop", "format": "percent", "signed": True}
+                ],
+            },
+            {
+                "id": "card-correlation",
+                "description": "Spearman correlation across the 35 original source images.",
+                "dataset": "headline",
+                "sourceId": "derived-analysis",
+                "metrics": [
+                    {"label": "D vs prediction-flip rho", "field": "rho_flip", "format": "number"}
+                ],
+            },
+        ],
+        "charts": [
+            {
+                "id": "chart-stage",
+                "title": "Stage-level QIF code disagreement",
+                "subtitle": "W4A4 distortion peaks at Decoder 6; W4 is the dominant single perturbation.",
+                "intent": "comparison",
+                "question": "Where in the network is discrete-code distortion concentrated?",
+                "rationale": "Grouped stage comparison separates depth effects from quantization mode effects.",
+                "comparisonContext": {"baseline": "FP-QIF", "grain": "stage", "unit": "rate"},
+                "type": "bar",
+                "dataset": "stage_chart",
+                "sourceId": "derived-analysis",
+                "encodings": {
+                    "x": {"field": "stage_label", "type": "ordinal", "label": "Network stage"},
+                    "y": {"field": "disagreement", "type": "quantitative", "format": "percent", "label": "Code disagreement"},
+                    "color": {"field": "mode_label", "type": "nominal", "label": "Perturbation"},
+                    "tooltip": [
+                        {"field": "disagreement_ci_low", "type": "quantitative", "format": "percent", "label": "95% CI low"},
+                        {"field": "disagreement_ci_high", "type": "quantitative", "format": "percent", "label": "95% CI high"},
+                        {"field": "layer_count", "type": "quantitative", "label": "Layers"},
+                    ],
+                },
+                "legend": {"position": "bottom", "title": "Perturbation"},
+                "settings": {"groupMode": "grouped", "sort": "none"},
+                "valueFormat": "percent",
+                "layout": "full",
+            },
+            {
+                "id": "chart-source",
+                "title": "Source-level code disagreement and prediction change",
+                "subtitle": "The association is strong across 35 source images (Spearman rho = 0.873), but is descriptive rather than causal.",
+                "intent": "relationship",
+                "question": "Does greater representation distortion co-occur with greater output instability?",
+                "rationale": "One point per independent source-image cluster preserves the inferential unit.",
+                "comparisonContext": {"baseline": "FP-QIF", "grain": "source image", "unit": "rate"},
+                "type": "scatter",
+                "dataset": "source_scatter",
+                "sourceId": "derived-analysis",
+                "encodings": {
+                    "x": {"field": "d_w4a4", "type": "quantitative", "format": "percent", "label": "W4A4 code disagreement"},
+                    "y": {"field": "prediction_flip_w4a4", "type": "quantitative", "format": "percent", "label": "Prediction-flip rate"},
+                    "label": {"field": "source_id", "type": "text", "label": "Source"},
+                    "tooltip": [
+                        {"field": "source_id", "type": "text", "label": "Source"},
+                        {"field": "miou_drop_w4a4", "type": "quantitative", "format": "percent", "label": "Per-source mIoU drop"},
+                        {"field": "mae_w4a4", "type": "quantitative", "label": "Code MAE"},
+                    ],
+                },
+                "valueFormat": "percent",
+                "layout": "full",
+            },
+            {
+                "id": "chart-class",
+                "title": "Per-class IoU under frozen quantization perturbations",
+                "subtitle": "Road and vehicle are most sensitive, while vegetation is comparatively robust.",
+                "intent": "comparison",
+                "question": "Is the task degradation uniform across semantic classes?",
+                "rationale": "Grouped class comparison exposes content-specific downstream sensitivity.",
+                "comparisonContext": {"baseline": "FP-QIF", "grain": "semantic class", "unit": "IoU"},
+                "type": "bar",
+                "dataset": "class_long",
+                "sourceId": "derived-analysis",
+                "encodings": {
+                    "x": {"field": "class", "type": "nominal", "label": "Class"},
+                    "y": {"field": "iou", "type": "quantitative", "format": "percent", "label": "IoU"},
+                    "color": {"field": "mode_label", "type": "nominal", "label": "Mode"},
+                    "tooltip": [
+                        {"field": "full_drop", "type": "quantitative", "format": "percent", "label": "FP-to-W4A4 drop"},
+                        {"field": "relative_full_drop", "type": "quantitative", "format": "percent", "label": "Relative drop"},
+                    ],
+                },
+                "legend": {"position": "bottom", "title": "Mode"},
+                "settings": {"groupMode": "grouped", "sort": "none"},
+                "valueFormat": "percent",
+                "layout": "full",
+            },
+        ],
+        "tables": [
+            {
+                "id": "table-stage-shape",
+                "title": "W4A4 stage-level distortion morphology",
+                "subtitle": "Positive signed error means codes increase; positive zero delta means more zero outputs.",
+                "dataset": "full_stage",
+                "defaultSort": {"field": "stage_order", "direction": "asc"},
+                "density": "dense",
+                "sourceId": "derived-analysis",
+                "layout": "full",
+                "columns": [
+                    {"field": "stage_label", "label": "Stage", "type": "text"},
+                    {"field": "layer_count", "label": "Layers", "format": "number"},
+                    {"field": "disagreement", "label": "D", "format": "percent"},
+                    {"field": "mae", "label": "MAE", "format": "number"},
+                    {"field": "signed_error", "label": "Signed error", "format": "number", "movement": True},
+                    {"field": "zero_delta", "label": "Zero-rate delta", "format": "percent", "movement": True},
+                    {"field": "saturation_delta", "label": "Saturation delta", "format": "percent", "movement": True},
+                    {"field": "distortion_contribution_share", "label": "Share of macro distortion", "format": "percent"},
+                ],
+            },
+            {
+                "id": "table-layers",
+                "title": "Highest-distortion active QIF layers",
+                "subtitle": "Ranked by source-balanced W4A4 code disagreement.",
+                "dataset": "top_layers",
+                "defaultSort": {"field": "d_w4a4", "direction": "desc"},
+                "density": "dense",
+                "sourceId": "derived-analysis",
+                "layout": "full",
+                "columns": [
+                    {"field": "layer", "label": "Layer", "type": "text"},
+                    {"field": "stage", "label": "Stage", "type": "text"},
+                    {"field": "d_w4", "label": "W4 D", "format": "percent"},
+                    {"field": "d_a4", "label": "A4 D", "format": "percent"},
+                    {"field": "d_w4a4", "label": "W4A4 D", "format": "percent"},
+                    {"field": "delta_d_full_minus_w4", "label": "W4A4 - W4", "format": "percent", "movement": True},
+                    {"field": "signed_w4a4", "label": "Signed error", "format": "number", "movement": True},
+                    {"field": "zero_delta_w4a4", "label": "Zero delta", "format": "percent", "movement": True},
+                ],
+            },
+        ],
+        "blocks": [
+            {"id": "title", "type": "markdown", "body": f"# {title}"},
+            {
+                "id": "summary",
+                "type": "markdown",
+                "sourceId": "derived-analysis",
+                "body": (
+                    "## 结论：失真是后段集中的离散码扰动，不是全局 collapse 或饱和\n\n"
+                    "W4A4-input 使源平衡的 QIF 整数码不一致率达到 **11.38%**；变化位置的微平均绝对位移为 **1.10 个码级**，由整数性可推出至少 **90.25%** 的变化是单码级跳变。"
+                    "全网 signed error 接近零、零值率没有整体上升、饱和值也极少，因此证据不支持全局 firing collapse 或 saturation。相反，Decoder 6 同时出现最高不一致率、负向码偏移和零值率上升，说明主要风险是具有层级方向差异的 near-threshold code flipping。"
+                ),
+            },
+            {"id": "metrics", "type": "metric-strip", "cardIds": ["card-disagreement", "card-step", "card-task", "card-correlation"]},
+            {
+                "id": "stage-heading",
+                "type": "markdown",
+                "sourceId": "derived-analysis",
+                "body": (
+                    "## Decoder 5–6 占据 55.5% 的等层权失真\n\n"
+                    "两段仅包含 26/78 个活跃层，却贡献 **55.5%** 的 W4A4 宏平均 disagreement。Decoder 6 的 D 为 **24.02%**，约为全网宏平均的 2.11 倍；最高单层达到 **42.56%**。"
+                ),
+            },
+            {"id": "stage-chart-block", "type": "chart", "chartId": "chart-stage", "layout": "full"},
+            {"id": "stage-table-block", "type": "table", "tableId": "table-stage-shape", "layout": "full"},
+            {
+                "id": "shape-heading",
+                "type": "markdown",
+                "sourceId": "derived-analysis",
+                "body": (
+                    "## 误差方向在网络中发生反转\n\n"
+                    "Stem 和 Decoder 5 的码值平均上移，零输出分别下降约 **2.42** 和 **1.40 个百分点**；Decoder 6 则平均下移 **0.058 个码级**，零输出上升约 **1.76 个百分点**。"
+                    "这种符号反转会在全网汇总时互相抵消，因此单看接近零的全网 signed error 会漏掉真正的局部结构。"
+                ),
+            },
+            {"id": "layer-table-block", "type": "table", "tableId": "table-layers", "layout": "full"},
+            {
+                "id": "association-heading",
+                "type": "markdown",
+                "sourceId": "derived-analysis",
+                "body": (
+                    "## 失真率与输出变化强相关，但同样的失真率不等价于同样的任务损失\n\n"
+                    "跨 35 个 source，W4A4 D 与 prediction-flip rate 的 Spearman ρ 为 **0.873**，与 per-source mIoU drop 的 ρ 为 **0.743**。"
+                    "然而 D 只在 **9.30%–12.96%** 间变化，per-source mIoU 损失却在 **12.71–49.90 个百分点**间变化，说明翻转发生的位置和语义内容比单纯数量同样重要。"
+                ),
+            },
+            {"id": "source-chart-block", "type": "chart", "chartId": "chart-source", "layout": "full"},
+            {
+                "id": "task-heading",
+                "type": "markdown",
+                "sourceId": "derived-analysis",
+                "body": (
+                    "## Road 与 vehicle 对冻结量化扰动最敏感\n\n"
+                    "W4A4 相对 FP-QIF 的整体 mIoU 下降 **33.26 个百分点**。Road IoU 下降 **53.65 个百分点（相对下降 84.0%）**，vehicle 下降 **38.82 个百分点（71.1%）**；vegetation 的相对下降仅 **15.5%**。"
+                ),
+            },
+            {"id": "class-chart-block", "type": "chart", "chartId": "chart-class", "layout": "full"},
+            {
+                "id": "scope",
+                "type": "markdown",
+                "sourceId": "derived-analysis",
+                "body": (
+                    "## 口径与统计方法\n\n"
+                    "分析覆盖 UDD6 validation 的 8,478 个 patch、35 个原始 source cluster、78 个实际触发的 QIF 层。主指标先在每个 source 内对层等权平均，再对 source 等权平均；95% CI 通过按 source 聚类重采样 10,000 次获得。"
+                    "微平均只用于说明逐元素扰动形态，不能替代预注册的等层权宏平均。A4-input 是历史 operator-input fake quantization，并不等价于将 Integer-LIF 输出改为连续 A32。"
+                ),
+            },
+            {
+                "id": "limitations",
+                "type": "markdown",
+                "sourceId": "derived-analysis",
+                "body": (
+                    "## 限制与稳健性边界\n\n"
+                    "这是单个冻结 checkpoint、单数据集、T=1 的干预式诊断，不是经过独立训练的 W32A32/W4A32/W32A4/W4A4 比较。35 个 source 上，W4A4 D 均高于 W4 和 A4-input；但 MAE 的联合交互项为负，且所有 source 均为负，因此不能声称 superadditive coupled distortion。"
+                    "相关性在同一批 source 上计算，可能受类别组成和场景难度混杂，只能解释为共变。零值与饱和统计能够排除若干候选机制，但还不能单独证明 QAD 修复了 Decoder 6。"
+                ),
+            },
+            {
+                "id": "next",
+                "type": "markdown",
+                "sourceId": "derived-analysis",
+                "body": (
+                    "## 下一步：用相同 probe 比较训练后的 QAT、KD 与 QAD\n\n"
+                    "最有信息量的后续不是继续扩大位宽扫描，而是固定初始化、训练预算和 teacher，对 task-only STE-QAT、generic KD 和 QAD 的 checkpoint 重复本统计。"
+                    "预先指定三个共同终点：全网 D/MAE、Decoder 6 的 signed error 与 zero-rate delta、以及 road/vehicle IoU。只有 QAD 同时修复局部统计和任务指标，才可把当前 distortion 提升为方法特异性的证据链。"
+                ),
+            },
+            {
+                "id": "questions",
+                "type": "markdown",
+                "body": (
+                    "## 仍待回答的问题\n\n"
+                    "- Decoder 6 的负向漂移是由上采样、skip fusion、局部阈值，还是权重误差累积触发？\n"
+                    "- QAD 是否减少的是翻转数量，还是优先修复语义敏感位置？\n"
+                    "- 该层级方向反转能否在第二 seed 或第二模型复现？"
+                ),
+            },
+        ],
+    }
+    snapshot = {
+        "version": 1,
+        "generatedAt": generated_at,
+        "status": "ready",
+        "datasets": {
+            "headline": rounded_records(headline),
+            "stage_chart": rounded_records(stage_chart),
+            "full_stage": rounded_records(full_stage),
+            "top_layers": rounded_records(top_layers),
+            "source_scatter": rounded_records(source_scatter),
+            "class_long": rounded_records(class_long),
+            "representation": rounded_records(representation),
+            "correlations": rounded_records(correlations),
+        },
+    }
+    artifact = {
+        "surface": "report",
+        "manifest": manifest,
+        "snapshot": snapshot,
+        "sources": [source],
+    }
+    (HERE / "artifact.json").write_text(
+        json.dumps(artifact, ensure_ascii=False, indent=2) + "\n",
+        encoding="utf-8",
+    )
+
+
+def run(write_notebook: bool = True) -> None:
+    rng = np.random.default_rng(BOOTSTRAP_SEED)
+    summary = json.loads((RESULT_DIR / "summary.json").read_text(encoding="utf-8"))
+    manifest = json.loads((RESULT_DIR / "manifest.json").read_text(encoding="utf-8"))
+    source_layer = pd.DataFrame(
+        json.loads((RESULT_DIR / "source_layer_aggregates.json").read_text(encoding="utf-8"))
+    )
+    source_layer["source_id"] = source_layer["source_id"].astype(str).str.zfill(6)
+    rate_columns = {
+        "disagreement": "disagreement_count",
+        "mae": "abs_error_sum",
+        "signed_error": "signed_error_sum",
+        "zero_reference": "reference_zero_count",
+        "zero_variant": "variant_zero_count",
+        "saturation_reference": "reference_saturation_count",
+        "saturation_variant": "variant_saturation_count",
+    }
+    for rate, count in rate_columns.items():
+        source_layer[rate] = source_layer[count] / source_layer["count"]
+    source_layer["zero_delta"] = source_layer["zero_variant"] - source_layer["zero_reference"]
+    source_layer["saturation_delta"] = (
+        source_layer["saturation_variant"] - source_layer["saturation_reference"]
+    )
+    source_layer["stage"] = source_layer["layer"].map(stage_for_layer)
+    if set(source_layer["stage"]) - set(STAGE_ORDER):
+        raise RuntimeError(f"Unmapped stages: {set(source_layer['stage']) - set(STAGE_ORDER)}")
+
+    metric_columns = [
+        "disagreement",
+        "mae",
+        "signed_error",
+        "zero_reference",
+        "zero_variant",
+        "zero_delta",
+        "saturation_reference",
+        "saturation_variant",
+        "saturation_delta",
+    ]
+    source_mode = source_layer.groupby(["mode", "source_id"], as_index=False)[metric_columns].mean()
+    representation_rows: list[dict[str, object]] = []
+    for mode in VARIANT_MODES:
+        rows = source_mode.query("mode == @mode")
+        raw = source_layer.query("mode == @mode")
+        d_ci = bootstrap_mean(rows["disagreement"].to_numpy(), rng)
+        mae_ci = bootstrap_mean(rows["mae"].to_numpy(), rng)
+        signed_ci = bootstrap_mean(rows["signed_error"].to_numpy(), rng)
+        zero_delta_ci = bootstrap_mean(rows["zero_delta"].to_numpy(), rng)
+        saturation_delta_ci = bootstrap_mean(rows["saturation_delta"].to_numpy(), rng)
+        micro_disagreement = float(raw["disagreement_count"].sum() / raw["count"].sum())
+        conditional_step = float(raw["abs_error_sum"].sum() / raw["disagreement_count"].sum())
+        representation_rows.append(
+            {
+                "mode": mode,
+                "mode_label": MODE_LABELS[mode],
+                "source_count": int(rows.shape[0]),
+                "layer_count": int(raw["layer"].nunique()),
+                "macro_disagreement": float(rows["disagreement"].mean()),
+                "disagreement_ci_low": d_ci[0],
+                "disagreement_ci_high": d_ci[1],
+                "source_std_disagreement": float(rows["disagreement"].std(ddof=1)),
+                "source_cv_disagreement": float(rows["disagreement"].std(ddof=1) / rows["disagreement"].mean()),
+                "micro_disagreement": micro_disagreement,
+                "macro_mae": float(rows["mae"].mean()),
+                "mae_ci_low": mae_ci[0],
+                "mae_ci_high": mae_ci[1],
+                "micro_conditional_abs_step": conditional_step,
+                "single_step_fraction_lower_bound": max(0.0, 2.0 - conditional_step),
+                "macro_signed_error": float(rows["signed_error"].mean()),
+                "signed_ci_low": signed_ci[0],
+                "signed_ci_high": signed_ci[1],
+                "signed_to_mae_ratio": float(rows["signed_error"].mean() / rows["mae"].mean()),
+                "macro_zero_reference": float(rows["zero_reference"].mean()),
+                "macro_zero_variant": float(rows["zero_variant"].mean()),
+                "macro_zero_delta": float(rows["zero_delta"].mean()),
+                "zero_delta_ci_low": zero_delta_ci[0],
+                "zero_delta_ci_high": zero_delta_ci[1],
+                "macro_saturation_reference": float(rows["saturation_reference"].mean()),
+                "macro_saturation_variant": float(rows["saturation_variant"].mean()),
+                "macro_saturation_delta": float(rows["saturation_delta"].mean()),
+                "saturation_delta_ci_low": saturation_delta_ci[0],
+                "saturation_delta_ci_high": saturation_delta_ci[1],
+            }
+        )
+    representation = pd.DataFrame(representation_rows)
+
+    source_stage = source_layer.groupby(["mode", "source_id", "stage"], as_index=False)[metric_columns].mean()
+    stage_rows: list[dict[str, object]] = []
+    layer_counts = source_layer.groupby("stage")["layer"].nunique().to_dict()
+    full_total = 0.0
+    full_stage_numerators: dict[str, float] = {}
+    for stage in STAGE_ORDER:
+        value = float(
+            source_stage.query("mode == 'w4a4_input_qif' and stage == @stage")["disagreement"].mean()
+        ) * int(layer_counts[stage])
+        full_stage_numerators[stage] = value
+        full_total += value
+    for mode in VARIANT_MODES:
+        for stage_index, stage in enumerate(STAGE_ORDER):
+            rows = source_stage.query("mode == @mode and stage == @stage")
+            d_ci = bootstrap_mean(rows["disagreement"].to_numpy(), rng)
+            zero_ci = bootstrap_mean(rows["zero_delta"].to_numpy(), rng)
+            signed_ci = bootstrap_mean(rows["signed_error"].to_numpy(), rng)
+            row = {
+                "mode": mode,
+                "mode_label": MODE_LABELS[mode],
+                "stage": stage,
+                "stage_label": STAGE_LABELS[stage],
+                "stage_order": stage_index,
+                "layer_count": int(layer_counts[stage]),
+                **{column: float(rows[column].mean()) for column in metric_columns},
+                "disagreement_ci_low": d_ci[0],
+                "disagreement_ci_high": d_ci[1],
+                "zero_delta_ci_low": zero_ci[0],
+                "zero_delta_ci_high": zero_ci[1],
+                "signed_ci_low": signed_ci[0],
+                "signed_ci_high": signed_ci[1],
+                "distortion_contribution_share": (
+                    full_stage_numerators[stage] / full_total if mode == "w4a4_input_qif" else np.nan
+                ),
+            }
+            stage_rows.append(row)
+    stage_stats = pd.DataFrame(stage_rows)
+
+    layer_mode = source_layer.groupby(["mode", "layer", "stage"], as_index=False)[metric_columns].mean()
+    layer_index = layer_mode[["layer", "stage"]].drop_duplicates().set_index("layer")
+    layer_stats = layer_index.copy()
+    aliases = {"w4_qif": "w4", "a4_input_qif": "a4", "w4a4_input_qif": "w4a4"}
+    for metric, short in [
+        ("disagreement", "d"),
+        ("mae", "mae"),
+        ("signed_error", "signed"),
+        ("zero_delta", "zero_delta"),
+        ("saturation_delta", "sat_delta"),
+    ]:
+        pivot = layer_mode.pivot(index="layer", columns="mode", values=metric)
+        for mode, alias in aliases.items():
+            layer_stats[f"{short}_{alias}"] = pivot[mode]
+    layer_stats["delta_d_full_minus_w4"] = layer_stats["d_w4a4"] - layer_stats["d_w4"]
+    layer_stats["delta_d_full_minus_a4"] = layer_stats["d_w4a4"] - layer_stats["d_a4"]
+    layer_stats["mae_interaction"] = (
+        layer_stats["mae_w4a4"] - layer_stats["mae_w4"] - layer_stats["mae_a4"]
+    )
+    layer_stats["w4a4_distortion_contribution_share"] = layer_stats["d_w4a4"] / layer_stats["d_w4a4"].sum()
+    layer_stats = layer_stats.reset_index()
+
+    quantile_rows: list[dict[str, object]] = []
+    for mode, alias in aliases.items():
+        values = layer_stats[f"d_{alias}"]
+        quantile_rows.append(
+            {
+                "mode": mode,
+                "mode_label": MODE_LABELS[mode],
+                "minimum": float(values.min()),
+                "p10": float(values.quantile(0.10)),
+                "q1": float(values.quantile(0.25)),
+                "median": float(values.median()),
+                "q3": float(values.quantile(0.75)),
+                "p90": float(values.quantile(0.90)),
+                "maximum": float(values.max()),
+                "exact_zero_layer_count": int((values == 0).sum()),
+            }
+        )
+    layer_quantiles = pd.DataFrame(quantile_rows)
+
+    confusion_rows = json.loads((RESULT_DIR / "source_confusion.json").read_text(encoding="utf-8"))
+    confusion: dict[tuple[str, str], np.ndarray] = {}
+    for row in confusion_rows:
+        confusion[(row["mode"], str(row["source_id"]).zfill(6))] = np.asarray(row["matrix"], dtype=np.int64)
+    sources = sorted({source for _, source in confusion})
+    task_counts = pd.read_csv(RESULT_DIR / "per_patch_task_counts.csv.gz", dtype={"source_id": str})
+    task_counts["source_id"] = task_counts["source_id"].str.zfill(6)
+    flip = task_counts.groupby(["mode", "source_id"], as_index=False)[
+        ["valid_pixel_count", "prediction_flip_count_vs_fp_qif"]
+    ].sum()
+    flip["prediction_flip_rate"] = (
+        flip["prediction_flip_count_vs_fp_qif"] / flip["valid_pixel_count"]
+    )
+    source_rows: list[dict[str, object]] = []
+    source_mode_indexed = source_mode.set_index(["mode", "source_id"])
+    flip_indexed = flip.set_index(["mode", "source_id"])
+    for source in sources:
+        task_by_mode = {
+            mode: confusion_metrics(confusion[(mode, source)])[0]
+            for mode in ("fp_qif", *VARIANT_MODES)
+        }
+        row: dict[str, object] = {
+            "source_id": source,
+            "miou_fp": task_by_mode["fp_qif"],
+            "miou_w4": task_by_mode["w4_qif"],
+            "miou_a4": task_by_mode["a4_input_qif"],
+            "miou_w4a4": task_by_mode["w4a4_input_qif"],
+            "miou_drop_w4a4": task_by_mode["fp_qif"] - task_by_mode["w4a4_input_qif"],
+        }
+        for mode, alias in aliases.items():
+            row[f"d_{alias}"] = float(source_mode_indexed.loc[(mode, source), "disagreement"])
+            row[f"mae_{alias}"] = float(source_mode_indexed.loc[(mode, source), "mae"])
+            row[f"prediction_flip_{alias}"] = float(flip_indexed.loc[(mode, source), "prediction_flip_rate"])
+        row["d_full_minus_w4"] = row["d_w4a4"] - row["d_w4"]
+        row["d_full_minus_a4"] = row["d_w4a4"] - row["d_a4"]
+        row["mae_interaction"] = row["mae_w4a4"] - row["mae_w4"] - row["mae_a4"]
+        source_rows.append(row)
+    source_stats = pd.DataFrame(source_rows)
+
+    correlation_rows: list[dict[str, object]] = []
+    for x, x_label in [("d_w4a4", "W4A4 code disagreement"), ("mae_w4a4", "W4A4 code MAE")]:
+        for y, y_label in [
+            ("prediction_flip_w4a4", "prediction-flip rate"),
+            ("miou_drop_w4a4", "per-source mIoU drop"),
+        ]:
+            for method, function in [("spearman", spearmanr), ("pearson", pearsonr)]:
+                result = function(source_stats[x], source_stats[y])
+                ci = bootstrap_correlation(
+                    source_stats[x].to_numpy(), source_stats[y].to_numpy(), method, rng
+                )
+                correlation_rows.append(
+                    {
+                        "x": x,
+                        "x_label": x_label,
+                        "y": y,
+                        "y_label": y_label,
+                        "method": method,
+                        "coefficient": float(result.statistic),
+                        "p_value": float(result.pvalue),
+                        "bootstrap_ci_low": ci[0],
+                        "bootstrap_ci_high": ci[1],
+                        "source_count": len(sources),
+                    }
+                )
+    correlations = pd.DataFrame(correlation_rows)
+
+    mode_matrices = {
+        mode: np.stack([confusion[(mode, source)] for source in sources])
+        for mode in ("fp_qif", *VARIANT_MODES)
+    }
+    class_boot, miou_boot = bootstrap_class_drops(
+        mode_matrices["fp_qif"], mode_matrices["w4a4_input_qif"], rng
+    )
+    task = summary["task"]
+    class_rows: list[dict[str, object]] = []
+    for index, class_name in enumerate(CLASS_NAMES):
+        fp_iou = task["fp_qif"]["per_class_iou"][class_name]
+        full_iou = task["w4a4_input_qif"]["per_class_iou"][class_name]
+        class_ci = percentile_ci(class_boot[:, index])
+        class_rows.append(
+            {
+                "class": class_name,
+                "iou_fp": fp_iou,
+                "iou_w4": task["w4_qif"]["per_class_iou"][class_name],
+                "iou_a4": task["a4_input_qif"]["per_class_iou"][class_name],
+                "iou_w4a4": full_iou,
+                "full_drop": fp_iou - full_iou,
+                "full_drop_ci_low": class_ci[0],
+                "full_drop_ci_high": class_ci[1],
+                "relative_full_drop": (fp_iou - full_iou) / fp_iou,
+                "full_minus_w4": full_iou - task["w4_qif"]["per_class_iou"][class_name],
+            }
+        )
+    class_stats = pd.DataFrame(class_rows)
+
+    contrast_rows: list[dict[str, object]] = []
+    for name, values in [
+        ("W4A4 - W4 disagreement", source_stats["d_full_minus_w4"].to_numpy()),
+        ("W4A4 - A4-input disagreement", source_stats["d_full_minus_a4"].to_numpy()),
+        ("MAE interaction: W4A4 - W4 - A4-input", source_stats["mae_interaction"].to_numpy()),
+    ]:
+        ci = bootstrap_mean(values, rng)
+        positives = int((values > 0).sum())
+        nonzero = int((values != 0).sum())
+        sign_p = float(binomtest(positives, nonzero, 0.5).pvalue) if nonzero else 1.0
+        contrast_rows.append(
+            {
+                "contrast": name,
+                "mean": float(values.mean()),
+                "bootstrap_ci_low": ci[0],
+                "bootstrap_ci_high": ci[1],
+                "source_std": float(values.std(ddof=1)),
+                "paired_effect_dz": float(values.mean() / values.std(ddof=1)),
+                "positive_sources": positives,
+                "source_count": int(values.size),
+                "two_sided_exact_sign_p": sign_p,
+            }
+        )
+    contrasts = pd.DataFrame(contrast_rows)
+
+    full_rep = representation.set_index("mode").loc["w4a4_input_qif"]
+    decoder56_share = float(
+        stage_stats.query(
+            "mode == 'w4a4_input_qif' and stage in ['decoder_5', 'decoder_6']"
+        )["distortion_contribution_share"].sum()
+    )
+    top10_share = float(
+        layer_stats.nlargest(10, "d_w4a4")["w4a4_distortion_contribution_share"].sum()
+    )
+    layer_delta = layer_stats["delta_d_full_minus_w4"]
+    layer_sign_counts = {
+        "positive": int((layer_delta > 0).sum()),
+        "negative": int((layer_delta < 0).sum()),
+        "zero": int((layer_delta == 0).sum()),
+    }
+    rho_flip_row = correlations.query(
+        "x == 'd_w4a4' and y == 'prediction_flip_w4a4' and method == 'spearman'"
+    ).iloc[0]
+    rho_miou_row = correlations.query(
+        "x == 'd_w4a4' and y == 'miou_drop_w4a4' and method == 'spearman'"
+    ).iloc[0]
+    findings = {
+        "full_macro_disagreement": float(full_rep["macro_disagreement"]),
+        "full_disagreement_ci": [float(full_rep["disagreement_ci_low"]), float(full_rep["disagreement_ci_high"])],
+        "full_micro_disagreement": float(full_rep["micro_disagreement"]),
+        "full_conditional_abs_step": float(full_rep["micro_conditional_abs_step"]),
+        "full_single_step_lower_bound": float(full_rep["single_step_fraction_lower_bound"]),
+        "full_signed_error": float(full_rep["macro_signed_error"]),
+        "full_signed_ci": [float(full_rep["signed_ci_low"]), float(full_rep["signed_ci_high"])],
+        "full_zero_delta": float(full_rep["macro_zero_delta"]),
+        "full_zero_delta_ci": [float(full_rep["zero_delta_ci_low"]), float(full_rep["zero_delta_ci_high"])],
+        "full_saturation_delta": float(full_rep["macro_saturation_delta"]),
+        "full_saturation_delta_ci": [float(full_rep["saturation_delta_ci_low"]), float(full_rep["saturation_delta_ci_high"])],
+        "decoder_5_6_distortion_share": decoder56_share,
+        "top_10_layer_distortion_share": top10_share,
+        "layer_delta_full_minus_w4_sign_counts": layer_sign_counts,
+        "source_disagreement_range": [float(source_stats["d_w4a4"].min()), float(source_stats["d_w4a4"].max())],
+        "source_miou_drop_range": [float(source_stats["miou_drop_w4a4"].min()), float(source_stats["miou_drop_w4a4"].max())],
+        "rho_disagreement_prediction_flip": float(rho_flip_row["coefficient"]),
+        "rho_disagreement_prediction_flip_ci": [float(rho_flip_row["bootstrap_ci_low"]), float(rho_flip_row["bootstrap_ci_high"])],
+        "rho_disagreement_miou_drop": float(rho_miou_row["coefficient"]),
+        "rho_disagreement_miou_drop_ci": [float(rho_miou_row["bootstrap_ci_low"]), float(rho_miou_row["bootstrap_ci_high"])],
+        "full_miou_drop": float(task["w4a4_input_qif"]["miou"] - task["fp_qif"]["miou"]),
+        "full_miou_drop_ci": [-float(percentile_ci(miou_boot)[1]), -float(percentile_ci(miou_boot)[0])],
+        "observable_w4a4_distortion": bool(summary["preregistered_decision"]["observable_w4a4_distortion"]),
+        "coupled_superadditive_distortion": bool(summary["preregistered_decision"]["coupled_superadditive_distortion"]),
+        "patch_count": int(manifest["completed_patches"]),
+        "source_count": len(sources),
+        "active_layer_count": int(len(layer_stats)),
+        "bootstrap_replicates": BOOTSTRAP_REPLICATES,
+        "bootstrap_seed": BOOTSTRAP_SEED,
+    }
+
+    write_csv(representation, "representation_statistics.csv")
+    write_csv(stage_stats, "stage_statistics.csv")
+    write_csv(layer_stats, "layer_statistics.csv")
+    write_csv(layer_quantiles, "layer_quantiles.csv")
+    write_csv(source_stats, "source_statistics.csv")
+    write_csv(correlations, "correlation_statistics.csv")
+    write_csv(class_stats, "class_statistics.csv")
+    write_csv(contrasts, "contrast_statistics.csv")
+
+    analysis_summary = {
+        "generated_at": datetime.now(timezone.utc).isoformat().replace("+00:00", "Z"),
+        "scope": {
+            "patch_count": findings["patch_count"],
+            "source_count": findings["source_count"],
+            "active_layer_count": findings["active_layer_count"],
+            "bootstrap_replicates": BOOTSTRAP_REPLICATES,
+            "bootstrap_seed": BOOTSTRAP_SEED,
+            "primary_metric": manifest["protocol"]["primary_metric"],
+            "statistical_unit": manifest["protocol"]["statistical_unit"],
+        },
+        "findings": findings,
+        "representation": rounded_records(representation),
+        "contrasts": rounded_records(contrasts),
+        "correlations": rounded_records(correlations),
+        "class_statistics": rounded_records(class_stats),
+        "top_layers": rounded_records(layer_stats.sort_values("d_w4a4", ascending=False).head(12)),
+    }
+    (HERE / "analysis_summary.json").write_text(
+        json.dumps(analysis_summary, ensure_ascii=False, indent=2) + "\n",
+        encoding="utf-8",
+    )
+    build_artifact(
+        representation,
+        stage_stats,
+        layer_stats,
+        source_stats,
+        class_stats,
+        correlations,
+        findings,
+    )
+    if write_notebook:
+        build_notebook()
+
+
+if __name__ == "__main__":
+    import argparse
+
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--no-notebook", action="store_true")
+    arguments = parser.parse_args()
+    run(write_notebook=not arguments.no_notebook)
