@@ -1,0 +1,884 @@
+{
+  "manifest": {
+    "blocks": [
+      {
+        "body": "# Integer-LIF + QAD 与直接 SNN 量化训练效率对比",
+        "id": "title",
+        "layout": "full",
+        "type": "markdown"
+      },
+      {
+        "body": "## Executive Summary\n\n在 RTX 5090、400×400 输入、AMP 关闭的受控 microbenchmark 中，Integer-LIF + QAD 在同 physical/effective batch=4 时只占 3.047 GiB，而 Direct-LIF + QAT+SQUAT（T=8、full BPTT）为 14.077 GiB；峰值 allocated memory 降低 78.35%，吞吐提高 4.545×。在 effective batch=64、各自最大可运行 physical batch 下，QAD 达 108.54 images/s，SQUAT 为 10.75 images/s，即 10.095×。容量探测显示 QAD 可运行 physical batch=32，SQUAT 为 4。",
+        "id": "executive_summary",
+        "layout": "full",
+        "sourceId": "efficiency_summary",
+        "type": "markdown"
+      },
+      {
+        "cardIds": [
+          "matched_memory",
+          "matched_speed",
+          "capacity_speed",
+          "capacity_batch",
+          "accuracy_gap"
+        ],
+        "id": "headline_metrics",
+        "layout": "full",
+        "type": "metric-strip"
+      },
+      {
+        "body": "## Key Findings\n\n1. **公平显存口径支持主要结论。** 同 physical batch=4 时，SQUAT/QAD 的峰值 allocated memory 比为 4.620×。\n2. **同有效 batch 的训练速度差距更大。** effective batch=64 时，单次 optimizer update 从 5.952s 降至 0.590s；按 25,700 个样本、402 个 updates 的纯训练投影约为 39.88 分钟/epoch 对 3.95 分钟/epoch。\n3. **独立轮次支持速度差异。** 同 batch 的成对轮次加速中位数为 4.599×（block-bootstrap 95% CI 3.551–4.624×）；同有效 batch 为 10.088×（9.701–10.224×）。",
+        "id": "key_findings",
+        "layout": "full",
+        "sourceId": "efficiency_summary",
+        "type": "markdown"
+      },
+      {
+        "chartId": "throughput_chart",
+        "id": "throughput",
+        "layout": "full",
+        "type": "chart"
+      },
+      {
+        "id": "main_results",
+        "layout": "full",
+        "tableId": "main_table",
+        "type": "table"
+      },
+      {
+        "body": "## Mechanism Evidence\n\n在相同 Direct-LIF + QAT+SQUAT 模型、输入与 batch 下，只把 T 从 1 增到 8，峰值显存增至 5.853×，update 时间增至 4.522×。这直接支持：recurrent state/activation 的时间展开与 full BPTT 是基线训练开销的主要来源之一。完整 QAD 相对无教师/KD 的 QIF-STE 多用 0.578 GiB；两者 pooled median update time 比为 1.001×。",
+        "id": "mechanism",
+        "layout": "full",
+        "sourceId": "efficiency_summary",
+        "type": "markdown"
+      },
+      {
+        "chartId": "timestep_memory_chart",
+        "id": "timestep_memory",
+        "layout": "half",
+        "type": "chart"
+      },
+      {
+        "chartId": "timestep_time_chart",
+        "id": "timestep_time",
+        "layout": "half",
+        "type": "chart"
+      },
+      {
+        "id": "ablation_results",
+        "layout": "full",
+        "tableId": "ablation_table",
+        "type": "table"
+      },
+      {
+        "id": "phase_results",
+        "layout": "full",
+        "tableId": "phase_table",
+        "type": "table"
+      },
+      {
+        "body": "## Accuracy Context\n\n冻结 seed-1234 记录中，QAD mIoU=0.619547，SQUAT mIoU=0.315514，路线差为 +0.304033。该结果与效率方向一致，但由于训练预算及完整路线设置不同，只能作为“不以现有精度换取效率”的支持性证据。",
+        "id": "accuracy_context_heading",
+        "layout": "full",
+        "sourceId": "accuracy_context",
+        "type": "markdown"
+      },
+      {
+        "id": "accuracy_results",
+        "layout": "full",
+        "tableId": "accuracy_table",
+        "type": "table"
+      },
+      {
+        "body": "## Scope, Data, and Metric Definitions\n\n- **QAD 路线：** Integer-LIF/QIF compact neuronal code，T=1，W4A4，冻结 FP32 教师，feature KD weight=0.1；没有跨时间展开的 BPTT。\n- **SNN 对照：** Direct-LIF，T=8，W4M4S1（权重/膜电位/脉冲量化），recurrent state 按时间展开并执行完整、非截断 BPTT。\n- **Peak allocated memory：** 每个隔离进程内 `torch.cuda.max_memory_allocated`，跨轮次取最大值；不含 CUDA context 与非 PyTorch 分配。\n- **Update time / throughput：** CUDA 同步 wall clock；吞吐为 effective batch / update time。",
+        "id": "scope",
+        "layout": "full",
+        "sourceId": "protocol",
+        "type": "markdown"
+      },
+      {
+        "body": "## Methodology\n\n固定读取 UDD 训练集前 64 个真实样本并 resize 到 400×400；每个配置在独立 subprocess 中加载 checkpoint、预热并测量。主比较每条路线 5 个独立轮次，每轮 10 个 warmup updates + 20 个 measured updates，并交替执行顺序。时间步与 QIF-STE 消融为 3 轮、每轮 5 warmups + 10 measurements。随机种子为 1234，AMP 关闭，cuDNN deterministic 开启。",
+        "id": "methodology",
+        "layout": "full",
+        "sourceId": "protocol",
+        "type": "markdown"
+      },
+      {
+        "body": "## Limitations, Uncertainty, and Robustness\n\n- 这是固定真实 batch 的训练内核 microbenchmark；排除了数据加载、验证和 checkpoint I/O，epoch 数字是投影，不是完整 epoch 实测。\n- 主比较同时改变神经元、T、BPTT、量化对象和蒸馏，因此结论属于完整训练路线，不能把全部收益单独归因于 QAD。\n- Capacity 模式的 physical batch 不同，故不得用其中的 24.006 GiB 与 14.082 GiB 推导显存优劣；可解释的是可运行 batch 容量与同 effective batch 吞吐。\n- QAD matched 第 4 轮出现较慢 backward，已保留并进入 block-bootstrap CI；没有事后删除。\n- 精度来自冻结的单种子、不同预算结果；需要等预算多种子实验才能作严格精度归因。\n- PyTorch fake-quant 训练速度不代表低比特硬件推理延迟或能耗。",
+        "id": "limitations",
+        "layout": "full",
+        "type": "markdown"
+      },
+      {
+        "body": "## Paper-ready Claim\n\n“On a single RTX 5090 with identical physical and effective batch sizes of 4, Integer-LIF + QAD reduced peak PyTorch-allocated training memory from 14.08 to 3.05 GiB (78.4%) and improved training throughput by 4.54× over the T=8 Direct-LIF QAT+SQUAT baseline with full BPTT. At an effective batch size of 64, QAD supported an 8× larger physical batch and achieved 10.09× higher throughput.”",
+        "id": "paper_wording",
+        "layout": "full",
+        "sourceId": "efficiency_summary",
+        "type": "markdown"
+      },
+      {
+        "body": "## Next Steps and Further Questions\n\n1. 运行 3–5 个独立训练种子，并统一 optimizer、epoch/update budget 与数据顺序，报告 mIoU 的均值和置信区间。\n2. 增加真正的整 epoch 端到端计时，以量化 dataloader、验证和 checkpoint I/O 后的实际节省。\n3. 增加等 T 或等神经元的桥接消融，以分离 compact code、时间步、BPTT、膜电位量化和蒸馏的边际贡献。",
+        "id": "next_steps",
+        "layout": "full",
+        "type": "markdown"
+      }
+    ],
+    "cards": [
+      {
+        "dataset": "efficiency_headlines",
+        "description": "physical batch=4、effective batch=4 下，QAD 相对 SQUAT 的 PyTorch 峰值 allocated memory 降幅。",
+        "id": "matched_memory",
+        "metrics": [
+          {
+            "field": "memory_reduction",
+            "format": "percent",
+            "label": "同 batch 峰值显存降低"
+          },
+          {
+            "field": "memory_ratio",
+            "format": "number",
+            "label": "SQUAT/QAD"
+          }
+        ],
+        "sourceId": "efficiency_summary"
+      },
+      {
+        "dataset": "efficiency_headlines",
+        "description": "physical/effective batch 均为 4 时的 CUDA 同步训练吞吐倍率。",
+        "id": "matched_speed",
+        "metrics": [
+          {
+            "field": "matched_speedup",
+            "format": "number",
+            "label": "同 batch 吞吐加速（×）"
+          },
+          {
+            "field": "matched_time_reduction",
+            "format": "percent",
+            "label": "update 时间降低"
+          }
+        ],
+        "sourceId": "efficiency_summary"
+      },
+      {
+        "dataset": "efficiency_headlines",
+        "description": "effective batch=64 时，分别采用各路线可运行的最大物理 batch。",
+        "id": "capacity_speed",
+        "metrics": [
+          {
+            "field": "capacity_speedup",
+            "format": "number",
+            "label": "同有效 batch 吞吐加速（×）"
+          }
+        ],
+        "sourceId": "efficiency_summary"
+      },
+      {
+        "dataset": "efficiency_headlines",
+        "description": "RTX 5090 上容量探测所得最大可运行 physical batch：QAD=32、SQUAT=4。",
+        "id": "capacity_batch",
+        "metrics": [
+          {
+            "field": "capacity_ratio",
+            "format": "number",
+            "label": "物理 batch 容量优势（×）"
+          }
+        ],
+        "sourceId": "efficiency_summary"
+      },
+      {
+        "dataset": "accuracy_headlines",
+        "description": "冻结单种子历史结果；训练预算与路线不同，仅作有效性上下文，不是受控因果比较。",
+        "id": "accuracy_gap",
+        "metrics": [
+          {
+            "field": "miou_gap",
+            "format": "number",
+            "label": "QAD−SQUAT mIoU",
+            "signed": true
+          },
+          {
+            "field": "qad_miou",
+            "format": "number",
+            "label": "QAD mIoU"
+          },
+          {
+            "field": "squat_miou",
+            "format": "number",
+            "label": "SQUAT mIoU"
+          }
+        ],
+        "sourceId": "accuracy_context"
+      }
+    ],
+    "charts": [
+      {
+        "comparisonContext": {
+          "denominator": "CUDA-synchronized optimizer update wall time",
+          "grain": "route × benchmark mode",
+          "unit": "images/s"
+        },
+        "dataset": "main_efficiency",
+        "encodings": {
+          "tooltip": [
+            {
+              "field": "physical_batch",
+              "label": "Physical batch",
+              "type": "quantitative"
+            },
+            {
+              "field": "effective_batch",
+              "label": "Effective batch",
+              "type": "quantitative"
+            },
+            {
+              "field": "update_ms",
+              "label": "Update time",
+              "type": "quantitative",
+              "unit": "ms"
+            }
+          ],
+          "x": {
+            "field": "chart_label",
+            "label": "基准口径与路线",
+            "type": "nominal"
+          },
+          "y": {
+            "field": "images_per_second",
+            "label": "吞吐量",
+            "type": "quantitative",
+            "unit": "images/s"
+          }
+        },
+        "id": "throughput_chart",
+        "intent": "comparison",
+        "layout": "full",
+        "maxRows": 4,
+        "question": "QAD 在同 batch 和同有效 batch 下分别能提供多大吞吐？",
+        "rationale": "单指标柱状图直接比较每秒处理图像数；模式与路线合并为显式类别，避免不受控的分组推断。",
+        "settings": {
+          "categoryLabelPolicy": "wrap",
+          "showValues": true,
+          "sort": "none"
+        },
+        "sourceId": "efficiency_summary",
+        "subtitle": "Matched 使用 physical/effective batch=4；Capacity 使用 effective batch=64 和各路线最大可运行 physical batch。",
+        "title": "两种训练口径下的吞吐量",
+        "type": "bar",
+        "unit": "images/s",
+        "valueFormat": "number"
+      },
+      {
+        "comparisonContext": {
+          "baseline": "T=1",
+          "grain": "time step",
+          "unit": "GiB"
+        },
+        "dataset": "timestep_ablation",
+        "encodings": {
+          "tooltip": [
+            {
+              "field": "update_ms",
+              "label": "Update time",
+              "type": "quantitative",
+              "unit": "ms"
+            },
+            {
+              "field": "images_per_second",
+              "label": "Throughput",
+              "type": "quantitative",
+              "unit": "images/s"
+            }
+          ],
+          "x": {
+            "field": "time_step",
+            "label": "时间步",
+            "type": "ordinal"
+          },
+          "y": {
+            "field": "peak_allocated_gib",
+            "label": "峰值 allocated memory",
+            "type": "quantitative",
+            "unit": "GiB"
+          }
+        },
+        "id": "timestep_memory_chart",
+        "intent": "comparison",
+        "layout": "half",
+        "maxRows": 4,
+        "question": "时间展开如何改变 recurrent SNN 量化训练的峰值显存？",
+        "rationale": "四个离散时间步适合从零基线的单系列柱状图。",
+        "settings": {
+          "showValues": true,
+          "sort": "none"
+        },
+        "sourceId": "efficiency_summary",
+        "subtitle": "同一 Direct-LIF + QAT+SQUAT 路线，physical/effective batch=4；T 从 1 增至 8。",
+        "title": "SQUAT 时间步消融：峰值 allocated memory",
+        "type": "bar",
+        "unit": "GiB",
+        "valueFormat": "number"
+      },
+      {
+        "comparisonContext": {
+          "baseline": "T=1",
+          "grain": "time step",
+          "unit": "ms/update"
+        },
+        "dataset": "timestep_ablation",
+        "encodings": {
+          "tooltip": [
+            {
+              "field": "forward_ms",
+              "label": "Forward",
+              "type": "quantitative",
+              "unit": "ms"
+            },
+            {
+              "field": "backward_ms",
+              "label": "Backward/BPTT",
+              "type": "quantitative",
+              "unit": "ms"
+            }
+          ],
+          "x": {
+            "field": "time_step",
+            "label": "时间步",
+            "type": "ordinal"
+          },
+          "y": {
+            "field": "update_ms",
+            "label": "Update time",
+            "type": "quantitative",
+            "unit": "ms"
+          }
+        },
+        "id": "timestep_time_chart",
+        "intent": "comparison",
+        "layout": "half",
+        "maxRows": 4,
+        "question": "时间展开如何改变 recurrent SNN 量化训练的更新时间？",
+        "rationale": "单系列柱状图呈现相同配置下随 T 增长的 CUDA 同步 wall time。",
+        "settings": {
+          "showValues": true,
+          "sort": "none"
+        },
+        "sourceId": "efficiency_summary",
+        "subtitle": "与显存消融相同的模型、输入与 batch；误差范围见精确结果表。",
+        "title": "SQUAT 时间步消融：训练更新时间",
+        "type": "bar",
+        "unit": "ms/update",
+        "valueFormat": "number"
+      }
+    ],
+    "description": "Same-GPU training-memory and speed comparison with timestep ablations and explicit causal boundaries.",
+    "generatedAt": "2026-08-20T08:59:57.739879+00:00",
+    "sources": [
+      {
+        "id": "efficiency_summary",
+        "label": "Formal efficiency summary",
+        "path": "summary.json",
+        "query": {
+          "description": "Aggregate of isolated-process CUDA benchmark runs on one RTX 5090.",
+          "engine": "SQLite 3 (in-memory staging)",
+          "executed_at": "2026-08-20T08:59:57.739879+00:00",
+          "filters": [
+            "UDD real samples resized to 400×400",
+            "AMP disabled; data loading, validation, and checkpoint I/O excluded",
+            "Matched memory comparison uses physical batch 4 for both routes"
+          ],
+          "language": "sql",
+          "metric_definitions": [
+            "Peak allocated memory is the maximum torch.cuda.max_memory_allocated value across independent runs.",
+            "Update time is the pooled median of CUDA-synchronized optimizer-update wall times; 95% CIs resample run-level medians.",
+            "Throughput is effective batch divided by CUDA-synchronized update wall time."
+          ],
+          "sql": "SELECT dataset_id, row_json FROM staged_efficiency_report ORDER BY dataset_id, row_index",
+          "tables_used": [
+            "staged_efficiency_report (materialized from summary.json)"
+          ]
+        }
+      },
+      {
+        "id": "raw_trials",
+        "label": "Per-update benchmark observations",
+        "path": "raw_trials.csv",
+        "query": {
+          "description": "All successful measured optimizer updates, including CUDA event phase timings.",
+          "engine": "Python 3.12",
+          "executed_at": "2026-08-20T08:59:57.739879+00:00",
+          "language": "python"
+        }
+      },
+      {
+        "id": "protocol",
+        "label": "Benchmark protocol and environment",
+        "path": "protocol.json",
+        "query": {
+          "description": "Warmup, repetition, batch, and capacity-probe settings for the formal run.",
+          "executed_at": "2026-08-20T08:59:57.739879+00:00"
+        }
+      },
+      {
+        "id": "accuracy_context",
+        "label": "Frozen route-level accuracy evidence",
+        "path": "accuracy_evidence.json",
+        "query": {
+          "description": "Exact mIoU values copied from the frozen seed-1234 comparison artifact with original path and SHA-256 recorded.",
+          "engine": "SQLite 3 (in-memory staging)",
+          "executed_at": "2026-08-20T08:59:57.739879+00:00",
+          "filters": [
+            "Frozen metrics only; no new accuracy training or evaluation in this benchmark"
+          ],
+          "language": "sql",
+          "metric_definitions": [
+            "mIoU is the unweighted mean of six UDD class IoUs."
+          ],
+          "sql": "SELECT dataset_id, row_json FROM staged_accuracy_report ORDER BY dataset_id, row_index",
+          "tables_used": [
+            "staged_accuracy_report (materialized from accuracy_evidence.json)"
+          ]
+        }
+      }
+    ],
+    "surface": "report",
+    "tables": [
+      {
+        "columns": [
+          {
+            "field": "benchmark",
+            "label": "口径",
+            "type": "text"
+          },
+          {
+            "field": "route",
+            "label": "路线",
+            "type": "text"
+          },
+          {
+            "field": "physical_batch",
+            "format": "number",
+            "label": "Physical B"
+          },
+          {
+            "field": "effective_batch",
+            "format": "number",
+            "label": "Effective B"
+          },
+          {
+            "field": "time_steps",
+            "format": "number",
+            "label": "T"
+          },
+          {
+            "field": "peak_allocated_gib",
+            "format": "number",
+            "label": "Peak GiB"
+          },
+          {
+            "field": "update_ms",
+            "format": "number",
+            "label": "ms/update"
+          },
+          {
+            "field": "images_per_second",
+            "format": "number",
+            "label": "images/s"
+          }
+        ],
+        "dataset": "main_efficiency",
+        "defaultSort": {
+          "direction": "asc",
+          "field": "benchmark"
+        },
+        "density": "dense",
+        "id": "main_table",
+        "layout": "full",
+        "sourceId": "efficiency_summary",
+        "subtitle": "显存倍率只在同 physical batch 行之间解释；Capacity 两行的峰值显存不可直接作路线倍率。",
+        "title": "主比较精确结果"
+      },
+      {
+        "columns": [
+          {
+            "field": "benchmark",
+            "label": "口径",
+            "type": "text"
+          },
+          {
+            "field": "route",
+            "label": "路线",
+            "type": "text"
+          },
+          {
+            "field": "forward_ms",
+            "format": "number",
+            "label": "Forward ms"
+          },
+          {
+            "field": "backward_ms",
+            "format": "number",
+            "label": "Backward ms"
+          },
+          {
+            "field": "optimizer_ms",
+            "format": "number",
+            "label": "Optimizer ms"
+          },
+          {
+            "field": "note",
+            "label": "定义",
+            "type": "text"
+          }
+        ],
+        "dataset": "phase_breakdown",
+        "defaultSort": {
+          "direction": "asc",
+          "field": "benchmark"
+        },
+        "density": "dense",
+        "id": "phase_table",
+        "layout": "full",
+        "sourceId": "efficiency_summary",
+        "subtitle": "阶段为 CUDA event 中位数；QAD forward 同时包含冻结教师与量化学生，SQUAT backward 为 full BPTT。",
+        "title": "前向、反向与优化器阶段耗时"
+      },
+      {
+        "columns": [
+          {
+            "field": "time_step",
+            "label": "T",
+            "type": "text"
+          },
+          {
+            "field": "peak_allocated_gib",
+            "format": "number",
+            "label": "Peak GiB"
+          },
+          {
+            "field": "update_ms",
+            "format": "number",
+            "label": "Median ms"
+          },
+          {
+            "field": "update_ci_low_ms",
+            "format": "number",
+            "label": "CI low ms"
+          },
+          {
+            "field": "update_ci_high_ms",
+            "format": "number",
+            "label": "CI high ms"
+          },
+          {
+            "field": "images_per_second",
+            "format": "number",
+            "label": "images/s"
+          }
+        ],
+        "dataset": "timestep_ablation",
+        "defaultSort": {
+          "direction": "asc",
+          "field": "time_step"
+        },
+        "density": "dense",
+        "id": "ablation_table",
+        "layout": "full",
+        "sourceId": "efficiency_summary",
+        "subtitle": "每个 T 为 3 个独立进程轮次、每轮 10 个 measured updates；95% CI 对轮次中位数做 block bootstrap。",
+        "title": "SQUAT 时间步消融精确结果"
+      },
+      {
+        "columns": [
+          {
+            "field": "route",
+            "label": "路线",
+            "type": "text"
+          },
+          {
+            "field": "miou",
+            "format": "number",
+            "label": "mIoU"
+          },
+          {
+            "field": "evidence_role",
+            "label": "证据角色",
+            "type": "text"
+          }
+        ],
+        "dataset": "accuracy_rows",
+        "defaultSort": {
+          "direction": "desc",
+          "field": "miou"
+        },
+        "density": "dense",
+        "id": "accuracy_table",
+        "layout": "full",
+        "sourceId": "accuracy_context",
+        "subtitle": "单种子且训练预算、神经元、时间步、量化对象与蒸馏设置不同；只说明现有完整路线结果。",
+        "title": "冻结精度证据（支持性上下文）"
+      }
+    ],
+    "title": "Integer-LIF + QAD 与直接 SNN 量化训练效率对比",
+    "version": 1
+  },
+  "snapshot": {
+    "datasets": {
+      "accuracy_headlines": [
+        {
+          "miou_gap": 0.3040331019721516,
+          "qad_miou": 0.6195473169172718,
+          "squat_miou": 0.3155142149451202
+        }
+      ],
+      "accuracy_rows": [
+        {
+          "evidence_role": "冻结单种子支持性证据",
+          "miou": 0.6195473169172718,
+          "route": "Integer-LIF + QAD"
+        },
+        {
+          "evidence_role": "冻结单种子支持性证据",
+          "miou": 0.3155142149451202,
+          "route": "Direct-LIF + QAT+SQUAT"
+        }
+      ],
+      "efficiency_headlines": [
+        {
+          "capacity_ratio": 8.0,
+          "capacity_speedup": 10.094592332275466,
+          "matched_speedup": 4.544693220506667,
+          "matched_time_reduction": 0.7799631284387609,
+          "memory_ratio": 4.619898243422066,
+          "memory_reduction": 0.7835450160782595
+        }
+      ],
+      "main_efficiency": [
+        {
+          "benchmark": "同物理 batch",
+          "chart_label": "Matched · QAD",
+          "effective_batch": 4,
+          "images_per_second": 49.0466548767055,
+          "peak_allocated_gib": 3.0470619201660156,
+          "peak_reserved_gib": 4.02734375,
+          "physical_batch": 4,
+          "rounds": 5,
+          "route": "Integer-LIF + QAD",
+          "temporal_gradient": "无时间展开 BPTT",
+          "time_steps": 1,
+          "update_ci_high_ms": 101.40059795230627,
+          "update_ci_low_ms": 80.39101352915168,
+          "update_ms": 81.555011915043
+        },
+        {
+          "benchmark": "同物理 batch",
+          "chart_label": "Matched · SQUAT",
+          "effective_batch": 4,
+          "images_per_second": 10.792071653020733,
+          "peak_allocated_gib": 14.077116012573242,
+          "peak_reserved_gib": 19.359375,
+          "physical_batch": 4,
+          "rounds": 5,
+          "route": "Direct-LIF + QAT+SQUAT",
+          "temporal_gradient": "完整 BPTT",
+          "time_steps": 8,
+          "update_ci_high_ms": 372.8813463822007,
+          "update_ci_low_ms": 360.07411568425596,
+          "update_ms": 370.64248067326844
+        },
+        {
+          "benchmark": "同有效 batch",
+          "chart_label": "Capacity · QAD",
+          "effective_batch": 64,
+          "images_per_second": 108.54039335357815,
+          "peak_allocated_gib": 24.00642967224121,
+          "peak_reserved_gib": 29.447265625,
+          "physical_batch": 32,
+          "rounds": 5,
+          "route": "Integer-LIF + QAD",
+          "temporal_gradient": "无时间展开 BPTT",
+          "time_steps": 1,
+          "update_ci_high_ms": 602.7972705196589,
+          "update_ci_low_ms": 585.9934161417186,
+          "update_ms": 589.6422346122563
+        },
+        {
+          "benchmark": "同有效 batch",
+          "chart_label": "Capacity · SQUAT",
+          "effective_batch": 64,
+          "images_per_second": 10.7523305331055,
+          "peak_allocated_gib": 14.082019329071045,
+          "peak_reserved_gib": 19.36328125,
+          "physical_batch": 4,
+          "rounds": 5,
+          "route": "Direct-LIF + QAT+SQUAT",
+          "temporal_gradient": "完整 BPTT",
+          "time_steps": 8,
+          "update_ci_high_ms": 5991.441433317959,
+          "update_ci_low_ms": 5819.787374697626,
+          "update_ms": 5952.19865324907
+        }
+      ],
+      "phase_breakdown": [
+        {
+          "backward_ms": 21.59411144256592,
+          "benchmark": "同物理 batch",
+          "forward_ms": 50.59025669097901,
+          "note": "teacher + student forward；无时间展开 BPTT",
+          "optimizer_ms": 2.3850079774856563,
+          "route": "Integer-LIF + QAD"
+        },
+        {
+          "backward_ms": 217.2441635131836,
+          "benchmark": "同物理 batch",
+          "forward_ms": 146.61719512939453,
+          "note": "T=8 recurrent forward + full BPTT",
+          "optimizer_ms": 2.8085120916366573,
+          "route": "Direct-LIF + QAT+SQUAT"
+        },
+        {
+          "backward_ms": 196.78004837036133,
+          "benchmark": "同有效 batch",
+          "forward_ms": 372.7454528808594,
+          "note": "teacher + student forward；无时间展开 BPTT",
+          "optimizer_ms": 2.746864080429077,
+          "route": "Integer-LIF + QAD"
+        },
+        {
+          "backward_ms": 3533.1715774536133,
+          "benchmark": "同有效 batch",
+          "forward_ms": 2369.3876342773438,
+          "note": "T=8 recurrent forward + full BPTT",
+          "optimizer_ms": 2.996559977531433,
+          "route": "Direct-LIF + QAT+SQUAT"
+        }
+      ],
+      "timestep_ablation": [
+        {
+          "backward_ms": 44.075008392333984,
+          "effective_batch": 4,
+          "forward_ms": 31.23311996459961,
+          "images_per_second": 50.094016163988144,
+          "peak_allocated_gib": 2.4050850868225098,
+          "physical_batch": 4,
+          "time_step": "T=1",
+          "time_steps": 1,
+          "update_ci_high_ms": 80.09893051348627,
+          "update_ci_low_ms": 79.5280181337148,
+          "update_ms": 79.85718711279333
+        },
+        {
+          "backward_ms": 62.114816665649414,
+          "effective_batch": 4,
+          "forward_ms": 41.773902893066406,
+          "images_per_second": 36.38211934454382,
+          "peak_allocated_gib": 4.188910484313965,
+          "physical_batch": 4,
+          "time_step": "T=2",
+          "time_steps": 2,
+          "update_ci_high_ms": 110.48611951991916,
+          "update_ci_low_ms": 106.90978053025901,
+          "update_ms": 109.9447594024241
+        },
+        {
+          "backward_ms": 106.9864959716797,
+          "effective_batch": 4,
+          "forward_ms": 74.77617645263672,
+          "images_per_second": 21.45719255160215,
+          "peak_allocated_gib": 7.734576225280762,
+          "physical_batch": 4,
+          "time_step": "T=4",
+          "time_steps": 4,
+          "update_ci_high_ms": 189.56363038159907,
+          "update_ci_low_ms": 186.0229754820466,
+          "update_ms": 186.41768395900726
+        },
+        {
+          "backward_ms": 213.90609741210938,
+          "effective_batch": 4,
+          "forward_ms": 142.0240478515625,
+          "images_per_second": 11.0765762362768,
+          "peak_allocated_gib": 14.077116012573242,
+          "physical_batch": 4,
+          "time_step": "T=8",
+          "time_steps": 8,
+          "update_ci_high_ms": 362.1598049066961,
+          "update_ci_low_ms": 358.235428808257,
+          "update_ms": 361.1224186606705
+        }
+      ]
+    },
+    "generatedAt": "2026-08-20T08:59:57.739879+00:00",
+    "status": "ready",
+    "version": 1
+  },
+  "sources": [
+    {
+      "id": "efficiency_summary",
+      "label": "Formal efficiency summary",
+      "path": "summary.json",
+      "query": {
+        "description": "Aggregate of isolated-process CUDA benchmark runs on one RTX 5090.",
+        "engine": "SQLite 3 (in-memory staging)",
+        "executed_at": "2026-08-20T08:59:57.739879+00:00",
+        "filters": [
+          "UDD real samples resized to 400×400",
+          "AMP disabled; data loading, validation, and checkpoint I/O excluded",
+          "Matched memory comparison uses physical batch 4 for both routes"
+        ],
+        "language": "sql",
+        "metric_definitions": [
+          "Peak allocated memory is the maximum torch.cuda.max_memory_allocated value across independent runs.",
+          "Update time is the pooled median of CUDA-synchronized optimizer-update wall times; 95% CIs resample run-level medians.",
+          "Throughput is effective batch divided by CUDA-synchronized update wall time."
+        ],
+        "sql": "SELECT dataset_id, row_json FROM staged_efficiency_report ORDER BY dataset_id, row_index",
+        "tables_used": [
+          "staged_efficiency_report (materialized from summary.json)"
+        ]
+      }
+    },
+    {
+      "id": "raw_trials",
+      "label": "Per-update benchmark observations",
+      "path": "raw_trials.csv",
+      "query": {
+        "description": "All successful measured optimizer updates, including CUDA event phase timings.",
+        "engine": "Python 3.12",
+        "executed_at": "2026-08-20T08:59:57.739879+00:00",
+        "language": "python"
+      }
+    },
+    {
+      "id": "protocol",
+      "label": "Benchmark protocol and environment",
+      "path": "protocol.json",
+      "query": {
+        "description": "Warmup, repetition, batch, and capacity-probe settings for the formal run.",
+        "executed_at": "2026-08-20T08:59:57.739879+00:00"
+      }
+    },
+    {
+      "id": "accuracy_context",
+      "label": "Frozen route-level accuracy evidence",
+      "path": "accuracy_evidence.json",
+      "query": {
+        "description": "Exact mIoU values copied from the frozen seed-1234 comparison artifact with original path and SHA-256 recorded.",
+        "engine": "SQLite 3 (in-memory staging)",
+        "executed_at": "2026-08-20T08:59:57.739879+00:00",
+        "filters": [
+          "Frozen metrics only; no new accuracy training or evaluation in this benchmark"
+        ],
+        "language": "sql",
+        "metric_definitions": [
+          "mIoU is the unweighted mean of six UDD class IoUs."
+        ],
+        "sql": "SELECT dataset_id, row_json FROM staged_accuracy_report ORDER BY dataset_id, row_index",
+        "tables_used": [
+          "staged_accuracy_report (materialized from accuracy_evidence.json)"
+        ]
+      }
+    }
+  ],
+  "surface": "report"
+}

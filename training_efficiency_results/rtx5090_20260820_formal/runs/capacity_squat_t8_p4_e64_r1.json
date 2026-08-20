@@ -1,0 +1,313 @@
+{
+  "completed_at": "2026-08-20T08:23:30.124516+00:00",
+  "effective_batch": 64,
+  "gradient_audit": {
+    "parameters_with_grad": 231,
+    "teacher_parameters_with_grad": 0
+  },
+  "input_residency": "cpu",
+  "measured_updates": 20,
+  "memory": {
+    "model_and_input_allocated_bytes": 5429760,
+    "model_and_input_reserved_bytes": 6291456,
+    "peak_allocated_bytes": 15120453120,
+    "peak_reserved_bytes": 20791164928,
+    "steady_allocated_bytes": 32998912,
+    "steady_reserved_bytes": 20791164928
+  },
+  "method": "squat",
+  "mode": "capacity",
+  "model": {
+    "qlayers": 0,
+    "teacher_parameters": 0,
+    "trainable_parameters": 1303060
+  },
+  "physical_batch": 4,
+  "round": 1,
+  "started_at": "2026-08-20T08:20:28.821055+00:00",
+  "status": "ok",
+  "time_steps": 8,
+  "trials": [
+    {
+      "images_per_second": 10.755966516033734,
+      "loss": 1.8359270095825195,
+      "phase_seconds": {
+        "bptt_backward": 3.532950927734375,
+        "host_to_device": 0.004479679971933365,
+        "loss": 0.0016296320334076885,
+        "optimizer_step": 0.002938240051269531,
+        "snn_forward": 2.3652945098876956
+      },
+      "seconds_per_image": 0.09297165424504783,
+      "trial": 0,
+      "wall_seconds": 5.950185871683061
+    },
+    {
+      "images_per_second": 10.745020446057971,
+      "loss": 1.854369878768921,
+      "phase_seconds": {
+        "bptt_backward": 3.5348167572021483,
+        "host_to_device": 0.004360096007585525,
+        "loss": 0.0016327360346913343,
+        "optimizer_step": 0.0031447041034698485,
+        "snn_forward": 2.370230590820312
+      },
+      "seconds_per_image": 0.09306636548717506,
+      "trial": 1,
+      "wall_seconds": 5.956247391179204
+    },
+    {
+      "images_per_second": 10.768629864332443,
+      "loss": 1.5996898412704468,
+      "phase_seconds": {
+        "bptt_backward": 3.5388098297119144,
+        "host_to_device": 0.004324000030755997,
+        "loss": 0.0016311040297150613,
+        "optimizer_step": 0.002899104118347168,
+        "snn_forward": 2.3564607238769533
+      },
+      "seconds_per_image": 0.09286232441809261,
+      "trial": 2,
+      "wall_seconds": 5.943188762757927
+    },
+    {
+      "images_per_second": 10.787848155848115,
+      "loss": 1.5464996099472046,
+      "phase_seconds": {
+        "bptt_backward": 3.5316713104248043,
+        "host_to_device": 0.004353376001119614,
+        "loss": 0.0016255360320210459,
+        "optimizer_step": 0.002819200038909912,
+        "snn_forward": 2.3520302886962887
+      },
+      "seconds_per_image": 0.09269689242501045,
+      "trial": 3,
+      "wall_seconds": 5.932601115200669
+    },
+    {
+      "images_per_second": 10.318800542098801,
+      "loss": 1.4883891344070435,
+      "phase_seconds": {
+        "bptt_backward": 3.553465682983399,
+        "host_to_device": 0.004474463999271394,
+        "loss": 0.0016327040344476704,
+        "optimizer_step": 0.004040927886962891,
+        "snn_forward": 2.589646560668945
+      },
+      "seconds_per_image": 0.0969104883770342,
+      "trial": 4,
+      "wall_seconds": 6.202271256130189
+    },
+    {
+      "images_per_second": 10.680962318895162,
+      "loss": 1.4258928298950195,
+      "phase_seconds": {
+        "bptt_backward": 3.5462474212646486,
+        "host_to_device": 0.004462399989366531,
+        "loss": 0.001632736034691334,
+        "optimizer_step": 0.0030031039714813234,
+        "snn_forward": 2.387306518554687
+      },
+      "seconds_per_image": 0.09362452278583078,
+      "trial": 5,
+      "wall_seconds": 5.99196945829317
+    },
+    {
+      "images_per_second": 10.81026924916959,
+      "loss": 1.369741439819336,
+      "phase_seconds": {
+        "bptt_backward": 3.523048553466797,
+        "host_to_device": 0.004449504017829895,
+        "loss": 0.0016329280287027364,
+        "optimizer_step": 0.002945280075073242,
+        "snn_forward": 2.3495469055175784
+      },
+      "seconds_per_image": 0.09250463396892883,
+      "trial": 6,
+      "wall_seconds": 5.920296574011445
+    },
+    {
+      "images_per_second": 10.810525900246578,
+      "loss": 1.3431756496429443,
+      "phase_seconds": {
+        "bptt_backward": 3.526033309936523,
+        "host_to_device": 0.004294592022895813,
+        "loss": 0.0016326720342040065,
+        "optimizer_step": 0.002788383960723877,
+        "snn_forward": 2.3463272247314455
+      },
+      "seconds_per_image": 0.09250243783026235,
+      "trial": 7,
+      "wall_seconds": 5.9201560211367905
+    },
+    {
+      "images_per_second": 10.714284130974464,
+      "loss": 1.3039525747299194,
+      "phase_seconds": {
+        "bptt_backward": 3.5549789276123045,
+        "host_to_device": 0.004451999962329864,
+        "loss": 0.0016352960318326956,
+        "optimizer_step": 0.0032027199268341066,
+        "snn_forward": 2.363331741333008
+      },
+      "seconds_per_image": 0.0933333471257356,
+      "trial": 8,
+      "wall_seconds": 5.973334216047078
+    },
+    {
+      "images_per_second": 10.787681204657614,
+      "loss": 1.202101230621338,
+      "phase_seconds": {
+        "bptt_backward": 3.530493804931641,
+        "host_to_device": 0.004385600000619889,
+        "loss": 0.0016326400339603429,
+        "optimizer_step": 0.002881216049194336,
+        "snn_forward": 2.3517962188720705
+      },
+      "seconds_per_image": 0.09269832701102132,
+      "trial": 9,
+      "wall_seconds": 5.9326929287053645
+    },
+    {
+      "images_per_second": 10.773041973822552,
+      "loss": 1.2171911001205444,
+      "phase_seconds": {
+        "bptt_backward": 3.5383194274902343,
+        "host_to_device": 0.004283104032278061,
+        "loss": 0.0016305920332670215,
+        "optimizer_step": 0.0031533119678497316,
+        "snn_forward": 2.3530574340820314
+      },
+      "seconds_per_image": 0.09282429256563773,
+      "trial": 10,
+      "wall_seconds": 5.940754724200815
+    },
+    {
+      "images_per_second": 10.797027418774576,
+      "loss": 1.1667674779891968,
+      "phase_seconds": {
+        "bptt_backward": 3.5269420623779295,
+        "host_to_device": 0.0043251200020313265,
+        "loss": 0.0016285440325737005,
+        "optimizer_step": 0.004467775821685791,
+        "snn_forward": 2.3486168060302735
+      },
+      "seconds_per_image": 0.09261808470182586,
+      "trial": 11,
+      "wall_seconds": 5.927557420916855
+    },
+    {
+      "images_per_second": 10.787281946830898,
+      "loss": 1.1534457206726074,
+      "phase_seconds": {
+        "bptt_backward": 3.532018310546875,
+        "host_to_device": 0.004304799914360046,
+        "loss": 0.0016250880286097528,
+        "optimizer_step": 0.0032755520343780518,
+        "snn_forward": 2.3507986450195317
+      },
+      "seconds_per_image": 0.0927017579524545,
+      "trial": 12,
+      "wall_seconds": 5.932912508957088
+    },
+    {
+      "images_per_second": 10.7838148383652,
+      "loss": 1.1241499185562134,
+      "phase_seconds": {
+        "bptt_backward": 3.5313452606201174,
+        "host_to_device": 0.00451248002052307,
+        "loss": 0.001633120030164719,
+        "optimizer_step": 0.0037775039672851562,
+        "snn_forward": 2.3541177520751955
+      },
+      "seconds_per_image": 0.09273156253038906,
+      "trial": 13,
+      "wall_seconds": 5.9348200019449
+    },
+    {
+      "images_per_second": 10.80905704483678,
+      "loss": 1.0780861377716064,
+      "phase_seconds": {
+        "bptt_backward": 3.5302345886230473,
+        "host_to_device": 0.0042750720083713535,
+        "loss": 0.0016296000331640246,
+        "optimizer_step": 0.0029369280338287355,
+        "snn_forward": 2.343738525390625
+      },
+      "seconds_per_image": 0.09251500809477875,
+      "trial": 14,
+      "wall_seconds": 5.92096051806584
+    },
+    {
+      "images_per_second": 10.384092955492246,
+      "loss": 1.078718900680542,
+      "phase_seconds": {
+        "bptt_backward": 3.544459976196289,
+        "host_to_device": 0.004328607976436615,
+        "loss": 0.0016331840306520466,
+        "optimizer_step": 0.0038784959316253663,
+        "snn_forward": 2.5681407623291017
+      },
+      "seconds_per_image": 0.09630114101310028,
+      "trial": 15,
+      "wall_seconds": 6.163273024838418
+    },
+    {
+      "images_per_second": 10.788889941879518,
+      "loss": 1.0449918508529663,
+      "phase_seconds": {
+        "bptt_backward": 3.531614974975586,
+        "host_to_device": 0.004372031956911087,
+        "loss": 0.0016304960325360302,
+        "optimizer_step": 0.0028160319328308105,
+        "snn_forward": 2.352205276489258
+      },
+      "seconds_per_image": 0.0926879415201256,
+      "trial": 16,
+      "wall_seconds": 5.932028257288039
+    },
+    {
+      "images_per_second": 10.762012459400259,
+      "loss": 1.035468339920044,
+      "phase_seconds": {
+        "bptt_backward": 3.533539611816406,
+        "host_to_device": 0.004328927993774415,
+        "loss": 0.0016316480338573458,
+        "optimizer_step": 0.0031508479118347167,
+        "snn_forward": 2.362534118652343
+      },
+      "seconds_per_image": 0.09291942411073251,
+      "trial": 17,
+      "wall_seconds": 5.9468431430868804
+    },
+    {
+      "images_per_second": 10.710418931478422,
+      "loss": 1.020409107208252,
+      "phase_seconds": {
+        "bptt_backward": 3.5481320037841804,
+        "host_to_device": 0.00447996798157692,
+        "loss": 0.001632032029330731,
+        "optimizer_step": 0.0038290879726409913,
+        "snn_forward": 2.3723819885253907
+      },
+      "seconds_per_image": 0.09336702946893638,
+      "trial": 18,
+      "wall_seconds": 5.975489886011928
+    },
+    {
+      "images_per_second": 10.724980988983672,
+      "loss": 0.9887615442276001,
+      "phase_seconds": {
+        "bptt_backward": 3.550822769165039,
+        "host_to_device": 0.004358304023742676,
+        "loss": 0.0016317440345883375,
+        "optimizer_step": 0.0031473278999328614,
+        "snn_forward": 2.3644254302978513
+      },
+      "seconds_per_image": 0.09324025851674378,
+      "trial": 19,
+      "wall_seconds": 5.967376545071602
+    }
+  ],
+  "warmup_updates": 10
+}

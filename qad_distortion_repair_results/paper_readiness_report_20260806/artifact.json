@@ -1,0 +1,1209 @@
+{
+  "surface": "report",
+  "manifest": {
+    "version": 1,
+    "surface": "report",
+    "title": "QAD 对 W4A4 Integer-LIF 失真的修复程度与论文证据边界",
+    "description": "Technical audit of whether QAD repairs observed W4A4 Integer-LIF distortion, using common-teacher and same-master-weight references.",
+    "generatedAt": "2026-08-06T07:17:16.815704Z",
+    "sources": [
+      {
+        "id": "repair-analysis",
+        "label": "QAD distortion-repair derived analysis",
+        "path": "qad_distortion_repair_results/paper_readiness_report_20260806/report_snapshot.json",
+        "query": {
+          "description": "Reviewed synthesis of the common-teacher audit, same-master-weight sensitivity audit, and original frozen-checkpoint distortion probe.",
+          "engine": "DuckDB",
+          "language": "sql",
+          "sql": "SELECT * FROM read_json_auto('qad_distortion_repair_results/paper_readiness_report_20260806/report_snapshot.json', format = 'unstructured');",
+          "query": "Run build_report.py after the two probe entrypoints to regenerate the bounded report snapshot and artifact.",
+          "tables_used": [
+            "qad_distortion_repair_results/qad_vs_ste16_full_20260806/analysis_summary.json",
+            "qad_distortion_repair_results/qad_vs_ste16_full_20260806/source_statistics.csv",
+            "qad_distortion_repair_results/self_sensitivity_full_20260806/analysis_summary.json",
+            "quantization_distortion_results/full_20260805/statistical_analysis/analysis_summary.json"
+          ],
+          "filters": [
+            "UDD6 validation only",
+            "8,478 patches grouped into 35 original source images",
+            "78 active QIF nodes and six forward_qat distillation features",
+            "T=1 runtime input step; QIF code range 0 through 8",
+            "Historical QAD checkpoint versus existing 16-epoch STE-QAT checkpoint"
+          ],
+          "metric_definitions": [
+            "QIF disagreement is the fraction of Integer-LIF output codes unequal to the stated reference, macro-averaged equally over active layers within each source and then equally over sources.",
+            "Feature normalized MSE is sum((student-teacher)^2) divided by sum(teacher^2), computed per feature and source before equal-weight averaging.",
+            "Feature repair is STE normalized MSE minus QAD normalized MSE; positive values favor QAD.",
+            "All 95% intervals resample the 35 source-image clusters with replacement 10,000 times.",
+            "The common-teacher comparison is representation alignment, while the FP-shadow comparison is local quantization sensitivity; neither removes the 127-versus-16 epoch training-budget confound."
+          ],
+          "executed_at": "2026-08-06T07:17:16.815704Z"
+        }
+      }
+    ],
+    "cards": [
+      {
+        "id": "card-qif",
+        "description": "Positive means QAD has more QIF code mismatches than STE against the common FP-QIF teacher.",
+        "dataset": "headline",
+        "sourceId": "repair-analysis",
+        "metrics": [
+          {
+            "label": "QAD − STE QIF disagreement",
+            "field": "qif_delta",
+            "format": "percent",
+            "signed": true
+          }
+        ]
+      },
+      {
+        "id": "card-feature",
+        "description": "Equal-weight mean normalized MSE across the six forward_qat KD targets.",
+        "dataset": "headline",
+        "sourceId": "repair-analysis",
+        "metrics": [
+          {
+            "label": "KD-feature NMSE reduction",
+            "field": "feature_nmse_reduction",
+            "format": "percent"
+          },
+          {
+            "label": "Excluding F6",
+            "field": "feature_nmse_reduction_ex6",
+            "format": "percent"
+          }
+        ]
+      },
+      {
+        "id": "card-flip",
+        "description": "Relative reduction in segmentation-prediction flips against the common FP-QIF teacher.",
+        "dataset": "headline",
+        "sourceId": "repair-analysis",
+        "metrics": [
+          {
+            "label": "Prediction-flip reduction",
+            "field": "prediction_flip_reduction",
+            "format": "percent"
+          }
+        ]
+      },
+      {
+        "id": "card-concentration",
+        "description": "Share of the raw six-term KD-MSE reduction contributed by the final pre-logit feature.",
+        "dataset": "headline",
+        "sourceId": "repair-analysis",
+        "metrics": [
+          {
+            "label": "Raw KD improvement from F6",
+            "field": "feature6_share",
+            "format": "percent"
+          }
+        ]
+      }
+    ],
+    "charts": [
+      {
+        "id": "chart-qif-reference",
+        "title": "QIF code disagreement under two reference definitions",
+        "subtitle": "Source-balanced macro disagreement across 78 active QIF nodes and 35 UDD source images.",
+        "intent": "comparison",
+        "question": "Does QAD reduce discrete Integer-LIF code mismatch?",
+        "rationale": "Grouped bars separate common-teacher alignment from same-master-weight quantization sensitivity.",
+        "comparisonContext": {
+          "grain": "reference × method",
+          "unit": "rate"
+        },
+        "type": "bar",
+        "dataset": "qif_reference",
+        "sourceId": "repair-analysis",
+        "encodings": {
+          "x": {
+            "field": "reference",
+            "type": "ordinal",
+            "label": "Reference"
+          },
+          "y": {
+            "field": "disagreement",
+            "type": "quantitative",
+            "format": "percent",
+            "label": "QIF code disagreement"
+          },
+          "color": {
+            "field": "method",
+            "type": "nominal",
+            "label": "Method"
+          }
+        },
+        "legend": {
+          "position": "bottom",
+          "title": "Method"
+        },
+        "settings": {
+          "groupMode": "grouped",
+          "sort": "none"
+        },
+        "valueFormat": "percent",
+        "layout": "full"
+      },
+      {
+        "id": "chart-feature",
+        "title": "Teacher-referenced normalized MSE at six KD features",
+        "subtitle": "Lower is better; F6 is the final decoder/pre-logit feature.",
+        "intent": "comparison",
+        "question": "Where does QAD improve the representations directly constrained by distillation?",
+        "rationale": "Feature-level grouped bars reveal broad effects and concentration at F6.",
+        "comparisonContext": {
+          "baseline": "FP-QIF teacher",
+          "grain": "feature × method",
+          "unit": "normalized MSE"
+        },
+        "type": "bar",
+        "dataset": "feature_chart",
+        "sourceId": "repair-analysis",
+        "encodings": {
+          "x": {
+            "field": "feature",
+            "type": "ordinal",
+            "label": "Distillation feature"
+          },
+          "y": {
+            "field": "normalized_mse",
+            "type": "quantitative",
+            "format": "number",
+            "label": "Normalized MSE"
+          },
+          "color": {
+            "field": "method",
+            "type": "nominal",
+            "label": "Method"
+          },
+          "tooltip": [
+            {
+              "field": "paired_relative_reduction",
+              "type": "quantitative",
+              "format": "percent",
+              "label": "QAD relative reduction"
+            }
+          ]
+        },
+        "legend": {
+          "position": "bottom",
+          "title": "Method"
+        },
+        "settings": {
+          "groupMode": "grouped",
+          "sort": "none"
+        },
+        "layout": "full"
+      },
+      {
+        "id": "chart-stage-delta",
+        "title": "QAD minus STE QIF disagreement by network stage",
+        "subtitle": "Positive values mean QAD is farther from the common FP-QIF teacher; all intervals are source-cluster bootstrap 95% CIs.",
+        "intent": "comparison",
+        "question": "Is QAD's higher code mismatch confined to one stage?",
+        "rationale": "A signed stage bar shows direction and magnitude without hiding the all-positive pattern.",
+        "comparisonContext": {
+          "baseline": "STE-QAT",
+          "grain": "network stage",
+          "unit": "disagreement-rate difference"
+        },
+        "type": "bar",
+        "dataset": "stage_delta",
+        "sourceId": "repair-analysis",
+        "encodings": {
+          "x": {
+            "field": "stage",
+            "type": "ordinal",
+            "label": "Network stage"
+          },
+          "y": {
+            "field": "qad_minus_ste",
+            "type": "quantitative",
+            "format": "percent",
+            "label": "QAD − STE disagreement"
+          },
+          "tooltip": [
+            {
+              "field": "ci_low",
+              "type": "quantitative",
+              "format": "percent",
+              "label": "95% CI low"
+            },
+            {
+              "field": "ci_high",
+              "type": "quantitative",
+              "format": "percent",
+              "label": "95% CI high"
+            },
+            {
+              "field": "layer_count",
+              "type": "quantitative",
+              "label": "Layers"
+            }
+          ]
+        },
+        "settings": {
+          "sort": "none"
+        },
+        "valueFormat": "percent",
+        "layout": "full"
+      },
+      {
+        "id": "chart-source-closure",
+        "title": "Source-level feature repair and mIoU gain",
+        "subtitle": "35 source-image clusters; Spearman rho = -0.184 and the 95% bootstrap interval spans zero.",
+        "intent": "relationship",
+        "question": "Do sources with stronger feature repair receive larger task gains?",
+        "rationale": "One point per independent source cluster tests the proposed representation-task closure at the correct grain.",
+        "comparisonContext": {
+          "grain": "source image",
+          "unit": "normalized-MSE repair versus mIoU"
+        },
+        "type": "scatter",
+        "dataset": "source_scatter",
+        "sourceId": "repair-analysis",
+        "encodings": {
+          "x": {
+            "field": "feature_repair",
+            "type": "quantitative",
+            "format": "number",
+            "label": "Feature repair (STE NMSE − QAD NMSE)"
+          },
+          "y": {
+            "field": "qad_minus_ste_miou",
+            "type": "quantitative",
+            "format": "percent",
+            "label": "QAD − STE source mIoU"
+          },
+          "label": {
+            "field": "source_id",
+            "type": "text",
+            "label": "Source"
+          },
+          "tooltip": [
+            {
+              "field": "qif_repair",
+              "type": "quantitative",
+              "format": "percent",
+              "label": "QIF repair"
+            },
+            {
+              "field": "qad_miou",
+              "type": "quantitative",
+              "format": "percent",
+              "label": "QAD mIoU"
+            },
+            {
+              "field": "ste_miou",
+              "type": "quantitative",
+              "format": "percent",
+              "label": "STE mIoU"
+            }
+          ]
+        },
+        "layout": "full"
+      }
+    ],
+    "tables": [
+      {
+        "id": "table-features",
+        "title": "Distillation-feature alignment audit",
+        "subtitle": "Common FP-QIF teacher reference; positive relative reduction favors QAD.",
+        "dataset": "feature_table",
+        "defaultSort": {
+          "field": "feature",
+          "direction": "asc"
+        },
+        "density": "dense",
+        "sourceId": "repair-analysis",
+        "layout": "full",
+        "columns": [
+          {
+            "field": "feature",
+            "label": "Feature",
+            "type": "text"
+          },
+          {
+            "field": "network_position",
+            "label": "Position",
+            "type": "text"
+          },
+          {
+            "field": "qad_nmse",
+            "label": "QAD NMSE",
+            "format": "number"
+          },
+          {
+            "field": "ste_nmse",
+            "label": "STE NMSE",
+            "format": "number"
+          },
+          {
+            "field": "relative_reduction",
+            "label": "Relative reduction",
+            "format": "percent",
+            "movement": true
+          },
+          {
+            "field": "qad_minus_ste_cosine_distance",
+            "label": "Cosine-distance delta",
+            "format": "number",
+            "movement": true
+          }
+        ]
+      },
+      {
+        "id": "table-claims",
+        "title": "Paper-claim evidence audit",
+        "subtitle": "Assessment incorporates the 127-versus-16 epoch budget mismatch.",
+        "dataset": "claims",
+        "defaultSort": {
+          "field": "claim",
+          "direction": "asc"
+        },
+        "density": "spacious",
+        "sourceId": "repair-analysis",
+        "layout": "full",
+        "columns": [
+          {
+            "field": "claim",
+            "label": "Candidate claim",
+            "type": "text"
+          },
+          {
+            "field": "assessment",
+            "label": "Assessment",
+            "type": "text"
+          },
+          {
+            "field": "evidence",
+            "label": "Evidence",
+            "type": "text"
+          }
+        ]
+      },
+      {
+        "id": "table-classes",
+        "title": "Per-class IoU under the common validation protocol",
+        "subtitle": "The QAD-versus-STE differences are descriptive because training budgets differ.",
+        "dataset": "class_rows",
+        "defaultSort": {
+          "field": "qad_minus_ste",
+          "direction": "desc"
+        },
+        "density": "dense",
+        "sourceId": "repair-analysis",
+        "layout": "full",
+        "columns": [
+          {
+            "field": "class",
+            "label": "Class",
+            "type": "text"
+          },
+          {
+            "field": "fp_iou",
+            "label": "FP-QIF",
+            "format": "percent"
+          },
+          {
+            "field": "qad_iou",
+            "label": "QAD",
+            "format": "percent"
+          },
+          {
+            "field": "ste_iou",
+            "label": "STE-QAT",
+            "format": "percent"
+          },
+          {
+            "field": "qad_minus_ste",
+            "label": "QAD − STE",
+            "format": "percent",
+            "movement": true
+          }
+        ]
+      }
+    ],
+    "blocks": [
+      {
+        "id": "title",
+        "type": "markdown",
+        "body": "# QAD 对 W4A4 Integer-LIF 失真的修复程度与论文证据边界"
+      },
+      {
+        "id": "technical-summary",
+        "type": "markdown",
+        "sourceId": "repair-analysis",
+        "body": "## 技术结论：QAD 改善了蒸馏特征与任务输出，但没有修复全网离散码失真\n\n**当前证据只部分支持 QAD 的作用解释，不足以支撑“QAD 解决了 Integer-LIF quantization distortion”的强表述。** 相对现有 STE-QAT，QAD 将六个 KD 特征的 teacher-referenced normalized MSE 降低 **31.85%**，prediction-flip rate 相对降低 **10.77%**，验证 mIoU 高 **3.83 pp**。但其 78 个 QIF 节点的宏平均码不一致率反而高 **1.56 pp**，且 35/35 个 source 都是同一方向。\n\n结果支持的窄机制是：**feature KD 将学生拉向 teacher 的多尺度语义特征，尤其是最终 decoder/pre-logit 特征；它不要求、也没有实现逐层逐码复原。** 由于 QAD 训练了 127 epochs、STE 仅训练 16 epochs，而且 feature repair 与 source-level mIoU gain 无显著相关，当前仍不能把特征对齐或精度差异因果归因于蒸馏。"
+      },
+      {
+        "id": "metrics",
+        "type": "metric-strip",
+        "cardIds": [
+          "card-qif",
+          "card-feature",
+          "card-flip",
+          "card-concentration"
+        ]
+      },
+      {
+        "id": "code-result",
+        "type": "markdown",
+        "sourceId": "repair-analysis",
+        "body": "## 两种 reference 下，QAD 的全网 QIF 码保真度都更差\n\n对共同 FP-QIF teacher，QAD 的宏平均 disagreement 为 **11.64%**，STE 为 **10.08%**；QAD 高 **1.56 pp**，95% CI 为 [1.53 pp, 1.59 pp]。改用 element-weighted micro average 后，差距扩大到 **2.89 pp**。在各自固定 master weights 的 FP-shadow/W4A4 开关测试中，QAD 同样高 **1.56 pp**。"
+      },
+      {
+        "id": "qif-chart-block",
+        "type": "chart",
+        "chartId": "chart-qif-reference",
+        "layout": "full"
+      },
+      {
+        "id": "stage-result",
+        "type": "markdown",
+        "sourceId": "repair-analysis",
+        "body": "## QIF 反例不是单层异常：七个 stage 全部同向\n\nQAD 的 disagreement 在 Stem、三个 encoder 和三个 decoder stage 均高于 STE。差距最大的是 Encoder 1（+3.51 pp），其次是 Stem（+3.20 pp）和 Decoder 6（+2.26 pp）。逐层看，51/78 层显著更高，只有 10 层显著更低。这个分布不能支持“QAD 全局修复 code flipping”。"
+      },
+      {
+        "id": "stage-chart-block",
+        "type": "chart",
+        "chartId": "chart-stage-delta",
+        "layout": "full"
+      },
+      {
+        "id": "feature-result",
+        "type": "markdown",
+        "sourceId": "repair-analysis",
+        "body": "## QAD 确实改善了 loss 直接约束的六个特征，但效应高度集中在 F6\n\n六个特征的 normalized MSE 均下降，平均相对下降 **31.85%**；排除 F6 后仍下降 **10.42%**，说明并非完全由单点制造。但按训练中实际使用的六项 raw MSE 求和，**98.19%** 的 QAD-versus-STE 改善来自 F6。此外 F4 的 cosine distance 反而更差，说明“对齐改善”依赖 metric，最稳妥的表述应限定到训练采用的 MSE。"
+      },
+      {
+        "id": "feature-chart-block",
+        "type": "chart",
+        "chartId": "chart-feature",
+        "layout": "full"
+      },
+      {
+        "id": "feature-table-block",
+        "type": "table",
+        "tableId": "table-features",
+        "layout": "full"
+      },
+      {
+        "id": "task-result",
+        "type": "markdown",
+        "sourceId": "repair-analysis",
+        "body": "## 输出层更稳定，但目前没有形成 representation–task 闭环\n\nQAD 相对 teacher 的 prediction-flip rate 为 **14.90%**，STE 为 **16.69%**；QAD 少 **1.80 pp**。QAD 的 mIoU 为 **61.95%**，STE 为 **58.13%**。然而 source-level feature repair 与 mIoU gain 的 Spearman ρ 仅 **-0.184**，bootstrap CI 跨过零。因此当前只能说两个现象共存，不能说更强的 feature repair 导致更大的任务收益。"
+      },
+      {
+        "id": "source-chart-block",
+        "type": "chart",
+        "chartId": "chart-source-closure",
+        "layout": "full"
+      },
+      {
+        "id": "class-table-block",
+        "type": "table",
+        "tableId": "table-classes",
+        "layout": "full"
+      },
+      {
+        "id": "scope",
+        "type": "markdown",
+        "sourceId": "repair-analysis",
+        "body": "## 指标、样本与比较口径\n\n主分析覆盖 UDD6 validation 的 8,478 个 patch，并按 35 张原始 source image 聚类。QIF 指标覆盖 78 个实际触发节点；feature 指标覆盖 forward_qat 返回、且 QAD loss 实际使用的六个中间特征。共同-teacher 分析衡量训练后学生表示与 FP-QIF teacher 的偏离；self-sensitivity 分析固定每个 checkpoint 的 master weights 与 BN，仅在 QLayer 内关闭 weight/input fake quantization。后者衡量局部开关敏感性，不是另一个经过训练的 FP32 baseline。所有区间按 35 个 source cluster 重采样 10,000 次。"
+      },
+      {
+        "id": "design",
+        "type": "markdown",
+        "sourceId": "repair-analysis",
+        "body": "## 实验设计与复现检查\n\nQAD、STE 和 FP teacher 使用相同 loader、输入顺序、T=1 和完整验证集。正式 probe 产生 1,322,568 条逐 patch/QIF 计数与 101,736 条逐 patch/feature 计数，行数与 2×8,478×78 和 2×8,478×6 完全一致。FP-QIF、QAD 与 STE 的 mIoU 分别精确复现为 67.8502%、61.9547% 和 58.1270%。macro 与 micro QIF 统计、common-teacher 与 self-shadow reference 都给出相同方向。"
+      },
+      {
+        "id": "robustness",
+        "type": "markdown",
+        "sourceId": "repair-analysis",
+        "body": "## 稳健性检查揭示：QAD 更依赖量化后的执行点，而不是更接近自身 FP shadow\n\n在 self-sensitivity probe 中，QAD 的 QIF disagreement 为 **9.31%**，STE 为 **7.75%**；QAD 的 feature NMSE 也高 **9.48%**。同时 QAD 的 W4A4 mIoU 比自身 FP shadow 高 **9.53 pp**。这说明 QAD 学到的是适应量化 forward 的解，而不是一个在开关量化时保持不变的解；因此不能把 FP shadow 当作理想目标，也不能用 self-distance 越小越好来替代任务证据。"
+      },
+      {
+        "id": "limitations",
+        "type": "markdown",
+        "sourceId": "repair-analysis",
+        "body": "## 证据限制：当前最严重的问题仍是训练预算与方法特异性\n\nQAD checkpoint 经历 127 epochs，当前保留的 STE checkpoint 只有 16 epochs；因此精度、feature alignment 甚至 self-sensitivity 差异都可能部分来自优化时间。只有一个 seed，且没有 generic KD checkpoint。此外 QAD 本身就是 feature KD + STE-QAT，没有直接针对某个 Integer-LIF distortion 指标的 loss。即使 matched-budget 后结果仍成立，也更适合声称“distillation improves task-relevant feature alignment under W4A4”，而不是“a distortion-specific QAD repairs coupled Integer-LIF degradation”。"
+      },
+      {
+        "id": "claims-heading",
+        "type": "markdown",
+        "body": "## 当前论文措辞的通过/阻断清单\n\n下表把观测事实、因果主张和方法特异性分开，避免用同一组数字支撑不同强度的结论。"
+      },
+      {
+        "id": "claim-table-block",
+        "type": "table",
+        "tableId": "table-claims",
+        "layout": "full"
+      },
+      {
+        "id": "next",
+        "type": "markdown",
+        "body": "## 最关键的下一步实验\n\n1. 重新生成与 QAD 完全同预算、同 LR horizon、同初始化的 127-epoch STE-QAT，并至少跑 3 seeds；这是解除当前最大 blocker 的最低要求。\n2. 在相同 teacher 下增加 generic feature-KD + QAT baseline。由于当前 QAD 没有 distortion-specific 组件，这个 baseline 实际上应与 QAD 定义重合；若确实重合，论文应主动把方法定位为训练框架/系统协同，而不是新型 loss。\n3. 做 feature-6 ablation 或只蒸馏 F6：因为 98.19% 的 raw KD-loss 改善来自 F6，这比继续扩大 layer-wise code 图更能解释方法作用。\n4. 预注册一个较窄的成功标准：matched-budget 下，QAD 同时降低 F6 MSE、prediction flips，并提高 mIoU；不要把全网 QIF code disagreement 设为预期修复终点，因为当前方向相反。"
+      },
+      {
+        "id": "questions",
+        "type": "markdown",
+        "body": "## 仍待回答的问题\n\n- F6 alignment 是 mIoU 提升的必要条件，还是训练更久产生的伴随现象？\n- matched-budget STE 是否仍会出现更低的全网 code disagreement？\n- 只蒸馏 F6 能否复现完整 QAD，或前五个特征提供了训练稳定性而非最终精度？\n- 第二 seed/第二数据集上，feature alignment 与 output flip 的方向是否复现？"
+      }
+    ]
+  },
+  "snapshot": {
+    "version": 1,
+    "generatedAt": "2026-08-06T07:17:16.815704Z",
+    "status": "ready",
+    "datasets": {
+      "headline": [
+        {
+          "qif_delta": 0.015582714549155392,
+          "feature_nmse_reduction": 0.31854538267426025,
+          "feature_nmse_reduction_ex6": 0.10418174547624706,
+          "prediction_flip_reduction": 0.1076699047446601,
+          "feature6_share": 0.9818609303979302,
+          "miou_gap": 0.03827681809049721,
+          "self_qif_delta": 0.015626766220907806
+        }
+      ],
+      "qif_reference": [
+        {
+          "reference": "Common FP-QIF teacher",
+          "reference_order": 0,
+          "method": "QAD",
+          "disagreement": 0.11635654574409818
+        },
+        {
+          "reference": "Common FP-QIF teacher",
+          "reference_order": 0,
+          "method": "STE-QAT",
+          "disagreement": 0.10077383119494279
+        },
+        {
+          "reference": "Own FP-operator shadow",
+          "reference_order": 1,
+          "method": "QAD",
+          "disagreement": 0.09310356063482052
+        },
+        {
+          "reference": "Own FP-operator shadow",
+          "reference_order": 1,
+          "method": "STE-QAT",
+          "disagreement": 0.07747679441391268
+        }
+      ],
+      "feature_chart": [
+        {
+          "feature": "F1",
+          "feature_order": 1,
+          "method": "QAD",
+          "normalized_mse": 0.8657165596901157,
+          "paired_relative_reduction": 0.04300709846798717
+        },
+        {
+          "feature": "F1",
+          "feature_order": 1,
+          "method": "STE-QAT",
+          "normalized_mse": 0.9046217148572614,
+          "paired_relative_reduction": 0.04300709846798717
+        },
+        {
+          "feature": "F2",
+          "feature_order": 2,
+          "method": "QAD",
+          "normalized_mse": 0.913789151291939,
+          "paired_relative_reduction": 0.09604715844762703
+        },
+        {
+          "feature": "F2",
+          "feature_order": 2,
+          "method": "STE-QAT",
+          "normalized_mse": 1.0108814412515967,
+          "paired_relative_reduction": 0.09604715844762703
+        },
+        {
+          "feature": "F3",
+          "feature_order": 3,
+          "method": "QAD",
+          "normalized_mse": 0.7607606987258283,
+          "paired_relative_reduction": 0.17239917715675088
+        },
+        {
+          "feature": "F3",
+          "feature_order": 3,
+          "method": "STE-QAT",
+          "normalized_mse": 0.9192362763877041,
+          "paired_relative_reduction": 0.17239917715675088
+        },
+        {
+          "feature": "F4",
+          "feature_order": 4,
+          "method": "QAD",
+          "normalized_mse": 0.7842435935159466,
+          "paired_relative_reduction": 0.13116627507800072
+        },
+        {
+          "feature": "F4",
+          "feature_order": 4,
+          "method": "STE-QAT",
+          "normalized_mse": 0.9026394475955145,
+          "paired_relative_reduction": 0.13116627507800072
+        },
+        {
+          "feature": "F5",
+          "feature_order": 5,
+          "method": "QAD",
+          "normalized_mse": 0.6565244254954437,
+          "paired_relative_reduction": 0.07092269226555185
+        },
+        {
+          "feature": "F5",
+          "feature_order": 5,
+          "method": "STE-QAT",
+          "normalized_mse": 0.706641331167991,
+          "paired_relative_reduction": 0.07092269226555185
+        },
+        {
+          "feature": "F6",
+          "feature_order": 6,
+          "method": "QAD",
+          "normalized_mse": 0.1864485302583646,
+          "paired_relative_reduction": 0.8884576421195831
+        },
+        {
+          "feature": "F6",
+          "feature_order": 6,
+          "method": "STE-QAT",
+          "normalized_mse": 1.6715491209021553,
+          "paired_relative_reduction": 0.8884576421195831
+        }
+      ],
+      "feature_table": [
+        {
+          "feature": "F1",
+          "network_position": "Encoder block 1",
+          "qad_nmse": 0.8657165596901157,
+          "ste_nmse": 0.9046217148572614,
+          "relative_reduction": 0.04300709846798717,
+          "reduction_ci_low": 0.033007543889394975,
+          "reduction_ci_high": 0.052619737933977305,
+          "qad_minus_ste_cosine_distance": -0.004678696381225857
+        },
+        {
+          "feature": "F2",
+          "network_position": "Encoder block 2",
+          "qad_nmse": 0.913789151291939,
+          "ste_nmse": 1.0108814412515967,
+          "relative_reduction": 0.09604715844762703,
+          "reduction_ci_low": 0.08890050861860717,
+          "reduction_ci_high": 0.10342414528016193,
+          "qad_minus_ste_cosine_distance": -0.01689476237899058
+        },
+        {
+          "feature": "F3",
+          "network_position": "Encoder block 3",
+          "qad_nmse": 0.7607606987258283,
+          "ste_nmse": 0.9192362763877041,
+          "relative_reduction": 0.17239917715675088,
+          "reduction_ci_low": 0.16077546430285478,
+          "reduction_ci_high": 0.18391113187574257,
+          "qad_minus_ste_cosine_distance": -0.014226161648365477
+        },
+        {
+          "feature": "F4",
+          "network_position": "Decoder block 4",
+          "qad_nmse": 0.7842435935159466,
+          "ste_nmse": 0.9026394475955145,
+          "relative_reduction": 0.13116627507800072,
+          "reduction_ci_low": 0.11260379167087431,
+          "reduction_ci_high": 0.15000648955732648,
+          "qad_minus_ste_cosine_distance": 0.02123327006214323
+        },
+        {
+          "feature": "F5",
+          "network_position": "Decoder block 5",
+          "qad_nmse": 0.6565244254954437,
+          "ste_nmse": 0.706641331167991,
+          "relative_reduction": 0.07092269226555185,
+          "reduction_ci_low": 0.05528728095360422,
+          "reduction_ci_high": 0.08740573733869532,
+          "qad_minus_ste_cosine_distance": -0.008483220926238804
+        },
+        {
+          "feature": "F6",
+          "network_position": "Decoder block 6 / pre-logit",
+          "qad_nmse": 0.1864485302583646,
+          "ste_nmse": 1.6715491209021553,
+          "relative_reduction": 0.8884576421195831,
+          "reduction_ci_low": 0.8764097649359897,
+          "reduction_ci_high": 0.8999835330408482,
+          "qad_minus_ste_cosine_distance": -0.09530782498653723
+        }
+      ],
+      "stage_delta": [
+        {
+          "stage": "Stem",
+          "stage_order": 0,
+          "layer_count": 3,
+          "qad_disagreement": 0.13771807585691348,
+          "ste_disagreement": 0.10573792957571804,
+          "qad_minus_ste": 0.03198014628119546,
+          "ci_low": 0.031162580934347938,
+          "ci_high": 0.03273634747590586
+        },
+        {
+          "stage": "Encoder 1",
+          "stage_order": 1,
+          "layer_count": 12,
+          "qad_disagreement": 0.13791047270317253,
+          "ste_disagreement": 0.10283570412960415,
+          "qad_minus_ste": 0.035074768573568414,
+          "ci_low": 0.03437959550471289,
+          "ci_high": 0.03571451922252792
+        },
+        {
+          "stage": "Encoder 2",
+          "stage_order": 2,
+          "layer_count": 12,
+          "qad_disagreement": 0.049114994394468314,
+          "ste_disagreement": 0.04201360769445936,
+          "qad_minus_ste": 0.007101386700008951,
+          "ci_low": 0.006646947525433281,
+          "ci_high": 0.007551927267464142
+        },
+        {
+          "stage": "Encoder 3",
+          "stage_order": 3,
+          "layer_count": 12,
+          "qad_disagreement": 0.086579114466971,
+          "ste_disagreement": 0.0744458971379341,
+          "qad_minus_ste": 0.012133217329036881,
+          "ci_low": 0.010650673104972254,
+          "ci_high": 0.013588475163242932
+        },
+        {
+          "stage": "Decoder 4",
+          "stage_order": 4,
+          "layer_count": 13,
+          "qad_disagreement": 0.04028932150396596,
+          "ste_disagreement": 0.035710676851813596,
+          "qad_minus_ste": 0.00457864465215236,
+          "ci_low": 0.004089131977066638,
+          "ci_high": 0.005063678626786749
+        },
+        {
+          "stage": "Decoder 5",
+          "stage_order": 5,
+          "layer_count": 13,
+          "qad_disagreement": 0.12512416582536354,
+          "ste_disagreement": 0.11634085921827234,
+          "qad_minus_ste": 0.008783306607091219,
+          "ci_low": 0.008063415102073094,
+          "ci_high": 0.009475531959631646
+        },
+        {
+          "stage": "Decoder 6",
+          "stage_order": 6,
+          "layer_count": 13,
+          "qad_disagreement": 0.24838661741633017,
+          "ste_disagreement": 0.2257640436940996,
+          "qad_minus_ste": 0.022622573722230546,
+          "ci_low": 0.021344356869164673,
+          "ci_high": 0.02396695884573911
+        }
+      ],
+      "source_scatter": [
+        {
+          "source_id": "000061",
+          "feature_repair": 0.2828828594545554,
+          "qif_repair": -0.016335056434044426,
+          "qad_minus_ste_miou": 0.042673008573048454,
+          "qad_miou": 0.6631072698685764,
+          "ste_miou": 0.6204342612955279
+        },
+        {
+          "source_id": "000161",
+          "feature_repair": 0.2824689256535564,
+          "qif_repair": -0.016942043275490745,
+          "qad_minus_ste_miou": 0.045366281527579266,
+          "qad_miou": 0.7025424381235533,
+          "ste_miou": 0.6571761565959741
+        },
+        {
+          "source_id": "000261",
+          "feature_repair": 0.26993631405261753,
+          "qif_repair": -0.01733131943609781,
+          "qad_minus_ste_miou": 0.050204896361056406,
+          "qad_miou": 0.6178951259538729,
+          "ste_miou": 0.5676902295928165
+        },
+        {
+          "source_id": "000361",
+          "feature_repair": 0.3231960339664879,
+          "qif_repair": -0.016243247402093305,
+          "qad_minus_ste_miou": 0.05342074996569779,
+          "qad_miou": 0.6635661209586614,
+          "ste_miou": 0.6101453709929636
+        },
+        {
+          "source_id": "001261",
+          "feature_repair": 0.2684564072498611,
+          "qif_repair": -0.015758648938301298,
+          "qad_minus_ste_miou": 0.051222370513777205,
+          "qad_miou": 0.5661282781696785,
+          "ste_miou": 0.5149059076559013
+        },
+        {
+          "source_id": "001361",
+          "feature_repair": 0.28237272197353624,
+          "qif_repair": -0.01523481215569912,
+          "qad_minus_ste_miou": 0.05295172669186998,
+          "qad_miou": 0.6537492886594093,
+          "ste_miou": 0.6007975619675393
+        },
+        {
+          "source_id": "001461",
+          "feature_repair": 0.26212081818763777,
+          "qif_repair": -0.01721090695112179,
+          "qad_minus_ste_miou": 0.027094110213899403,
+          "qad_miou": 0.5472723704016252,
+          "ste_miou": 0.5201782601877258
+        },
+        {
+          "source_id": "001561",
+          "feature_repair": 0.27023834735666596,
+          "qif_repair": -0.015410930983323412,
+          "qad_minus_ste_miou": 0.04689418857879801,
+          "qad_miou": 0.5427625860396553,
+          "ste_miou": 0.4958683974608573
+        },
+        {
+          "source_id": "0119_3img2031",
+          "feature_repair": 0.2678342958644915,
+          "qif_repair": -0.01665732690067266,
+          "qad_minus_ste_miou": -0.002937986801508252,
+          "qad_miou": 0.3999110763381883,
+          "ste_miou": 0.40284906313969654
+        },
+        {
+          "source_id": "0119_4img1001",
+          "feature_repair": 0.3793845385989435,
+          "qif_repair": -0.014867869261871669,
+          "qad_minus_ste_miou": 0.07108763064122536,
+          "qad_miou": 0.4010075342768343,
+          "ste_miou": 0.3299199036356089
+        },
+        {
+          "source_id": "0119_4img3041",
+          "feature_repair": 0.32198453899400314,
+          "qif_repair": -0.0155033466177463,
+          "qad_minus_ste_miou": 0.07326520650555518,
+          "qad_miou": 0.34053053402125594,
+          "ste_miou": 0.26726532751570076
+        },
+        {
+          "source_id": "0119_5img3001",
+          "feature_repair": 0.3679486727296247,
+          "qif_repair": -0.016736655635859438,
+          "qad_minus_ste_miou": -0.02906937928551251,
+          "qad_miou": 0.41464498103030484,
+          "ste_miou": 0.44371436031581735
+        },
+        {
+          "source_id": "DJI_0031",
+          "feature_repair": 0.40833018365608587,
+          "qif_repair": -0.01450457167087639,
+          "qad_minus_ste_miou": 0.05525111794169568,
+          "qad_miou": 0.46819393707683776,
+          "ste_miou": 0.4129428191351421
+        },
+        {
+          "source_id": "DJI_00528",
+          "feature_repair": 0.3301804451928583,
+          "qif_repair": -0.013611978408875236,
+          "qad_minus_ste_miou": -0.00830249465229349,
+          "qad_miou": 0.5132288892397775,
+          "ste_miou": 0.521531383892071
+        },
+        {
+          "source_id": "DJI_00581",
+          "feature_repair": 0.3062767930742606,
+          "qif_repair": -0.016157317492762835,
+          "qad_minus_ste_miou": 0.05637527086919897,
+          "qad_miou": 0.4616489107463458,
+          "ste_miou": 0.4052736398771468
+        },
+        {
+          "source_id": "DJI_00591",
+          "feature_repair": 0.37622820363655773,
+          "qif_repair": -0.01738872960364403,
+          "qad_minus_ste_miou": 0.008917288384822142,
+          "qad_miou": 0.44164393963148885,
+          "ste_miou": 0.4327266512466667
+        },
+        {
+          "source_id": "DJI_0291",
+          "feature_repair": 0.3429814230019803,
+          "qif_repair": -0.015101434974530661,
+          "qad_minus_ste_miou": 0.01366272501857635,
+          "qad_miou": 0.47551688060391784,
+          "ste_miou": 0.4618541555853415
+        },
+        {
+          "source_id": "DJI_0303",
+          "feature_repair": 0.3319844488465853,
+          "qif_repair": -0.015247599081462657,
+          "qad_minus_ste_miou": 0.004472737716858077,
+          "qad_miou": 0.5158261527955733,
+          "ste_miou": 0.5113534150787152
+        },
+        {
+          "source_id": "DJI_0316",
+          "feature_repair": 0.2952606153131915,
+          "qif_repair": -0.014328608979254018,
+          "qad_minus_ste_miou": 0.05430661764471112,
+          "qad_miou": 0.6426421305212958,
+          "ste_miou": 0.5883355128765847
+        },
+        {
+          "source_id": "DJI_0373_heda",
+          "feature_repair": 0.3362233648631071,
+          "qif_repair": -0.014523783372945603,
+          "qad_minus_ste_miou": 0.09899046073682871,
+          "qad_miou": 0.4615471080271584,
+          "ste_miou": 0.3625566472903297
+        },
+        {
+          "source_id": "DJI_0388",
+          "feature_repair": 0.4256656931916253,
+          "qif_repair": -0.015152836615652684,
+          "qad_minus_ste_miou": 0.005805345290338049,
+          "qad_miou": 0.5658854363810598,
+          "ste_miou": 0.5600800910907218
+        },
+        {
+          "source_id": "DJI_0397",
+          "feature_repair": 0.26421071888092773,
+          "qif_repair": -0.015628810843590316,
+          "qad_minus_ste_miou": 0.0778218067724551,
+          "qad_miou": 0.600170589639358,
+          "ste_miou": 0.5223487828669029
+        },
+        {
+          "source_id": "DJI_0406",
+          "feature_repair": 0.25636590895128164,
+          "qif_repair": -0.01590260212863133,
+          "qad_minus_ste_miou": 0.03930446193053294,
+          "qad_miou": 0.5626864052152943,
+          "ste_miou": 0.5233819432847614
+        },
+        {
+          "source_id": "DJI_0415",
+          "feature_repair": 0.33523680851067683,
+          "qif_repair": -0.014282140781453345,
+          "qad_minus_ste_miou": 0.01783862308709855,
+          "qad_miou": 0.4938495896638211,
+          "ste_miou": 0.47601096657672254
+        },
+        {
+          "source_id": "DJI_0431",
+          "feature_repair": 0.2999475592767349,
+          "qif_repair": -0.015637580688311836,
+          "qad_minus_ste_miou": 0.08019830916890403,
+          "qad_miou": 0.6817739276839175,
+          "ste_miou": 0.6015756185150135
+        },
+        {
+          "source_id": "DJI_0490",
+          "feature_repair": 0.4181157699010306,
+          "qif_repair": -0.01563849087581483,
+          "qad_minus_ste_miou": 0.03520328726002109,
+          "qad_miou": 0.6250243195134996,
+          "ste_miou": 0.5898210322534785
+        },
+        {
+          "source_id": "DJI_0499_heda",
+          "feature_repair": 0.49247875349913417,
+          "qif_repair": -0.0132884096509302,
+          "qad_minus_ste_miou": 0.041695180434343726,
+          "qad_miou": 0.5742209431905122,
+          "ste_miou": 0.5325257627561685
+        },
+        {
+          "source_id": "DJI_0511",
+          "feature_repair": 0.341087025863528,
+          "qif_repair": -0.014899373847780492,
+          "qad_minus_ste_miou": 0.07267527176387523,
+          "qad_miou": 0.6415128243320808,
+          "ste_miou": 0.5688375525682056
+        },
+        {
+          "source_id": "DJI_0520",
+          "feature_repair": 0.31691166292178086,
+          "qif_repair": -0.015468563950440994,
+          "qad_minus_ste_miou": 0.056502896291995675,
+          "qad_miou": 0.6458016580588894,
+          "ste_miou": 0.5892987617668938
+        },
+        {
+          "source_id": "DJI_0532",
+          "feature_repair": 0.2851523750618997,
+          "qif_repair": -0.016098255644181048,
+          "qad_minus_ste_miou": 0.1208511758034354,
+          "qad_miou": 0.6497953610425543,
+          "ste_miou": 0.5289441852391189
+        },
+        {
+          "source_id": "DJI_0539_heda",
+          "feature_repair": 0.3938065664546979,
+          "qif_repair": -0.01485859830616204,
+          "qad_minus_ste_miou": -0.008668326733602738,
+          "qad_miou": 0.43403112837054225,
+          "ste_miou": 0.442699455104145
+        },
+        {
+          "source_id": "DJI_0553_heda",
+          "feature_repair": 0.3201082923065719,
+          "qif_repair": -0.01449811626704231,
+          "qad_minus_ste_miou": -0.005347666264578166,
+          "qad_miou": 0.5796728475893881,
+          "ste_miou": 0.5850205138539663
+        },
+        {
+          "source_id": "DJI_0563_heda",
+          "feature_repair": 0.2968394543280709,
+          "qif_repair": -0.01546921576401944,
+          "qad_minus_ste_miou": -0.04026044490092762,
+          "qad_miou": 0.3860312268864427,
+          "ste_miou": 0.4262916717873703
+        },
+        {
+          "source_id": "DJI_0627",
+          "feature_repair": 0.28334119967792104,
+          "qif_repair": -0.01741132771080342,
+          "qad_minus_ste_miou": 0.05064595574601799,
+          "qad_miou": 0.5267127735540191,
+          "ste_miou": 0.47606681780800114
+        },
+        {
+          "source_id": "DJI_0707",
+          "feature_repair": 0.32827943641759294,
+          "qif_repair": -0.016064498568950925,
+          "qad_minus_ste_miou": 0.027194163041257324,
+          "qad_miou": 0.5944736575286765,
+          "ste_miou": 0.5672794944874192
+        }
+      ],
+      "class_rows": [
+        {
+          "class": "background",
+          "fp_iou": 0.5449321807875185,
+          "qad_iou": 0.4901700688908935,
+          "ste_iou": 0.4384235281893583,
+          "qad_minus_ste": 0.05174654070153517
+        },
+        {
+          "class": "facade",
+          "fp_iou": 0.6293353007030607,
+          "qad_iou": 0.5768358315111254,
+          "ste_iou": 0.5329594481560379,
+          "qad_minus_ste": 0.04387638335508748
+        },
+        {
+          "class": "road",
+          "fp_iou": 0.6390930014582594,
+          "qad_iou": 0.5958942730379632,
+          "ste_iou": 0.5620176241940578,
+          "qad_minus_ste": 0.0338766488439054
+        },
+        {
+          "class": "vegetation",
+          "fp_iou": 0.8897509022147535,
+          "qad_iou": 0.8745987569537662,
+          "ste_iou": 0.8399892819892196,
+          "qad_minus_ste": 0.03460947496454658
+        },
+        {
+          "class": "vehicle",
+          "fp_iou": 0.5456109022415445,
+          "qad_iou": 0.39856164491253276,
+          "ste_iou": 0.35059753183394815,
+          "qad_minus_ste": 0.047964113078584614
+        },
+        {
+          "class": "roof",
+          "fp_iou": 0.8222921977622362,
+          "qad_iou": 0.7812233261973497,
+          "ste_iou": 0.7636355785980256,
+          "qad_minus_ste": 0.017587747599324133
+        }
+      ],
+      "claims": [
+        {
+          "claim": "QAD reduces global Integer-LIF code distortion",
+          "assessment": "Contradicted",
+          "evidence": "Teacher-referenced D is 11.64% for QAD vs 10.08% for STE; QAD is higher on 35/35 sources."
+        },
+        {
+          "claim": "QAD improves the six features directly targeted by KD",
+          "assessment": "Supported descriptively",
+          "evidence": "Mean normalized MSE is lower by 31.85%; excluding F6 it remains lower by 10.42%."
+        },
+        {
+          "claim": "Feature repair explains the source-level mIoU gain",
+          "assessment": "Not supported",
+          "evidence": "Spearman rho = -0.184 with a 95% bootstrap interval spanning zero."
+        },
+        {
+          "claim": "QAD improves mIoU relative to STE-QAT",
+          "assessment": "Observed, not causal",
+          "evidence": "QAD is higher by 3.83 pp, but QAD saw 127 epochs and STE saw 16."
+        },
+        {
+          "claim": "QAD specifically solves the previously diagnosed W4A4 distortion",
+          "assessment": "Insufficient evidence",
+          "evidence": "The direction differs by metric: feature alignment improves while code fidelity and local quantization sensitivity worsen."
+        }
+      ]
+    }
+  },
+  "sources": [
+    {
+      "id": "repair-analysis",
+      "label": "QAD distortion-repair derived analysis",
+      "path": "qad_distortion_repair_results/paper_readiness_report_20260806/report_snapshot.json",
+      "query": {
+        "description": "Reviewed synthesis of the common-teacher audit, same-master-weight sensitivity audit, and original frozen-checkpoint distortion probe.",
+        "engine": "DuckDB",
+        "language": "sql",
+        "sql": "SELECT * FROM read_json_auto('qad_distortion_repair_results/paper_readiness_report_20260806/report_snapshot.json', format = 'unstructured');",
+        "query": "Run build_report.py after the two probe entrypoints to regenerate the bounded report snapshot and artifact.",
+        "tables_used": [
+          "qad_distortion_repair_results/qad_vs_ste16_full_20260806/analysis_summary.json",
+          "qad_distortion_repair_results/qad_vs_ste16_full_20260806/source_statistics.csv",
+          "qad_distortion_repair_results/self_sensitivity_full_20260806/analysis_summary.json",
+          "quantization_distortion_results/full_20260805/statistical_analysis/analysis_summary.json"
+        ],
+        "filters": [
+          "UDD6 validation only",
+          "8,478 patches grouped into 35 original source images",
+          "78 active QIF nodes and six forward_qat distillation features",
+          "T=1 runtime input step; QIF code range 0 through 8",
+          "Historical QAD checkpoint versus existing 16-epoch STE-QAT checkpoint"
+        ],
+        "metric_definitions": [
+          "QIF disagreement is the fraction of Integer-LIF output codes unequal to the stated reference, macro-averaged equally over active layers within each source and then equally over sources.",
+          "Feature normalized MSE is sum((student-teacher)^2) divided by sum(teacher^2), computed per feature and source before equal-weight averaging.",
+          "Feature repair is STE normalized MSE minus QAD normalized MSE; positive values favor QAD.",
+          "All 95% intervals resample the 35 source-image clusters with replacement 10,000 times.",
+          "The common-teacher comparison is representation alignment, while the FP-shadow comparison is local quantization sensitivity; neither removes the 127-versus-16 epoch training-budget confound."
+        ],
+        "executed_at": "2026-08-06T07:17:16.815704Z"
+      }
+    }
+  ]
+}

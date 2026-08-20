@@ -1,0 +1,313 @@
+{
+  "completed_at": "2026-08-20T08:20:21.427408+00:00",
+  "effective_batch": 4,
+  "gradient_audit": {
+    "parameters_with_grad": 231,
+    "teacher_parameters_with_grad": 0
+  },
+  "input_residency": "gpu",
+  "measured_updates": 20,
+  "memory": {
+    "model_and_input_allocated_bytes": 23572480,
+    "model_and_input_reserved_bytes": 33554432,
+    "peak_allocated_bytes": 3271757824,
+    "peak_reserved_bytes": 4324327424,
+    "steady_allocated_bytes": 56467456,
+    "steady_reserved_bytes": 4324327424
+  },
+  "method": "qad",
+  "mode": "matched",
+  "model": {
+    "qlayers": 71,
+    "teacher_parameters": 1303060,
+    "trainable_parameters": 1303060
+  },
+  "physical_batch": 4,
+  "round": 1,
+  "started_at": "2026-08-20T08:20:17.395202+00:00",
+  "status": "ok",
+  "time_steps": 1,
+  "trials": [
+    {
+      "images_per_second": 49.17672521266219,
+      "loss": 0.8883990049362183,
+      "phase_seconds": {
+        "backward": 0.02069811248779297,
+        "loss": 0.0004082239866256714,
+        "optimizer_step": 0.0024954879283905027,
+        "student_forward": 0.03838662338256836,
+        "teacher_forward": 0.01599395179748535
+      },
+      "seconds_per_image": 0.02033482294064015,
+      "trial": 0,
+      "wall_seconds": 0.0813392917625606
+    },
+    {
+      "images_per_second": 49.06438750893661,
+      "loss": 0.8365168571472168,
+      "phase_seconds": {
+        "backward": 0.020553728103637696,
+        "loss": 0.0004082239866256714,
+        "optimizer_step": 0.0025011200904846193,
+        "student_forward": 0.041661151885986326,
+        "teacher_forward": 0.012856255531311036
+      },
+      "seconds_per_image": 0.020381381502375007,
+      "trial": 1,
+      "wall_seconds": 0.08152552600950003
+    },
+    {
+      "images_per_second": 48.714807626170085,
+      "loss": 0.761250376701355,
+      "phase_seconds": {
+        "backward": 0.02044313621520996,
+        "loss": 0.0003969599902629852,
+        "optimizer_step": 0.0024457600116729737,
+        "student_forward": 0.04257817459106445,
+        "teacher_forward": 0.012726431846618652
+      },
+      "seconds_per_image": 0.020527639309875667,
+      "trial": 2,
+      "wall_seconds": 0.08211055723950267
+    },
+    {
+      "images_per_second": 49.95831061807421,
+      "loss": 0.7397671937942505,
+      "phase_seconds": {
+        "backward": 0.020198400497436524,
+        "loss": 0.0003815999925136566,
+        "optimizer_step": 0.002341599941253662,
+        "student_forward": 0.04095308685302734,
+        "teacher_forward": 0.012773152351379394
+      },
+      "seconds_per_image": 0.020016689668409526,
+      "trial": 3,
+      "wall_seconds": 0.0800667586736381
+    },
+    {
+      "images_per_second": 50.16319274860125,
+      "loss": 0.7190539836883545,
+      "phase_seconds": {
+        "backward": 0.02150809669494629,
+        "loss": 0.00044304001331329346,
+        "optimizer_step": 0.002333184003829956,
+        "student_forward": 0.03939139175415039,
+        "teacher_forward": 0.012675423622131348
+      },
+      "seconds_per_image": 0.019934935262426734,
+      "trial": 4,
+      "wall_seconds": 0.07973974104970694
+    },
+    {
+      "images_per_second": 49.659123606107215,
+      "loss": 0.7049554586410522,
+      "phase_seconds": {
+        "backward": 0.024663040161132813,
+        "loss": 0.0004461120069026947,
+        "optimizer_step": 0.0023273279666900636,
+        "student_forward": 0.03698694229125977,
+        "teacher_forward": 0.01267084789276123
+      },
+      "seconds_per_image": 0.020137286512181163,
+      "trial": 5,
+      "wall_seconds": 0.08054914604872465
+    },
+    {
+      "images_per_second": 50.501641753852475,
+      "loss": 0.679662823677063,
+      "phase_seconds": {
+        "backward": 0.02187571144104004,
+        "loss": 0.0003866879940032959,
+        "optimizer_step": 0.003240895986557007,
+        "student_forward": 0.03705545425415039,
+        "teacher_forward": 0.012660608291625977
+      },
+      "seconds_per_image": 0.019801336457021534,
+      "trial": 6,
+      "wall_seconds": 0.07920534582808614
+    },
+    {
+      "images_per_second": 51.83451744729049,
+      "loss": 0.6385163068771362,
+      "phase_seconds": {
+        "backward": 0.019985408782958985,
+        "loss": 0.00037648001313209535,
+        "optimizer_step": 0.0032488319873809814,
+        "student_forward": 0.036926719665527345,
+        "teacher_forward": 0.012665568351745605
+      },
+      "seconds_per_image": 0.01929216377902776,
+      "trial": 7,
+      "wall_seconds": 0.07716865511611104
+    },
+    {
+      "images_per_second": 52.575712276874846,
+      "loss": 0.617390513420105,
+      "phase_seconds": {
+        "backward": 0.020184064865112306,
+        "loss": 0.0003877440094947815,
+        "optimizer_step": 0.0023136959075927732,
+        "student_forward": 0.037060768127441406,
+        "teacher_forward": 0.012671808242797851
+      },
+      "seconds_per_image": 0.019020189298316836,
+      "trial": 8,
+      "wall_seconds": 0.07608075719326735
+    },
+    {
+      "images_per_second": 50.022551327823216,
+      "loss": 0.602378249168396,
+      "phase_seconds": {
+        "backward": 0.020321279525756835,
+        "loss": 0.0003897919952869415,
+        "optimizer_step": 0.0024305920600891113,
+        "student_forward": 0.03726041412353515,
+        "teacher_forward": 0.015339712142944335
+      },
+      "seconds_per_image": 0.019990983535535634,
+      "trial": 9,
+      "wall_seconds": 0.07996393414214253
+    },
+    {
+      "images_per_second": 48.491335246518304,
+      "loss": 0.587986946105957,
+      "phase_seconds": {
+        "backward": 0.02044825553894043,
+        "loss": 0.00039798399806022645,
+        "optimizer_step": 0.002416032075881958,
+        "student_forward": 0.03734518432617188,
+        "teacher_forward": 0.017845407485961914
+      },
+      "seconds_per_image": 0.020622240961529315,
+      "trial": 10,
+      "wall_seconds": 0.08248896384611726
+    },
+    {
+      "images_per_second": 50.835645797792615,
+      "loss": 0.5568636655807495,
+      "phase_seconds": {
+        "backward": 0.02004377555847168,
+        "loss": 0.0003775039911270142,
+        "optimizer_step": 0.0023313279151916506,
+        "student_forward": 0.03801641464233398,
+        "teacher_forward": 0.014471455574035645
+      },
+      "seconds_per_image": 0.0196712362812832,
+      "trial": 11,
+      "wall_seconds": 0.0786849451251328
+    },
+    {
+      "images_per_second": 50.335538681529925,
+      "loss": 0.5341725945472717,
+      "phase_seconds": {
+        "backward": 0.020136959075927736,
+        "loss": 0.0003744319975376129,
+        "optimizer_step": 0.0023316481113433837,
+        "student_forward": 0.04059222412109375,
+        "teacher_forward": 0.012605504035949707
+      },
+      "seconds_per_image": 0.019866679213009775,
+      "trial": 12,
+      "wall_seconds": 0.0794667168520391
+    },
+    {
+      "images_per_second": 48.74354604575413,
+      "loss": 0.5134854316711426,
+      "phase_seconds": {
+        "backward": 0.02127052879333496,
+        "loss": 0.0004461120069026947,
+        "optimizer_step": 0.0023404159545898436,
+        "student_forward": 0.04181113433837891,
+        "teacher_forward": 0.012705504417419433
+      },
+      "seconds_per_image": 0.020515536540187895,
+      "trial": 13,
+      "wall_seconds": 0.08206214616075158
+    },
+    {
+      "images_per_second": 47.277767220157955,
+      "loss": 0.5147046446800232,
+      "phase_seconds": {
+        "backward": 0.02165247917175293,
+        "loss": 0.00044304001331329346,
+        "optimizer_step": 0.002322272062301636,
+        "student_forward": 0.044136638641357424,
+        "teacher_forward": 0.012615455627441406
+      },
+      "seconds_per_image": 0.0211515910923481,
+      "trial": 14,
+      "wall_seconds": 0.0846063643693924
+    },
+    {
+      "images_per_second": 48.23942960051108,
+      "loss": 0.508092999458313,
+      "phase_seconds": {
+        "backward": 0.023418880462646483,
+        "loss": 0.00045020800828933716,
+        "optimizer_step": 0.002589279890060425,
+        "student_forward": 0.03998847961425781,
+        "teacher_forward": 0.012688511848449708
+      },
+      "seconds_per_image": 0.020729930023662746,
+      "trial": 15,
+      "wall_seconds": 0.08291972009465098
+    },
+    {
+      "images_per_second": 47.86424380143015,
+      "loss": 0.4883710443973541,
+      "phase_seconds": {
+        "backward": 0.025047040939331053,
+        "loss": 0.0004911679923534394,
+        "optimizer_step": 0.0025932800769805906,
+        "student_forward": 0.03852009582519531,
+        "teacher_forward": 0.01311955165863037
+      },
+      "seconds_per_image": 0.02089242241345346,
+      "trial": 16,
+      "wall_seconds": 0.08356968965381384
+    },
+    {
+      "images_per_second": 48.03596199694564,
+      "loss": 0.48144078254699707,
+      "phase_seconds": {
+        "backward": 0.025555967330932617,
+        "loss": 0.0004031040072441101,
+        "optimizer_step": 0.0030649919509887695,
+        "student_forward": 0.037249279022216794,
+        "teacher_forward": 0.012956895828247071
+      },
+      "seconds_per_image": 0.020817736512981355,
+      "trial": 17,
+      "wall_seconds": 0.08327094605192542
+    },
+    {
+      "images_per_second": 49.207138879419574,
+      "loss": 0.46782657504081726,
+      "phase_seconds": {
+        "backward": 0.022388736724853517,
+        "loss": 0.0003959360122680664,
+        "optimizer_step": 0.0032272319793701172,
+        "student_forward": 0.038486175537109375,
+        "teacher_forward": 0.012779264450073243
+      },
+      "seconds_per_image": 0.020322254509665072,
+      "trial": 18,
+      "wall_seconds": 0.08128901803866029
+    },
+    {
+      "images_per_second": 50.79869066590133,
+      "loss": 0.4591040015220642,
+      "phase_seconds": {
+        "backward": 0.020586111068725585,
+        "loss": 0.0008720960021018982,
+        "optimizer_step": 0.003276128053665161,
+        "student_forward": 0.03724009704589844,
+        "teacher_forward": 0.012745183944702148
+      },
+      "seconds_per_image": 0.019685546751134098,
+      "trial": 19,
+      "wall_seconds": 0.07874218700453639
+    }
+  ],
+  "warmup_updates": 10
+}

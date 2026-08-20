@@ -1,0 +1,47 @@
+{
+  "completed_at": "2026-08-20T08:07:07.431634+00:00",
+  "effective_batch": 64,
+  "gradient_audit": {
+    "parameters_with_grad": 231,
+    "teacher_parameters_with_grad": 0
+  },
+  "input_residency": "cpu",
+  "measured_updates": 1,
+  "memory": {
+    "model_and_input_allocated_bytes": 5429760,
+    "model_and_input_reserved_bytes": 6291456,
+    "peak_allocated_bytes": 15120453120,
+    "peak_reserved_bytes": 20791164928,
+    "steady_allocated_bytes": 32998912,
+    "steady_reserved_bytes": 20780679168
+  },
+  "method": "squat",
+  "mode": "probe",
+  "model": {
+    "qlayers": 0,
+    "teacher_parameters": 0,
+    "trainable_parameters": 1303060
+  },
+  "physical_batch": 4,
+  "round": 0,
+  "started_at": "2026-08-20T08:06:54.195104+00:00",
+  "status": "ok",
+  "time_steps": 8,
+  "trials": [
+    {
+      "images_per_second": 11.055530295001251,
+      "loss": 2.3201305866241455,
+      "phase_seconds": {
+        "bptt_backward": 3.4627465972900398,
+        "host_to_device": 0.004326559990644455,
+        "loss": 0.00162412802875042,
+        "optimizer_step": 0.0028707520961761476,
+        "snn_forward": 2.284106781005859
+      },
+      "seconds_per_image": 0.09045246797904838,
+      "trial": 0,
+      "wall_seconds": 5.788957950659096
+    }
+  ],
+  "warmup_updates": 1
+}

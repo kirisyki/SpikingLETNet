@@ -1,0 +1,11 @@
+{
+  "best_miou": 0.3155092124744023,
+  "effective_batch": 64,
+  "elapsed_seconds": 58453.01355106011,
+  "epochs": 40,
+  "global_step": 16080,
+  "peak_memory_bytes": 60281199104,
+  "physical_batch": 16,
+  "stage": "w4m4s1_qat_squat_amended_40_epochs",
+  "updates_per_epoch": 402
+}

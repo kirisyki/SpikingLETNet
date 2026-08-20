@@ -1,0 +1,18 @@
+% Auto-generated from validated_summary.json.
+\begin{table}[t]
+\centering
+\caption{Training efficiency on one RTX 5090. Peak-memory ratios are reported only for matched physical batch size.}
+\label{tab:training_efficiency}
+\begin{tabular}{llrrrr}
+\toprule
+Setting & Method & $B_{phys}/B_{eff}$ & $T$ & Peak GiB & img/s \\
+\midrule
+Matched & Integer-LIF + QAD & 4/4 & 1 & 3.05 & 49.05 \\
+Matched & Direct-LIF + SQUAT & 4/4 & 8 & 14.08 & 10.79 \\
+Capacity & Integer-LIF + QAD & 32/64 & 1 & 24.01$^\dagger$ & 108.54 \\
+Capacity & Direct-LIF + SQUAT & 4/64 & 8 & 14.08$^\dagger$ & 10.75 \\
+\bottomrule
+\end{tabular}
+\vspace{2pt}
+\footnotesize Matched-batch QAD: 78.4% lower peak allocated memory and 4.54$\times$ throughput. Capacity setting: 10.09$\times$ throughput and 8$\times$ physical-batch capacity. $^\dagger$Not directly comparable because physical batch sizes differ.
+\end{table}

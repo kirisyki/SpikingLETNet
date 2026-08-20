@@ -1,0 +1,333 @@
+{
+  "completed_at": "2026-08-20T08:23:56.773099+00:00",
+  "effective_batch": 64,
+  "gradient_audit": {
+    "parameters_with_grad": 231,
+    "teacher_parameters_with_grad": 0
+  },
+  "input_residency": "cpu",
+  "measured_updates": 20,
+  "memory": {
+    "model_and_input_allocated_bytes": 10772480,
+    "model_and_input_reserved_bytes": 12582912,
+    "peak_allocated_bytes": 25776707584,
+    "peak_reserved_bytes": 31618760704,
+    "steady_allocated_bytes": 43987456,
+    "steady_reserved_bytes": 31618760704
+  },
+  "method": "qad",
+  "mode": "capacity",
+  "model": {
+    "qlayers": 71,
+    "teacher_parameters": 1303060,
+    "trainable_parameters": 1303060
+  },
+  "physical_batch": 32,
+  "round": 1,
+  "started_at": "2026-08-20T08:23:37.360756+00:00",
+  "status": "ok",
+  "time_steps": 1,
+  "trials": [
+    {
+      "images_per_second": 109.78436616050745,
+      "loss": 0.5633454322814941,
+      "phase_seconds": {
+        "backward": 0.1965486068725586,
+        "host_to_device": 0.003755296111106873,
+        "loss": 0.002621343970298767,
+        "optimizer_step": 0.002739648103713989,
+        "student_forward": 0.23984569549560547,
+        "teacher_forward": 0.13050460815429688
+      },
+      "seconds_per_image": 0.009108765072596725,
+      "trial": 0,
+      "wall_seconds": 0.5829609646461904
+    },
+    {
+      "images_per_second": 109.66181656541403,
+      "loss": 0.5582946538925171,
+      "phase_seconds": {
+        "backward": 0.1966656036376953,
+        "host_to_device": 0.0036973440647125244,
+        "loss": 0.0026248319149017336,
+        "optimizer_step": 0.002655936002731323,
+        "student_forward": 0.24067308807373047,
+        "teacher_forward": 0.1304815368652344
+      },
+      "seconds_per_image": 0.009118944326473866,
+      "trial": 1,
+      "wall_seconds": 0.5836124368943274
+    },
+    {
+      "images_per_second": 109.21184298428935,
+      "loss": 0.5545071363449097,
+      "phase_seconds": {
+        "backward": 0.19660822296142577,
+        "host_to_device": 0.0036938560009002683,
+        "loss": 0.002619711995124817,
+        "optimizer_step": 0.002657792091369629,
+        "student_forward": 0.2431624298095703,
+        "teacher_forward": 0.1304434585571289
+      },
+      "seconds_per_image": 0.009156516112852842,
+      "trial": 2,
+      "wall_seconds": 0.5860170312225819
+    },
+    {
+      "images_per_second": 109.22667743055662,
+      "loss": 0.5223846435546875,
+      "phase_seconds": {
+        "backward": 0.19663520050048827,
+        "host_to_device": 0.003703552007675171,
+        "loss": 0.0026389760971069335,
+        "optimizer_step": 0.002870464086532593,
+        "student_forward": 0.2423032989501953,
+        "teacher_forward": 0.13055516815185547
+      },
+      "seconds_per_image": 0.009155272535281256,
+      "trial": 3,
+      "wall_seconds": 0.5859374422580004
+    },
+    {
+      "images_per_second": 109.07130393978136,
+      "loss": 0.5099056363105774,
+      "phase_seconds": {
+        "backward": 0.1966556167602539,
+        "host_to_device": 0.0037072319984436035,
+        "loss": 0.0026470720767974854,
+        "optimizer_step": 0.002689728021621704,
+        "student_forward": 0.2437215347290039,
+        "teacher_forward": 0.13051468658447266
+      },
+      "seconds_per_image": 0.009168314340058714,
+      "trial": 4,
+      "wall_seconds": 0.5867721177637577
+    },
+    {
+      "images_per_second": 108.23895584650194,
+      "loss": 0.503517746925354,
+      "phase_seconds": {
+        "backward": 0.19673036193847657,
+        "host_to_device": 0.0036980159282684324,
+        "loss": 0.0026501760482788086,
+        "optimizer_step": 0.0028072960376739503,
+        "student_forward": 0.24724819183349608,
+        "teacher_forward": 0.13048367309570313
+      },
+      "seconds_per_image": 0.009238817874575034,
+      "trial": 5,
+      "wall_seconds": 0.5912843439728022
+    },
+    {
+      "images_per_second": 108.536491719172,
+      "loss": 0.47831493616104126,
+      "phase_seconds": {
+        "backward": 0.19677747344970703,
+        "host_to_device": 0.0037093440294265747,
+        "loss": 0.0026395199298858644,
+        "optimizer_step": 0.002766079902648926,
+        "student_forward": 0.24581766510009767,
+        "teacher_forward": 0.13049945831298826
+      },
+      "seconds_per_image": 0.00921349109557923,
+      "trial": 6,
+      "wall_seconds": 0.5896634301170707
+    },
+    {
+      "images_per_second": 108.79977385180511,
+      "loss": 0.4861530065536499,
+      "phase_seconds": {
+        "backward": 0.19679615783691407,
+        "host_to_device": 0.0037131199836730956,
+        "loss": 0.002626879930496216,
+        "optimizer_step": 0.002722304105758667,
+        "student_forward": 0.24474041748046876,
+        "teacher_forward": 0.1305601272583008
+      },
+      "seconds_per_image": 0.009191195575112943,
+      "trial": 7,
+      "wall_seconds": 0.5882365168072283
+    },
+    {
+      "images_per_second": 108.71864799307573,
+      "loss": 0.49347829818725586,
+      "phase_seconds": {
+        "backward": 0.1967959976196289,
+        "host_to_device": 0.0036975680589675904,
+        "loss": 0.002628704071044922,
+        "optimizer_step": 0.0028545920848846436,
+        "student_forward": 0.24451001739501954,
+        "teacher_forward": 0.13061616516113284
+      },
+      "seconds_per_image": 0.009198054045555182,
+      "trial": 8,
+      "wall_seconds": 0.5886754589155316
+    },
+    {
+      "images_per_second": 108.6999801778414,
+      "loss": 0.48233649134635925,
+      "phase_seconds": {
+        "backward": 0.19669561004638672,
+        "host_to_device": 0.0037060160636901854,
+        "loss": 0.002619391918182373,
+        "optimizer_step": 0.002700160026550293,
+        "student_forward": 0.24515001678466797,
+        "teacher_forward": 0.1305358352661133
+      },
+      "seconds_per_image": 0.009199633692333009,
+      "trial": 9,
+      "wall_seconds": 0.5887765563093126
+    },
+    {
+      "images_per_second": 108.1827233397261,
+      "loss": 0.45292651653289795,
+      "phase_seconds": {
+        "backward": 0.19700553131103515,
+        "host_to_device": 0.003721567988395691,
+        "loss": 0.002656576037406921,
+        "optimizer_step": 0.00304419207572937,
+        "student_forward": 0.24642694091796874,
+        "teacher_forward": 0.13050704193115234
+      },
+      "seconds_per_image": 0.009243620137567632,
+      "trial": 10,
+      "wall_seconds": 0.5915916888043284
+    },
+    {
+      "images_per_second": 108.24331277778957,
+      "loss": 0.44755685329437256,
+      "phase_seconds": {
+        "backward": 0.19694140625,
+        "host_to_device": 0.0037417600154876713,
+        "loss": 0.0026501439809799195,
+        "optimizer_step": 0.0028850879669189452,
+        "student_forward": 0.24669216156005858,
+        "teacher_forward": 0.1304593276977539
+      },
+      "seconds_per_image": 0.009238446000381373,
+      "trial": 11,
+      "wall_seconds": 0.5912605440244079
+    },
+    {
+      "images_per_second": 108.49173688030928,
+      "loss": 0.45059633255004883,
+      "phase_seconds": {
+        "backward": 0.19689315032958984,
+        "host_to_device": 0.0037182400226593018,
+        "loss": 0.0026369279623031615,
+        "optimizer_step": 0.002923167943954468,
+        "student_forward": 0.24515411376953125,
+        "teacher_forward": 0.13051503753662108
+      },
+      "seconds_per_image": 0.009217291830282193,
+      "trial": 12,
+      "wall_seconds": 0.5899066771380603
+    },
+    {
+      "images_per_second": 108.4337546939337,
+      "loss": 0.4495112895965576,
+      "phase_seconds": {
+        "backward": 0.1969254379272461,
+        "host_to_device": 0.0037218239307403563,
+        "loss": 0.0026444799900054933,
+        "optimizer_step": 0.0029864320755004885,
+        "student_forward": 0.2455934066772461,
+        "teacher_forward": 0.1305052185058594
+      },
+      "seconds_per_image": 0.009222220542142168,
+      "trial": 13,
+      "wall_seconds": 0.5902221146970987
+    },
+    {
+      "images_per_second": 108.61224197593965,
+      "loss": 0.434559166431427,
+      "phase_seconds": {
+        "backward": 0.19689366149902343,
+        "host_to_device": 0.0037180160284042358,
+        "loss": 0.0026454079151153565,
+        "optimizer_step": 0.0028776319026947023,
+        "student_forward": 0.2444608688354492,
+        "teacher_forward": 0.13046022033691407
+      },
+      "seconds_per_image": 0.009207065260852687,
+      "trial": 14,
+      "wall_seconds": 0.589252176694572
+    },
+    {
+      "images_per_second": 108.34497769310569,
+      "loss": 0.4324631094932556,
+      "phase_seconds": {
+        "backward": 0.1970345916748047,
+        "host_to_device": 0.003750336050987244,
+        "loss": 0.0026419519186019896,
+        "optimizer_step": 0.002948607921600342,
+        "student_forward": 0.245342529296875,
+        "teacher_forward": 0.13051129150390625
+      },
+      "seconds_per_image": 0.009229777155269403,
+      "trial": 15,
+      "wall_seconds": 0.5907057379372418
+    },
+    {
+      "images_per_second": 108.14515750773627,
+      "loss": 0.44090351462364197,
+      "phase_seconds": {
+        "backward": 0.1968547821044922,
+        "host_to_device": 0.0037188160419464114,
+        "loss": 0.002644927978515625,
+        "optimizer_step": 0.0028350720405578614,
+        "student_forward": 0.2474591293334961,
+        "teacher_forward": 0.13050089263916015
+      },
+      "seconds_per_image": 0.009246831046766602,
+      "trial": 16,
+      "wall_seconds": 0.5917971869930625
+    },
+    {
+      "images_per_second": 108.82521126118273,
+      "loss": 0.43336907029151917,
+      "phase_seconds": {
+        "backward": 0.19685580444335937,
+        "host_to_device": 0.0037246719598770144,
+        "loss": 0.0026352959871292114,
+        "optimizer_step": 0.0028235518932342527,
+        "student_forward": 0.243835205078125,
+        "teacher_forward": 0.13045989990234375
+      },
+      "seconds_per_image": 0.009189047174004372,
+      "trial": 17,
+      "wall_seconds": 0.5880990191362798
+    },
+    {
+      "images_per_second": 108.4613717359969,
+      "loss": 0.43047696352005005,
+      "phase_seconds": {
+        "backward": 0.19680966186523438,
+        "host_to_device": 0.003716320037841797,
+        "loss": 0.002649407982826233,
+        "optimizer_step": 0.0029550399780273436,
+        "student_forward": 0.24554835510253908,
+        "teacher_forward": 0.130521728515625
+      },
+      "seconds_per_image": 0.009219872328685597,
+      "trial": 18,
+      "wall_seconds": 0.5900718290358782
+    },
+    {
+      "images_per_second": 108.79713528755349,
+      "loss": 0.43068838119506836,
+      "phase_seconds": {
+        "backward": 0.19678262329101565,
+        "host_to_device": 0.0037575680017471313,
+        "loss": 0.0026245439052581788,
+        "optimizer_step": 0.002732095956802368,
+        "student_forward": 0.24441580200195312,
+        "teacher_forward": 0.13051016998291015
+      },
+      "seconds_per_image": 0.00919141848135041,
+      "trial": 19,
+      "wall_seconds": 0.5882507828064263
+    }
+  ],
+  "warmup_updates": 10
+}

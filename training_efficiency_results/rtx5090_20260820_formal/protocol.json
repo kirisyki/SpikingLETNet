@@ -1,0 +1,14 @@
+{
+  "ablation_rounds": 3,
+  "ablation_updates": 10,
+  "capacities": {
+    "qad": 32,
+    "squat": 4
+  },
+  "capacity_effective_batch": 64,
+  "common_physical_batch": 4,
+  "matched_effective_batch": 4,
+  "measured_updates": 20,
+  "rounds": 5,
+  "warmup_updates": 10
+}

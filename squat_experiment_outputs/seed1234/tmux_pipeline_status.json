@@ -1,14 +1,9 @@
 {
-  "command": [
-    "/root/miniconda3/bin/python",
-    "Network/squat_comparison/train_squat_amended_40.py",
-    "--log-interval",
-    "20"
-  ],
-  "controller_pid": 6983,
+  "comparison": "/root/autodl-tmp/LETNet/squat_experiment_outputs/seed1234/evaluation/comparison.json",
+  "controller_pid": 4894,
   "format": "qad-vs-squat-tmux-controller-v2",
-  "resume_epoch": null,
-  "state": "training_squat",
-  "target_epoch": 40,
-  "updated_at": "2026-08-05T14:22:33.021996+00:00"
+  "fp32_epoch": 100,
+  "squat_epoch": 40,
+  "state": "complete",
+  "updated_at": "2026-08-06T19:20:00.896885+00:00"
 }

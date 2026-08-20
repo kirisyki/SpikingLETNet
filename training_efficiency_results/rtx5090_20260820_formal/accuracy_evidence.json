@@ -1,0 +1,16 @@
+{
+  "copied_at": "2026-08-20T08:59:57.741521+00:00",
+  "execution_policy": "read frozen metrics only; no new accuracy train/eval/convert",
+  "historical_qad_quantization_loss": -0.058955097277290314,
+  "limitations": [
+    "single seed",
+    "different training budgets",
+    "route-level comparison; not a controlled causal ablation"
+  ],
+  "original_source": "/root/autodl-tmp/LETNet/squat_experiment_outputs/seed1234/evaluation/comparison.json",
+  "original_source_sha256": "33a1b65f17e2909322b7bf1c241c273194a71d29875d46f8398f2aeb996b653e",
+  "qad_minus_squat_miou": 0.3040331019721516,
+  "qad_miou": 0.6195473169172718,
+  "squat_miou": 0.3155142149451202,
+  "squat_quantization_loss": -0.3739481039034076
+}

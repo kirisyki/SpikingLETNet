@@ -1,0 +1,14 @@
+[
+  {
+    "method": "qad",
+    "source_id": "000061",
+    "flip_count": 1505945,
+    "valid_count": 6400000
+  },
+  {
+    "method": "ste",
+    "source_id": "000061",
+    "flip_count": 1237426,
+    "valid_count": 6400000
+  }
+]

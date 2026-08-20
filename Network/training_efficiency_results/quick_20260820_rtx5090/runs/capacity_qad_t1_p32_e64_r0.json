@@ -1,0 +1,78 @@
+{
+  "completed_at": "2026-08-20T08:07:37.385607+00:00",
+  "effective_batch": 64,
+  "gradient_audit": {
+    "parameters_with_grad": 231,
+    "teacher_parameters_with_grad": 0
+  },
+  "input_residency": "cpu",
+  "measured_updates": 3,
+  "memory": {
+    "model_and_input_allocated_bytes": 10772480,
+    "model_and_input_reserved_bytes": 12582912,
+    "peak_allocated_bytes": 25774403584,
+    "peak_reserved_bytes": 31616663552,
+    "steady_allocated_bytes": 43987456,
+    "steady_reserved_bytes": 31616663552
+  },
+  "method": "qad",
+  "mode": "capacity",
+  "model": {
+    "qlayers": 71,
+    "teacher_parameters": 1303060,
+    "trainable_parameters": 1303060
+  },
+  "physical_batch": 32,
+  "round": 0,
+  "started_at": "2026-08-20T08:07:33.023549+00:00",
+  "status": "ok",
+  "time_steps": 1,
+  "trials": [
+    {
+      "images_per_second": 110.80529966821686,
+      "loss": 0.9840570688247681,
+      "phase_seconds": {
+        "backward": 0.19584611511230468,
+        "host_to_device": 0.0037393920421600344,
+        "loss": 0.0026080960035324095,
+        "optimizer_step": 0.00259932804107666,
+        "student_forward": 0.2361736297607422,
+        "teacher_forward": 0.1302206039428711
+      },
+      "seconds_per_image": 0.009024839091580361,
+      "trial": 0,
+      "wall_seconds": 0.5775897018611431
+    },
+    {
+      "images_per_second": 110.2930518266856,
+      "loss": 0.8955105543136597,
+      "phase_seconds": {
+        "backward": 0.19932672119140626,
+        "host_to_device": 0.003693343997001648,
+        "loss": 0.0025957759618759155,
+        "optimizer_step": 0.0023968000411987303,
+        "student_forward": 0.23549366760253906,
+        "teacher_forward": 0.1302241973876953
+      },
+      "seconds_per_image": 0.009066754282684997,
+      "trial": 1,
+      "wall_seconds": 0.5802722740918398
+    },
+    {
+      "images_per_second": 109.52216306299854,
+      "loss": 0.7862788438796997,
+      "phase_seconds": {
+        "backward": 0.20353023529052733,
+        "host_to_device": 0.00368668794631958,
+        "loss": 0.0025989439487457276,
+        "optimizer_step": 0.0024028799533843993,
+        "student_forward": 0.23545475769042967,
+        "teacher_forward": 0.1302961959838867
+      },
+      "seconds_per_image": 0.00913057204161305,
+      "trial": 2,
+      "wall_seconds": 0.5843566106632352
+    }
+  ],
+  "warmup_updates": 2
+}

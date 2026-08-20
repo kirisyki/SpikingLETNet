@@ -1,0 +1,313 @@
+{
+  "completed_at": "2026-08-20T08:31:39.839145+00:00",
+  "effective_batch": 64,
+  "gradient_audit": {
+    "parameters_with_grad": 231,
+    "teacher_parameters_with_grad": 0
+  },
+  "input_residency": "cpu",
+  "measured_updates": 20,
+  "memory": {
+    "model_and_input_allocated_bytes": 5429760,
+    "model_and_input_reserved_bytes": 6291456,
+    "peak_allocated_bytes": 15120453120,
+    "peak_reserved_bytes": 20791164928,
+    "steady_allocated_bytes": 32998912,
+    "steady_reserved_bytes": 20791164928
+  },
+  "method": "squat",
+  "mode": "capacity",
+  "model": {
+    "qlayers": 0,
+    "teacher_parameters": 0,
+    "trainable_parameters": 1303060
+  },
+  "physical_batch": 4,
+  "round": 3,
+  "started_at": "2026-08-20T08:28:42.264552+00:00",
+  "status": "ok",
+  "time_steps": 8,
+  "trials": [
+    {
+      "images_per_second": 11.099320877276412,
+      "loss": 1.8307859897613525,
+      "phase_seconds": {
+        "bptt_backward": 3.4566383819580078,
+        "host_to_device": 0.004261920005083084,
+        "loss": 0.0016326400339603429,
+        "optimizer_step": 0.0027712960243225096,
+        "snn_forward": 2.268800796508789
+      },
+      "seconds_per_image": 0.0900956023397157,
+      "trial": 0,
+      "wall_seconds": 5.766118549741805
+    },
+    {
+      "images_per_second": 11.045776978340012,
+      "loss": 1.781346321105957,
+      "phase_seconds": {
+        "bptt_backward": 3.4659566802978516,
+        "host_to_device": 0.0042351680397987364,
+        "loss": 0.0016286400333046917,
+        "optimizer_step": 0.0027230079174041747,
+        "snn_forward": 2.285383392333985
+      },
+      "seconds_per_image": 0.09053233665326843,
+      "trial": 1,
+      "wall_seconds": 5.7940695458091795
+    },
+    {
+      "images_per_second": 11.001984096461582,
+      "loss": 1.6529902219772339,
+      "phase_seconds": {
+        "bptt_backward": 3.4860129089355474,
+        "host_to_device": 0.004265440046787261,
+        "loss": 0.0016312640309333805,
+        "optimizer_step": 0.0031362240314483643,
+        "snn_forward": 2.287896240234375
+      },
+      "seconds_per_image": 0.09089269637479447,
+      "trial": 2,
+      "wall_seconds": 5.817132567986846
+    },
+    {
+      "images_per_second": 10.879112749344175,
+      "loss": 1.535022497177124,
+      "phase_seconds": {
+        "bptt_backward": 3.5093790588378906,
+        "host_to_device": 0.004516896009445191,
+        "loss": 0.0016296000257134443,
+        "optimizer_step": 0.004648896217346191,
+        "snn_forward": 2.3193890686035155
+      },
+      "seconds_per_image": 0.09191926060884725,
+      "trial": 3,
+      "wall_seconds": 5.882832678966224
+    },
+    {
+      "images_per_second": 10.370919125823846,
+      "loss": 1.4879504442214966,
+      "phase_seconds": {
+        "bptt_backward": 3.5457619323730474,
+        "host_to_device": 0.004665856003761291,
+        "loss": 0.001624544031918049,
+        "optimizer_step": 0.0031226561069488527,
+        "snn_forward": 2.5666904602050784
+      },
+      "seconds_per_image": 0.09642346911277855,
+      "trial": 4,
+      "wall_seconds": 6.171102023217827
+    },
+    {
+      "images_per_second": 10.817697938204557,
+      "loss": 1.4761855602264404,
+      "phase_seconds": {
+        "bptt_backward": 3.546091552734375,
+        "host_to_device": 0.004682335972785949,
+        "loss": 0.0016303360313177115,
+        "optimizer_step": 0.0029963200092315676,
+        "snn_forward": 2.315735717773437
+      },
+      "seconds_per_image": 0.09244110953295603,
+      "trial": 5,
+      "wall_seconds": 5.916231010109186
+    },
+    {
+      "images_per_second": 10.893749713571225,
+      "loss": 1.3722459077835083,
+      "phase_seconds": {
+        "bptt_backward": 3.5198949127197268,
+        "host_to_device": 0.004548576027154922,
+        "loss": 0.0016269760280847553,
+        "optimizer_step": 0.0030211200714111326,
+        "snn_forward": 2.3047691650390623
+      },
+      "seconds_per_image": 0.09179575685993768,
+      "trial": 6,
+      "wall_seconds": 5.874928439036012
+    },
+    {
+      "images_per_second": 10.98217662742761,
+      "loss": 1.3344860076904297,
+      "phase_seconds": {
+        "bptt_backward": 3.4985929107666016,
+        "host_to_device": 0.004389600068330764,
+        "loss": 0.0016281280294060708,
+        "optimizer_step": 0.0028909759521484374,
+        "snn_forward": 2.2827308197021488
+      },
+      "seconds_per_image": 0.09105663056834601,
+      "trial": 7,
+      "wall_seconds": 5.8276243563741446
+    },
+    {
+      "images_per_second": 10.914666601612302,
+      "loss": 1.3059602975845337,
+      "phase_seconds": {
+        "bptt_backward": 3.5008870849609375,
+        "host_to_device": 0.004524799972772598,
+        "loss": 0.0016322240307927137,
+        "optimizer_step": 0.003503040075302124,
+        "snn_forward": 2.3109988250732427
+      },
+      "seconds_per_image": 0.09161983929516282,
+      "trial": 8,
+      "wall_seconds": 5.86366971489042
+    },
+    {
+      "images_per_second": 10.642741578295203,
+      "loss": 1.2085667848587036,
+      "phase_seconds": {
+        "bptt_backward": 3.5452787780761716,
+        "host_to_device": 0.0048965119719505314,
+        "loss": 0.0016306240335106851,
+        "optimizer_step": 0.0032781438827514647,
+        "snn_forward": 2.4013482666015626
+      },
+      "seconds_per_image": 0.09396075180848129,
+      "trial": 9,
+      "wall_seconds": 6.013488115742803
+    },
+    {
+      "images_per_second": 10.849380310277384,
+      "loss": 1.1865493059158325,
+      "phase_seconds": {
+        "bptt_backward": 3.480256057739258,
+        "host_to_device": 0.004495711952447891,
+        "loss": 0.001632160030305386,
+        "optimizer_step": 0.0029280641078948976,
+        "snn_forward": 2.3711868896484374
+      },
+      "seconds_per_image": 0.09217116290528793,
+      "trial": 10,
+      "wall_seconds": 5.8989544259384274
+    },
+    {
+      "images_per_second": 10.821462905077908,
+      "loss": 1.1548278331756592,
+      "phase_seconds": {
+        "bptt_backward": 3.482774276733398,
+        "host_to_device": 0.004513280004262924,
+        "loss": 0.0016306240335106853,
+        "optimizer_step": 0.0036329600811004638,
+        "snn_forward": 2.3786975555419922
+      },
+      "seconds_per_image": 0.09240894773392938,
+      "trial": 11,
+      "wall_seconds": 5.91417265497148
+    },
+    {
+      "images_per_second": 10.863609063124443,
+      "loss": 1.1441618204116821,
+      "phase_seconds": {
+        "bptt_backward": 3.4721312103271487,
+        "host_to_device": 0.004442816019058228,
+        "loss": 0.001631200030446053,
+        "optimizer_step": 0.0031058239936828614,
+        "snn_forward": 2.3699566497802733
+      },
+      "seconds_per_image": 0.09205044052941957,
+      "trial": 12,
+      "wall_seconds": 5.891228193882853
+    },
+    {
+      "images_per_second": 10.974939271590857,
+      "loss": 1.0976258516311646,
+      "phase_seconds": {
+        "bptt_backward": 3.4712827148437504,
+        "host_to_device": 0.004356607973575592,
+        "loss": 0.0016305280327796937,
+        "optimizer_step": 0.002683039903640747,
+        "snn_forward": 2.3162325439453126
+      },
+      "seconds_per_image": 0.09111667730030604,
+      "trial": 13,
+      "wall_seconds": 5.831467347219586
+    },
+    {
+      "images_per_second": 11.050142620812185,
+      "loss": 1.0758836269378662,
+      "phase_seconds": {
+        "bptt_backward": 3.4757124938964847,
+        "host_to_device": 0.004302687972784042,
+        "loss": 0.001630656033754349,
+        "optimizer_step": 0.0030288000106811525,
+        "snn_forward": 2.2714828033447265
+      },
+      "seconds_per_image": 0.09049656952993246,
+      "trial": 14,
+      "wall_seconds": 5.791780449915677
+    },
+    {
+      "images_per_second": 10.705821644236797,
+      "loss": 1.0569411516189575,
+      "phase_seconds": {
+        "bptt_backward": 3.466656234741211,
+        "host_to_device": 0.004243295967578888,
+        "loss": 0.001633280031383038,
+        "optimizer_step": 0.002738879919052124,
+        "snn_forward": 2.4705161590576172
+      },
+      "seconds_per_image": 0.09340712308039656,
+      "trial": 15,
+      "wall_seconds": 5.97805587714538
+    },
+    {
+      "images_per_second": 11.083453075476328,
+      "loss": 1.0301343202590942,
+      "phase_seconds": {
+        "bptt_backward": 3.463718353271484,
+        "host_to_device": 0.00423049595952034,
+        "loss": 0.001632160030305386,
+        "optimizer_step": 0.0027152960300445557,
+        "snn_forward": 2.2695518798828127
+      },
+      "seconds_per_image": 0.09022458914114395,
+      "trial": 16,
+      "wall_seconds": 5.774373705033213
+    },
+    {
+      "images_per_second": 11.014736515095823,
+      "loss": 1.0278942584991455,
+      "phase_seconds": {
+        "bptt_backward": 3.4863559570312495,
+        "host_to_device": 0.004313471972942353,
+        "loss": 0.0016325440332293517,
+        "optimizer_step": 0.0029090559482574463,
+        "snn_forward": 2.281089584350586
+      },
+      "seconds_per_image": 0.09078746446903097,
+      "trial": 17,
+      "wall_seconds": 5.810397726017982
+    },
+    {
+      "images_per_second": 11.090559126686884,
+      "loss": 1.0164002180099487,
+      "phase_seconds": {
+        "bptt_backward": 3.4636886749267575,
+        "host_to_device": 0.004236735969781876,
+        "loss": 0.001629568032920361,
+        "optimizer_step": 0.0028248639106750488,
+        "snn_forward": 2.2661204833984376
+      },
+      "seconds_per_image": 0.09016677956242347,
+      "trial": 18,
+      "wall_seconds": 5.770673891995102
+    },
+    {
+      "images_per_second": 11.076820798115602,
+      "loss": 1.0025173425674438,
+      "phase_seconds": {
+        "bptt_backward": 3.4711946411132817,
+        "host_to_device": 0.004251423984766006,
+        "loss": 0.0016325760334730153,
+        "optimizer_step": 0.0027932159900665283,
+        "snn_forward": 2.2658183135986323
+      },
+      "seconds_per_image": 0.09027861136564752,
+      "trial": 19,
+      "wall_seconds": 5.777831127401441
+    }
+  ],
+  "warmup_updates": 10
+}

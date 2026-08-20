@@ -1,0 +1,70 @@
+{
+  "format": "qad-distortion-repair-probe-v1",
+  "status": "complete",
+  "started_at": "2026-08-06T06:48:26Z",
+  "protocol": {
+    "design": "paired trained-student representation audit against common FP-QIF teacher",
+    "dataset": "UDD6 validation",
+    "validation_patches": 8478,
+    "statistical_unit": "35 original source images",
+    "batch_size": 20,
+    "time_steps": 1,
+    "qif_code_range": [
+      0,
+      8
+    ],
+    "methods": [
+      "qad",
+      "ste"
+    ],
+    "primary_metric": "source-balanced macro QIF code disagreement vs FP-QIF teacher",
+    "feature_metrics": [
+      "normalized_mse",
+      "cosine_distance"
+    ],
+    "bootstrap_replicates": 10000,
+    "bootstrap_seed": 20270806,
+    "max_batches": 0,
+    "known_confound": "QAD observed 127 training epochs; STE-QAT observed 16 epochs"
+  },
+  "checkpoints": {
+    "fp": {
+      "path": "/root/autodl-tmp/LETNet/checkpoint/udd/SpikingLETNet_shallow_maxbs64gpu1_trainval20260611-003821/model_best.pth",
+      "sha256": "2729d27dad82b9ec5124cc6474bcaad5bb3813de30b1875cd39765be1f46c3fb",
+      "epoch": 286,
+      "sha256_recomputed": "2729d27dad82b9ec5124cc6474bcaad5bb3813de30b1875cd39765be1f46c3fb"
+    },
+    "qad": {
+      "path": "/root/autodl-tmp/LETNet/QAT_checkpoint/udd/SpikingLETNet_shallow_maxbs64gpu1_trainval20260612-135249/model_q_best.pth",
+      "sha256": "50f0e778e40e69c8f96eccd17df99f9ff6a353b767b417af0706b080edb70ca5",
+      "epoch": 119,
+      "sha256_recomputed": "50f0e778e40e69c8f96eccd17df99f9ff6a353b767b417af0706b080edb70ca5"
+    },
+    "ste": {
+      "path": "/root/autodl-tmp/LETNet/quantization_comparison_checkpoint/udd/seed1234/ste_qat_w4a4/checkpoint_best.pth",
+      "sha256": "90d7d105085146a1a71e5c79232834d0ef9cdb95796f6c213a57e3b9c9397168",
+      "epoch": 14,
+      "best_miou_recorded": 0.5813407428164983,
+      "sha256_recomputed": "90d7d105085146a1a71e5c79232834d0ef9cdb95796f6c213a57e3b9c9397168"
+    }
+  },
+  "split": {
+    "path": "/root/autodl-tmp/UDD/UDD6/preprocessed/val_patches.txt",
+    "sha256": "e535815642b56f6f4d11c3d0ce0ec35914e0861975157d7a3357aa1495261169"
+  },
+  "git": {
+    "commit": "02b5cf1eb097d00b322a0bdc22f1ac5e521c39c5",
+    "status_short": "D docs/ste_qat_long127_protocol.md\n D quantization_comparison_checkpoint/udd/seed1234/ste_qat_w4a4_long127/manifest.json\n D quantization_comparison_checkpoint/udd/seed1234/ste_qat_w4a4_long127/metrics.csv\n D quantization_comparison_results/seed1234/smoke/ste_qat_w4a4_long127/manifest.json\n D quantization_comparison_results/seed1234/smoke/ste_qat_w4a4_long127/metrics.csv\n D quantization_comparison_results/seed1234/smoke/ste_qat_w4a4_long127/training_summary.json\n M squat_experiment_outputs/seed1234/tmux_pipeline_status.json\n M squat_experiment_outputs/seed1234/w4m4s1_squat/metrics.csv\n?? Network/qad_distortion_repair/\n?? Network/run_qad_distortion_repair_probe.py\n?? qad_distortion_repair_results/\n?? tests/qad_distortion_repair/"
+  },
+  "device": {
+    "requested": "cuda:1",
+    "name": "NVIDIA RTX PRO 6000 Blackwell Server Edition"
+  },
+  "completed_at": "2026-08-06T06:51:42Z",
+  "completed_batches": 424,
+  "completed_patches": 8478,
+  "complete_validation": true,
+  "elapsed_seconds": 196.05435408093035,
+  "active_qif_layer_count": 78,
+  "source_count": 35
+}

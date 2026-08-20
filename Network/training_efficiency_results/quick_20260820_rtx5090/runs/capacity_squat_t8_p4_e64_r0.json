@@ -1,0 +1,75 @@
+{
+  "completed_at": "2026-08-20T08:08:14.840823+00:00",
+  "effective_batch": 64,
+  "gradient_audit": {
+    "parameters_with_grad": 231,
+    "teacher_parameters_with_grad": 0
+  },
+  "input_residency": "cpu",
+  "measured_updates": 3,
+  "memory": {
+    "model_and_input_allocated_bytes": 5429760,
+    "model_and_input_reserved_bytes": 6291456,
+    "peak_allocated_bytes": 15120453120,
+    "peak_reserved_bytes": 20791164928,
+    "steady_allocated_bytes": 32998912,
+    "steady_reserved_bytes": 20791164928
+  },
+  "method": "squat",
+  "mode": "capacity",
+  "model": {
+    "qlayers": 0,
+    "teacher_parameters": 0,
+    "trainable_parameters": 1303060
+  },
+  "physical_batch": 4,
+  "round": 0,
+  "started_at": "2026-08-20T08:07:44.080521+00:00",
+  "status": "ok",
+  "time_steps": 8,
+  "trials": [
+    {
+      "images_per_second": 10.988832586368533,
+      "loss": 2.2798590660095215,
+      "phase_seconds": {
+        "bptt_backward": 3.475923950195312,
+        "host_to_device": 0.0043272959887981416,
+        "loss": 0.001624448031187058,
+        "optimizer_step": 0.003108351945877075,
+        "snn_forward": 2.304702087402344
+      },
+      "seconds_per_image": 0.09100147737626685,
+      "trial": 0,
+      "wall_seconds": 5.824094552081078
+    },
+    {
+      "images_per_second": 10.993826431031756,
+      "loss": 2.292635679244995,
+      "phase_seconds": {
+        "bptt_backward": 3.4825666351318363,
+        "host_to_device": 0.004297056019306182,
+        "loss": 0.0016283520311117178,
+        "optimizer_step": 0.0031173439025878906,
+        "snn_forward": 2.296591049194336
+      },
+      "seconds_per_image": 0.09096014079113957,
+      "trial": 1,
+      "wall_seconds": 5.821449010632932
+    },
+    {
+      "images_per_second": 11.009374263832356,
+      "loss": 2.213411808013916,
+      "phase_seconds": {
+        "bptt_backward": 3.476939193725586,
+        "host_to_device": 0.004317471981048583,
+        "loss": 0.001622528031468392,
+        "optimizer_step": 0.0031040000915527346,
+        "snn_forward": 2.291838012695312
+      },
+      "seconds_per_image": 0.09083168362121796,
+      "trial": 2,
+      "wall_seconds": 5.81322775175795
+    }
+  ],
+  "warmup_updates": 2
+}

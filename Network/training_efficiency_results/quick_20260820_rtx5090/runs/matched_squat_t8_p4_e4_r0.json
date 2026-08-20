@@ -1,0 +1,72 @@
+{
+  "completed_at": "2026-08-20T08:07:26.087408+00:00",
+  "effective_batch": 4,
+  "gradient_audit": {
+    "parameters_with_grad": 231,
+    "teacher_parameters_with_grad": 0
+  },
+  "input_residency": "gpu",
+  "measured_updates": 3,
+  "memory": {
+    "model_and_input_allocated_bytes": 18229760,
+    "model_and_input_reserved_bytes": 27262976,
+    "peak_allocated_bytes": 15115188224,
+    "peak_reserved_bytes": 20786970624,
+    "steady_allocated_bytes": 45798912,
+    "steady_reserved_bytes": 20786970624
+  },
+  "method": "squat",
+  "mode": "matched",
+  "model": {
+    "qlayers": 0,
+    "teacher_parameters": 0,
+    "trainable_parameters": 1303060
+  },
+  "physical_batch": 4,
+  "round": 0,
+  "started_at": "2026-08-20T08:07:22.708938+00:00",
+  "status": "ok",
+  "time_steps": 8,
+  "trials": [
+    {
+      "images_per_second": 11.039318415210882,
+      "loss": 2.279505968093872,
+      "phase_seconds": {
+        "bptt_backward": 0.21443942260742188,
+        "loss": 0.00010214400291442871,
+        "optimizer_step": 0.0027224318981170655,
+        "snn_forward": 0.142935546875
+      },
+      "seconds_per_image": 0.09058530267793685,
+      "trial": 0,
+      "wall_seconds": 0.3623412107117474
+    },
+    {
+      "images_per_second": 11.09237185144453,
+      "loss": 2.2882070541381836,
+      "phase_seconds": {
+        "bptt_backward": 0.21357260131835937,
+        "loss": 0.00010192000120878219,
+        "optimizer_step": 0.0025376639366149903,
+        "snn_forward": 0.14211260986328125
+      },
+      "seconds_per_image": 0.09015204443130642,
+      "trial": 1,
+      "wall_seconds": 0.3606081777252257
+    },
+    {
+      "images_per_second": 11.147162750106084,
+      "loss": 2.2403876781463623,
+      "phase_seconds": {
+        "bptt_backward": 0.2134886474609375,
+        "loss": 0.000100832000374794,
+        "optimizer_step": 0.0024683520793914795,
+        "snn_forward": 0.1405659484863281
+      },
+      "seconds_per_image": 0.08970892615616322,
+      "trial": 2,
+      "wall_seconds": 0.35883570462465286
+    }
+  ],
+  "warmup_updates": 2
+}

@@ -1,0 +1,59 @@
+{
+  "checkpoint_sha256": {
+    "/root/autodl-tmp/LETNet/QAT_checkpoint/udd/SpikingLETNet_shallow_maxbs64gpu1_trainval20260612-135249/model_q_best.pth": "50f0e778e40e69c8f96eccd17df99f9ff6a353b767b417af0706b080edb70ca5",
+    "/root/autodl-tmp/LETNet/checkpoint/udd/SpikingLETNet_shallow_maxbs64gpu1_trainval20260611-003821/model_best.pth": "2729d27dad82b9ec5124cc6474bcaad5bb3813de30b1875cd39765be1f46c3fb",
+    "/root/autodl-tmp/LETNet/squat_experiment_outputs/seed1234/w4m4s1_squat/checkpoint_best.pth": "0e2c1421c51e49d2b195c296a9fe6d649b6a8468d314c060e97418ae8ea96ee7"
+  },
+  "created_at": "2026-08-20T08:05:54.632534+00:00",
+  "git_commit": "02b5cf1eb097d00b322a0bdc22f1ac5e521c39c5",
+  "git_status_at_start": "D docs/ste_qat_long127_protocol.md\n D quantization_comparison_checkpoint/udd/seed1234/ste_qat_w4a4_long127/manifest.json\n D quantization_comparison_checkpoint/udd/seed1234/ste_qat_w4a4_long127/metrics.csv\n D quantization_comparison_results/seed1234/smoke/ste_qat_w4a4_long127/manifest.json\n D quantization_comparison_results/seed1234/smoke/ste_qat_w4a4_long127/metrics.csv\n D quantization_comparison_results/seed1234/smoke/ste_qat_w4a4_long127/training_summary.json\n M squat_experiment_outputs/seed1234/tmux_pipeline_status.json\n M squat_experiment_outputs/seed1234/w4m4s1_squat/metrics.csv\n?? Network/qad_distortion_repair/\n?? Network/reanalyze_qad_distortion_repair.py\n?? Network/run_qad_distortion_repair_probe.py\n?? Network/run_qad_self_distortion_probe.py\n?? Network/training_efficiency_comparison/\n?? qad_distortion_repair_results/\n?? squat_experiment_outputs/seed1234/evaluation/\n?? squat_experiment_outputs/seed1234/w4m4s1_squat/training_summary.json\n?? tests/qad_distortion_repair/\n?? tests/training_efficiency_comparison/",
+  "gpu": {
+    "name": "NVIDIA GeForce RTX 5090",
+    "total_memory_bytes": 33670758400
+  },
+  "protocol": {
+    "classes": 6,
+    "input_shape": [
+      3,
+      400,
+      400
+    ],
+    "memory": "torch.cuda peak allocated and reserved bytes",
+    "qad": "QIF T=1 W4A4, frozen FP32 teacher, feature KD weight 0.1",
+    "seed": 1234,
+    "squat": "DirectLIF T=8 W4M4S1, full BPTT",
+    "timing": "CUDA-synchronized wall clock; data loading excluded",
+    "train_samples": 25700
+  },
+  "purpose": "reportable same-GPU training-efficiency comparison",
+  "run_configuration": {
+    "ablation_rounds": 1,
+    "ablation_updates": 2,
+    "command": "run",
+    "measured_updates": 3,
+    "output_dir": "training_efficiency_results/quick_20260820_rtx5090",
+    "rounds": 1,
+    "warmup_updates": 2
+  },
+  "software": {
+    "allow_tf32_cudnn": true,
+    "allow_tf32_matmul": true,
+    "amp": false,
+    "cuda_runtime": "12.8",
+    "cudnn": 90701,
+    "cudnn_benchmark": false,
+    "cudnn_deterministic": true,
+    "platform": "Linux-5.15.0-94-generic-x86_64-with-glibc2.35",
+    "python": "3.12.3 | packaged by Anaconda, Inc. | (main, May  6 2024, 19:46:43) [GCC 11.2.0]",
+    "torch": "2.7.0+cu128"
+  },
+  "source_sha256": {
+    "/root/autodl-tmp/LETNet/Network/QAT_snn_STE.py": "6f568d7195ce7ee7682c2f9db94f1ec7dfbef4acdcacd9b6eca126374ddc6386",
+    "/root/autodl-tmp/LETNet/Network/quantization/int4_selfbuild.py": "58f51d0da0f1088533f34bbe27a82bb46954d9ca2295924a1abd399c1a550e3e",
+    "/root/autodl-tmp/LETNet/Network/squat_comparison/lif_neuron.py": "6ff490a90c05a0f97074aa62048ccf6eb461bbbe4587be66179b7b9160eb6132",
+    "/root/autodl-tmp/LETNet/Network/squat_comparison/state_quantizer.py": "e72f5baeee29df07c5029e95fa153b68e69ef4b8ea5e4ec01f9156d898e1ac88",
+    "/root/autodl-tmp/LETNet/Network/squat_comparison/training.py": "903d92fdafa84aaf5099a21393da88841ffb7658f179f5911ce15c348d937983",
+    "/root/autodl-tmp/LETNet/Network/training_efficiency_comparison/analysis.py": "967c6519afb11868d41498223e75165868c5952d1718601aecd63787c6cd43b2",
+    "/root/autodl-tmp/LETNet/Network/training_efficiency_comparison/benchmark.py": "8a1343d079b6bd1320e21680442db2cf9631abd8d3ca99ae7cc9f61bb4989981"
+  }
+}

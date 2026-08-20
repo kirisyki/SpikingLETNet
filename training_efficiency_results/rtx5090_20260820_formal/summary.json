@@ -1,0 +1,892 @@
+{
+  "capacities": {
+    "qad": 32,
+    "squat": 4
+  },
+  "common_physical_batch": 4,
+  "comparisons": [
+    {
+      "memory_comparable": false,
+      "mode": "capacity",
+      "qad_peak_memory_bytes": 25776707584,
+      "qad_throughput_speedup": 10.094592332275466,
+      "qad_time_reduction_fraction": 0.9009370706586894,
+      "squat_peak_memory_bytes": 15120453120
+    },
+    {
+      "memory_comparable": true,
+      "mode": "matched",
+      "qad_memory_reduction_fraction": 0.7835450160782595,
+      "qad_peak_memory_bytes": 3271757824,
+      "qad_throughput_speedup": 4.544693220506667,
+      "qad_time_reduction_fraction": 0.7799631284387609,
+      "squat_peak_memory_bytes": 15115188224,
+      "squat_to_qad_memory_ratio": 4.619898243422066
+    }
+  ],
+  "epoch_projection": [
+    {
+      "effective_batch": 64,
+      "method": "qad",
+      "optimizer_updates": 402,
+      "projected_training_minutes": 3.950602971902117,
+      "projected_training_seconds": 237.03617831412703,
+      "training_samples": 25700
+    },
+    {
+      "effective_batch": 64,
+      "method": "squat",
+      "optimizer_updates": 402,
+      "projected_training_minutes": 39.87973097676877,
+      "projected_training_seconds": 2392.783858606126,
+      "training_samples": 25700
+    }
+  ],
+  "groups": [
+    {
+      "effective_batch": 64,
+      "gradient_accumulation_steps": 2,
+      "images_per_second": {
+        "block_bootstrap_median_ci95_high": 109.21631480167233,
+        "block_bootstrap_median_ci95_low": 106.17169511473288,
+        "bootstrap_median_ci95_high": 108.75000759427205,
+        "bootstrap_median_ci95_low": 108.3449776931057,
+        "coefficient_of_variation": 0.012851729338162964,
+        "count": 100,
+        "independent_blocks": 5,
+        "mean": 108.14783927516692,
+        "median": 108.54039335357815,
+        "p25": 107.31099917743134,
+        "p75": 108.98039620419127,
+        "stdev": 1.3898867588715955
+      },
+      "memory": {
+        "dynamic_peak_bytes": 25732720128,
+        "peak_allocated_bytes": 25776707584,
+        "peak_reserved_bytes": 31618760704,
+        "steady_allocated_bytes": 43987456
+      },
+      "method": "qad",
+      "mode": "capacity",
+      "phase_seconds": {
+        "backward": {
+          "bootstrap_median_ci95_high": 0.1969254379272461,
+          "bootstrap_median_ci95_low": 0.19658761596679686,
+          "coefficient_of_variation": 0.04629974009084387,
+          "count": 100,
+          "mean": 0.20268081642150879,
+          "median": 0.19678004837036134,
+          "p25": 0.19643693351745606,
+          "p75": 0.20870275306701658,
+          "stdev": 0.009384069121715898
+        },
+        "host_to_device": {
+          "bootstrap_median_ci95_high": 0.003709856033325195,
+          "bootstrap_median_ci95_low": 0.003703920006752014,
+          "coefficient_of_variation": 0.006290923446796598,
+          "count": 100,
+          "mean": 0.003713468804359436,
+          "median": 0.0037066560387611393,
+          "p25": 0.0036984880268573763,
+          "p75": 0.0037188240587711337,
+          "stdev": 2.3361147970292505e-05
+        },
+        "loss": {
+          "bootstrap_median_ci95_high": 0.0026375839710235595,
+          "bootstrap_median_ci95_low": 0.0026295360326766964,
+          "coefficient_of_variation": 0.0059883609758974886,
+          "count": 100,
+          "mean": 0.002633993592262268,
+          "median": 0.002633599936962128,
+          "p25": 0.00262228798866272,
+          "p75": 0.0026451200246810913,
+          "stdev": 1.5773304438667407e-05
+        },
+        "optimizer_step": {
+          "bootstrap_median_ci95_high": 0.0027683879792690276,
+          "bootstrap_median_ci95_low": 0.0027284640073776244,
+          "coefficient_of_variation": 0.12297570627809955,
+          "count": 100,
+          "mean": 0.0028301647996902468,
+          "median": 0.0027468640804290774,
+          "p25": 0.0026976880431175227,
+          "p75": 0.00287225604057312,
+          "stdev": 0.00034804151512532423
+        },
+        "student_forward": {
+          "bootstrap_median_ci95_high": 0.2439754867553711,
+          "bootstrap_median_ci95_low": 0.24067308807373047,
+          "coefficient_of_variation": 0.015172861947133449,
+          "count": 100,
+          "mean": 0.24208638656616213,
+          "median": 0.24228539276123046,
+          "p25": 0.2385728588104248,
+          "p75": 0.2451569290161133,
+          "stdev": 0.0036731433226487595
+        },
+        "teacher_forward": {
+          "bootstrap_median_ci95_high": 0.1304815368652344,
+          "bootstrap_median_ci95_low": 0.13044483184814454,
+          "coefficient_of_variation": 0.0005207239071444343,
+          "count": 100,
+          "mean": 0.1304530029296875,
+          "median": 0.1304600601196289,
+          "p25": 0.1304061107635498,
+          "p75": 0.1305047607421875,
+          "stdev": 6.792999738427121e-05
+        }
+      },
+      "physical_batch": 32,
+      "rounds": 5,
+      "time_steps": 1,
+      "wall_seconds": {
+        "block_bootstrap_median_ci95_high": 0.6027972705196589,
+        "block_bootstrap_median_ci95_low": 0.5859934161417186,
+        "bootstrap_median_ci95_high": 0.5907057379372418,
+        "bootstrap_median_ci95_low": 0.5885057237464935,
+        "coefficient_of_variation": 0.013038803598517647,
+        "count": 100,
+        "independent_blocks": 5,
+        "mean": 0.5918806874752045,
+        "median": 0.5896422346122563,
+        "p25": 0.5872615857515484,
+        "p75": 0.5963974418118596,
+        "stdev": 0.007717416037744795
+      }
+    },
+    {
+      "effective_batch": 64,
+      "gradient_accumulation_steps": 16,
+      "images_per_second": {
+        "block_bootstrap_median_ci95_high": 10.996974399823346,
+        "block_bootstrap_median_ci95_low": 10.681907260317976,
+        "bootstrap_median_ci95_high": 10.788285573268567,
+        "bootstrap_median_ci95_low": 10.732466614996117,
+        "coefficient_of_variation": 0.01796178392258607,
+        "count": 100,
+        "independent_blocks": 5,
+        "mean": 10.77911835754238,
+        "median": 10.7523305331055,
+        "p25": 10.700957642068389,
+        "p75": 10.919446494232865,
+        "stdev": 0.1936121948141571
+      },
+      "memory": {
+        "dynamic_peak_bytes": 15087454208,
+        "peak_allocated_bytes": 15120453120,
+        "peak_reserved_bytes": 20791164928,
+        "steady_allocated_bytes": 32998912
+      },
+      "method": "squat",
+      "mode": "capacity",
+      "phase_seconds": {
+        "bptt_backward": {
+          "bootstrap_median_ci95_high": 3.5377096481323242,
+          "bootstrap_median_ci95_low": 3.529820686340332,
+          "coefficient_of_variation": 0.009302177760736725,
+          "count": 100,
+          "mean": 3.522269519805908,
+          "median": 3.533171577453613,
+          "p25": 3.4915863037109376,
+          "p75": 3.5461305198669435,
+          "stdev": 0.032764777194459346
+        },
+        "host_to_device": {
+          "bootstrap_median_ci95_high": 0.0043948799967765805,
+          "bootstrap_median_ci95_low": 0.004322879999876022,
+          "coefficient_of_variation": 0.030012628042867227,
+          "count": 100,
+          "mean": 0.004382354232370853,
+          "median": 0.004357215985655785,
+          "p25": 0.004285887986421585,
+          "p75": 0.004479751974344253,
+          "stdev": 0.00013152596752823135
+        },
+        "loss": {
+          "bootstrap_median_ci95_high": 0.001631168030202389,
+          "bootstrap_median_ci95_low": 0.0016296640336513524,
+          "coefficient_of_variation": 0.00168272703081976,
+          "count": 100,
+          "mean": 0.0016300854710489514,
+          "median": 0.0016305760331451896,
+          "p25": 0.0016285680327564483,
+          "p75": 0.0016322240307927137,
+          "stdev": 2.742988884680632e-06
+        },
+        "optimizer_step": {
+          "bootstrap_median_ci95_high": 0.0030782719850540163,
+          "bootstrap_median_ci95_low": 0.002919088006019592,
+          "coefficient_of_variation": 0.15569763626660782,
+          "count": 100,
+          "mean": 0.0031486191987991335,
+          "median": 0.002996559977531433,
+          "p25": 0.002814719974994659,
+          "p75": 0.0032601600885391237,
+          "stdev": 0.0004902325667566856
+        },
+        "snn_forward": {
+          "bootstrap_median_ci95_high": 2.3736840133666997,
+          "bootstrap_median_ci95_low": 2.3530574340820314,
+          "coefficient_of_variation": 0.033932366786456176,
+          "count": 100,
+          "mean": 2.367273741912842,
+          "median": 2.3693876342773437,
+          "p25": 2.3108960952758792,
+          "p75": 2.385560634613037,
+          "stdev": 0.08032720089453314
+        }
+      },
+      "physical_batch": 4,
+      "rounds": 5,
+      "time_steps": 8,
+      "wall_seconds": {
+        "block_bootstrap_median_ci95_high": 5.991441433317959,
+        "block_bootstrap_median_ci95_low": 5.819787374697626,
+        "bootstrap_median_ci95_high": 5.963214890565723,
+        "bootstrap_median_ci95_low": 5.932360592996702,
+        "coefficient_of_variation": 0.018186758797564682,
+        "count": 100,
+        "independent_blocks": 5,
+        "mean": 5.939325865996071,
+        "median": 5.95219865324907,
+        "p25": 5.861106310854666,
+        "p75": 5.980773457093164,
+        "stdev": 0.1080170869450075
+      }
+    },
+    {
+      "effective_batch": 4,
+      "gradient_accumulation_steps": 1,
+      "images_per_second": {
+        "block_bootstrap_median_ci95_high": 49.75681734946414,
+        "block_bootstrap_median_ci95_low": 39.447504922839634,
+        "bootstrap_median_ci95_high": 49.478967680617785,
+        "bootstrap_median_ci95_low": 48.486396306013845,
+        "coefficient_of_variation": 0.08963683348329589,
+        "count": 100,
+        "independent_blocks": 5,
+        "mean": 47.18776948768346,
+        "median": 49.0466548767055,
+        "p25": 44.33879503959786,
+        "p75": 49.893078965194526,
+        "stdev": 4.229762236015633
+      },
+      "memory": {
+        "dynamic_peak_bytes": 3215290368,
+        "peak_allocated_bytes": 3271757824,
+        "peak_reserved_bytes": 4324327424,
+        "steady_allocated_bytes": 56467456
+      },
+      "method": "qad",
+      "mode": "matched",
+      "phase_seconds": {
+        "backward": {
+          "bootstrap_median_ci95_high": 0.022544384002685547,
+          "bootstrap_median_ci95_low": 0.02056991958618164,
+          "coefficient_of_variation": 0.35693116550840465,
+          "count": 100,
+          "mean": 0.026258722171783447,
+          "median": 0.02159411144256592,
+          "p25": 0.020359679698944092,
+          "p75": 0.025522632122039795,
+          "stdev": 0.009372556309536052
+        },
+        "loss": {
+          "bootstrap_median_ci95_high": 0.0003948799967765808,
+          "bootstrap_median_ci95_low": 0.0003815999925136566,
+          "coefficient_of_variation": 0.1566035110154372,
+          "count": 100,
+          "mean": 0.000409380479156971,
+          "median": 0.00038569599390029906,
+          "p25": 0.0003775039911270142,
+          "p75": 0.0004100159928202629,
+          "stdev": 6.411042037716367e-05
+        },
+        "optimizer_step": {
+          "bootstrap_median_ci95_high": 0.0024428479671478273,
+          "bootstrap_median_ci95_low": 0.0023625919818878174,
+          "coefficient_of_variation": 0.19389807793658315,
+          "count": 100,
+          "mean": 0.0026594060635566712,
+          "median": 0.0023850079774856564,
+          "p25": 0.002346399962902069,
+          "p75": 0.0027753759622573854,
+          "stdev": 0.0005156537241765332
+        },
+        "student_forward": {
+          "bootstrap_median_ci95_high": 0.03818121719360352,
+          "bootstrap_median_ci95_low": 0.03743961715698242,
+          "coefficient_of_variation": 0.05427604076821325,
+          "count": 100,
+          "mean": 0.03897529029846191,
+          "median": 0.037695184707641605,
+          "p25": 0.0372866325378418,
+          "p75": 0.04107355308532715,
+          "stdev": 0.002115424445192265
+        },
+        "teacher_forward": {
+          "bootstrap_median_ci95_high": 0.012974767684936524,
+          "bootstrap_median_ci95_low": 0.01284883213043213,
+          "coefficient_of_variation": 0.08507548840769104,
+          "count": 100,
+          "mean": 0.013448137922286987,
+          "median": 0.012895071983337402,
+          "p25": 0.012786263704299927,
+          "p75": 0.013578128099441528,
+          "stdev": 0.0011441069019125568
+        }
+      },
+      "physical_batch": 4,
+      "rounds": 5,
+      "time_steps": 1,
+      "wall_seconds": {
+        "block_bootstrap_median_ci95_high": 0.10140059795230627,
+        "block_bootstrap_median_ci95_low": 0.08039101352915168,
+        "bootstrap_median_ci95_high": 0.08249754412099719,
+        "bootstrap_median_ci95_low": 0.08084243047051132,
+        "coefficient_of_variation": 0.0985387333165141,
+        "count": 100,
+        "independent_blocks": 5,
+        "mean": 0.08551405760925263,
+        "median": 0.081555011915043,
+        "p25": 0.08017146307975054,
+        "p75": 0.09021482337266207,
+        "stdev": 0.008426446917571167
+      }
+    },
+    {
+      "effective_batch": 4,
+      "gradient_accumulation_steps": 1,
+      "images_per_second": {
+        "block_bootstrap_median_ci95_high": 11.108824186236903,
+        "block_bootstrap_median_ci95_low": 10.727280578643771,
+        "bootstrap_median_ci95_high": 10.880857303980108,
+        "bootstrap_median_ci95_low": 10.751726180252318,
+        "coefficient_of_variation": 0.016269175684545858,
+        "count": 100,
+        "independent_blocks": 5,
+        "mean": 10.83393675785612,
+        "median": 10.792071653020733,
+        "p25": 10.683103677444747,
+        "p75": 10.95891055138205,
+        "stdev": 0.1762592204688204
+      },
+      "memory": {
+        "dynamic_peak_bytes": 15069389312,
+        "peak_allocated_bytes": 15115188224,
+        "peak_reserved_bytes": 20786970624,
+        "steady_allocated_bytes": 45798912
+      },
+      "method": "squat",
+      "mode": "matched",
+      "phase_seconds": {
+        "bptt_backward": {
+          "bootstrap_median_ci95_high": 0.21890406799316406,
+          "bootstrap_median_ci95_low": 0.2151183319091797,
+          "coefficient_of_variation": 0.013534717237381162,
+          "count": 100,
+          "mean": 0.2173992967224121,
+          "median": 0.2172441635131836,
+          "p25": 0.21449249267578124,
+          "p75": 0.22026379776000976,
+          "stdev": 0.0029424380087433727
+        },
+        "loss": {
+          "bootstrap_median_ci95_high": 0.00010203200206160545,
+          "bootstrap_median_ci95_low": 0.00010195200145244598,
+          "coefficient_of_variation": 0.008035759991832208,
+          "count": 100,
+          "mean": 0.00010181504100561142,
+          "median": 0.00010200000181794167,
+          "p25": 0.00010181600041687488,
+          "p75": 0.00010211200267076492,
+          "stdev": 8.18161233079648e-07
+        },
+        "optimizer_step": {
+          "bootstrap_median_ci95_high": 0.002869455933570862,
+          "bootstrap_median_ci95_low": 0.0027297921180725097,
+          "coefficient_of_variation": 0.19095908652813823,
+          "count": 100,
+          "mean": 0.002989600632190704,
+          "median": 0.0028085120916366575,
+          "p25": 0.0025703760385513306,
+          "p75": 0.003309583902359009,
+          "stdev": 0.0005708914058070814
+        },
+        "snn_forward": {
+          "bootstrap_median_ci95_high": 0.14710150146484374,
+          "bootstrap_median_ci95_low": 0.1461988296508789,
+          "coefficient_of_variation": 0.02215342248142099,
+          "count": 100,
+          "mean": 0.1461447737121582,
+          "median": 0.14661719512939453,
+          "p25": 0.14491426086425782,
+          "p75": 0.1478462371826172,
+          "stdev": 0.0032376069154971088
+        }
+      },
+      "physical_batch": 4,
+      "rounds": 5,
+      "time_steps": 8,
+      "wall_seconds": {
+        "block_bootstrap_median_ci95_high": 0.3728813463822007,
+        "block_bootstrap_median_ci95_low": 0.36007411568425596,
+        "bootstrap_median_ci95_high": 0.37203328404575586,
+        "bootstrap_median_ci95_low": 0.3676180918700993,
+        "coefficient_of_variation": 0.016219358927598966,
+        "count": 100,
+        "independent_blocks": 5,
+        "mean": 0.36930666826665404,
+        "median": 0.37064248067326844,
+        "p25": 0.3649998106993735,
+        "p75": 0.37442302564159036,
+        "stdev": 0.005989917406972585
+      }
+    },
+    {
+      "effective_batch": 4,
+      "gradient_accumulation_steps": 1,
+      "images_per_second": {
+        "block_bootstrap_median_ci95_high": 49.29772196178364,
+        "block_bootstrap_median_ci95_low": 48.31029328682973,
+        "bootstrap_median_ci95_high": 49.72549288208592,
+        "bootstrap_median_ci95_low": 47.91678055837683,
+        "coefficient_of_variation": 0.03358515094537324,
+        "count": 30,
+        "independent_blocks": 3,
+        "mean": 49.213485321060844,
+        "median": 49.1186440611374,
+        "p25": 47.87790671557302,
+        "p75": 50.33763781500314,
+        "stdev": 1.6528423330557387
+      },
+      "memory": {
+        "dynamic_peak_bytes": 2600162304,
+        "peak_allocated_bytes": 2651243520,
+        "peak_reserved_bytes": 3705667584,
+        "steady_allocated_bytes": 51081216
+      },
+      "method": "qif_ste",
+      "mode": "qad_ablation",
+      "phase_seconds": {
+        "backward": {
+          "bootstrap_median_ci95_high": 0.0408787841796875,
+          "bootstrap_median_ci95_low": 0.03683430480957031,
+          "coefficient_of_variation": 0.08252437271050184,
+          "count": 30,
+          "mean": 0.038271941502889,
+          "median": 0.03848270416259766,
+          "p25": 0.0363123197555542,
+          "p75": 0.04106164073944092,
+          "stdev": 0.0031583679649389356
+        },
+        "loss": {
+          "bootstrap_median_ci95_high": 0.00010196800157427787,
+          "bootstrap_median_ci95_low": 0.00010000000149011611,
+          "coefficient_of_variation": 0.010145584669544683,
+          "count": 30,
+          "mean": 0.00010103146806359292,
+          "median": 0.00010185600072145462,
+          "p25": 9.996800124645233e-05,
+          "p75": 0.00010200800187885761,
+          "stdev": 1.0250233135275816e-06
+        },
+        "optimizer_step": {
+          "bootstrap_median_ci95_high": 0.0023835680484771728,
+          "bootstrap_median_ci95_low": 0.002347808003425598,
+          "coefficient_of_variation": 0.07355827450931136,
+          "count": 30,
+          "mean": 0.002408185601234436,
+          "median": 0.0023585599660873413,
+          "p25": 0.0023426480293273926,
+          "p75": 0.0023899199962615966,
+          "stdev": 0.0001771419775249737
+        },
+        "student_forward": {
+          "bootstrap_median_ci95_high": 0.038151968002319334,
+          "bootstrap_median_ci95_low": 0.0380086555480957,
+          "coefficient_of_variation": 0.019606154434481844,
+          "count": 30,
+          "mean": 0.038308105214436845,
+          "median": 0.03809182357788086,
+          "p25": 0.0379007682800293,
+          "p75": 0.03817597579956055,
+          "stdev": 0.000751074626926628
+        }
+      },
+      "physical_batch": 4,
+      "rounds": 3,
+      "time_steps": 1,
+      "wall_seconds": {
+        "block_bootstrap_median_ci95_high": 0.0828217756934464,
+        "block_bootstrap_median_ci95_low": 0.08114082831889391,
+        "bootstrap_median_ci95_high": 0.08347806331003085,
+        "bootstrap_median_ci95_low": 0.08044163603335619,
+        "coefficient_of_variation": 0.03286082992880602,
+        "count": 30,
+        "independent_blocks": 3,
+        "mean": 0.08136529419571162,
+        "median": 0.08143547526560724,
+        "p25": 0.07946471869945526,
+        "p75": 0.0835458516376093,
+        "stdev": 0.002673731094672547
+      }
+    },
+    {
+      "effective_batch": 4,
+      "gradient_accumulation_steps": 1,
+      "images_per_second": {
+        "block_bootstrap_median_ci95_high": 50.306263906607725,
+        "block_bootstrap_median_ci95_low": 49.946136812353046,
+        "bootstrap_median_ci95_high": 51.06883689752274,
+        "bootstrap_median_ci95_low": 49.43818622840089,
+        "coefficient_of_variation": 0.02691536991137391,
+        "count": 30,
+        "independent_blocks": 3,
+        "mean": 50.45668321365583,
+        "median": 50.094016163988144,
+        "p25": 49.37413363323181,
+        "p75": 51.534085341559646,
+        "stdev": 1.358060293196557
+      },
+      "memory": {
+        "dynamic_peak_bytes": 2536641536,
+        "peak_allocated_bytes": 2582440448,
+        "peak_reserved_bytes": 3930062848,
+        "steady_allocated_bytes": 45798912
+      },
+      "method": "squat",
+      "mode": "timestep_ablation",
+      "phase_seconds": {
+        "bptt_backward": {
+          "bootstrap_median_ci95_high": 0.045055999755859374,
+          "bootstrap_median_ci95_low": 0.04247910499572754,
+          "coefficient_of_variation": 0.05948403967710067,
+          "count": 30,
+          "mean": 0.043163579686482746,
+          "median": 0.044075008392333984,
+          "p25": 0.04080204772949218,
+          "p75": 0.04515584087371826,
+          "stdev": 0.002567544086676436
+        },
+        "loss": {
+          "bootstrap_median_ci95_high": 0.00014079999923706055,
+          "bootstrap_median_ci95_low": 0.00013887999951839447,
+          "coefficient_of_variation": 0.043941298130477105,
+          "count": 30,
+          "mean": 0.00014210880051056544,
+          "median": 0.00013958399742841718,
+          "p25": 0.0001385440044105053,
+          "p75": 0.0001427360065281391,
+          "stdev": 6.2444451701992535e-06
+        },
+        "optimizer_step": {
+          "bootstrap_median_ci95_high": 0.0023578399419784545,
+          "bootstrap_median_ci95_low": 0.002344607949256897,
+          "coefficient_of_variation": 0.02668214153539828,
+          "count": 30,
+          "mean": 0.002375263984998067,
+          "median": 0.0023520160913467407,
+          "p25": 0.0023429359793663024,
+          "p75": 0.002362575948238373,
+          "stdev": 6.337712983165256e-05
+        },
+        "snn_forward": {
+          "bootstrap_median_ci95_high": 0.03145524787902832,
+          "bootstrap_median_ci95_low": 0.031107583999633787,
+          "coefficient_of_variation": 0.019057471170363806,
+          "count": 30,
+          "mean": 0.03148270823160807,
+          "median": 0.03123311996459961,
+          "p25": 0.031069536209106442,
+          "p75": 0.03153925561904907,
+          "stdev": 0.000599980804488846
+        }
+      },
+      "physical_batch": 4,
+      "rounds": 3,
+      "time_steps": 1,
+      "wall_seconds": {
+        "block_bootstrap_median_ci95_high": 0.08009893051348627,
+        "block_bootstrap_median_ci95_low": 0.0795280181337148,
+        "bootstrap_median_ci95_high": 0.08090911712497473,
+        "bootstrap_median_ci95_low": 0.07832580176182091,
+        "coefficient_of_variation": 0.026656368543297483,
+        "count": 30,
+        "independent_blocks": 3,
+        "mean": 0.07933092983439564,
+        "median": 0.07985718711279333,
+        "p25": 0.07761856855358928,
+        "p75": 0.08101408125367016,
+        "stdev": 0.0021146745025481238
+      }
+    },
+    {
+      "effective_batch": 4,
+      "gradient_accumulation_steps": 1,
+      "images_per_second": {
+        "block_bootstrap_median_ci95_high": 37.41535553363643,
+        "block_bootstrap_median_ci95_low": 36.20367873211565,
+        "bootstrap_median_ci95_high": 37.002794140034695,
+        "bootstrap_median_ci95_low": 36.18783096034336,
+        "coefficient_of_variation": 0.07481812953755144,
+        "count": 30,
+        "independent_blocks": 3,
+        "mean": 37.16744139245323,
+        "median": 36.38211934454382,
+        "p25": 36.142475991334194,
+        "p75": 37.16007834711912,
+        "stdev": 2.7807984446799168
+      },
+      "memory": {
+        "dynamic_peak_bytes": 4450145792,
+        "peak_allocated_bytes": 4497808384,
+        "peak_reserved_bytes": 5976883200,
+        "steady_allocated_bytes": 47662592
+      },
+      "method": "squat",
+      "mode": "timestep_ablation",
+      "phase_seconds": {
+        "bptt_backward": {
+          "bootstrap_median_ci95_high": 0.0640604133605957,
+          "bootstrap_median_ci95_low": 0.061469152450561525,
+          "coefficient_of_variation": 0.12079026075427186,
+          "count": 30,
+          "mean": 0.06120336888631185,
+          "median": 0.062114816665649414,
+          "p25": 0.05970073509216309,
+          "p75": 0.06418996047973632,
+          "stdev": 0.007392770886817498
+        },
+        "loss": {
+          "bootstrap_median_ci95_high": 0.00010102400183677673,
+          "bootstrap_median_ci95_low": 0.00010081600025296211,
+          "coefficient_of_variation": 0.0312841866286757,
+          "count": 30,
+          "mean": 0.00010142826735973357,
+          "median": 0.00010102400183677673,
+          "p25": 0.00010036799684166907,
+          "p75": 0.0001016400009393692,
+          "stdev": 3.173100845505121e-06
+        },
+        "optimizer_step": {
+          "bootstrap_median_ci95_high": 0.002373471975326538,
+          "bootstrap_median_ci95_low": 0.0023479679822921754,
+          "coefficient_of_variation": 0.02370731603483954,
+          "count": 30,
+          "mean": 0.0023776192029317223,
+          "median": 0.002357167959213257,
+          "p25": 0.002346520006656647,
+          "p75": 0.002385303974151611,
+          "stdev": 5.636696985440562e-05
+        },
+        "snn_forward": {
+          "bootstrap_median_ci95_high": 0.04199734497070313,
+          "bootstrap_median_ci95_low": 0.0416585750579834,
+          "coefficient_of_variation": 0.028952776945211468,
+          "count": 30,
+          "mean": 0.042274480056762695,
+          "median": 0.04177390289306641,
+          "p25": 0.041622055053710943,
+          "p75": 0.04286319351196288,
+          "stdev": 0.001223963591558241
+        }
+      },
+      "physical_batch": 4,
+      "rounds": 3,
+      "time_steps": 2,
+      "wall_seconds": {
+        "block_bootstrap_median_ci95_high": 0.11048611951991916,
+        "block_bootstrap_median_ci95_low": 0.10690978053025901,
+        "bootstrap_median_ci95_high": 0.1105344295501709,
+        "bootstrap_median_ci95_low": 0.10809997678734362,
+        "coefficient_of_variation": 0.06934730159754338,
+        "count": 30,
+        "independent_blocks": 3,
+        "mean": 0.10815808931365609,
+        "median": 0.1099447594024241,
+        "p25": 0.1076425164937973,
+        "p75": 0.1106731042964384,
+        "stdev": 0.007500471639848142
+      }
+    },
+    {
+      "effective_batch": 4,
+      "gradient_accumulation_steps": 1,
+      "images_per_second": {
+        "block_bootstrap_median_ci95_high": 21.50272025205576,
+        "block_bootstrap_median_ci95_low": 21.105225863851754,
+        "bootstrap_median_ci95_high": 21.48423540304438,
+        "bootstrap_median_ci95_low": 21.320426321316262,
+        "coefficient_of_variation": 0.013215780152778663,
+        "count": 30,
+        "independent_blocks": 3,
+        "mean": 21.324035772212817,
+        "median": 21.45719255160215,
+        "p25": 21.240512370214333,
+        "p75": 21.501340683445214,
+        "stdev": 0.28181376873555236
+      },
+      "memory": {
+        "dynamic_peak_bytes": 8259139072,
+        "peak_allocated_bytes": 8304937984,
+        "peak_reserved_bytes": 12002000896,
+        "steady_allocated_bytes": 45798912
+      },
+      "method": "squat",
+      "mode": "timestep_ablation",
+      "phase_seconds": {
+        "bptt_backward": {
+          "bootstrap_median_ci95_high": 0.10725273513793945,
+          "bootstrap_median_ci95_low": 0.10676290893554688,
+          "coefficient_of_variation": 0.007999208083405743,
+          "count": 30,
+          "mean": 0.10714748764038086,
+          "median": 0.1069864959716797,
+          "p25": 0.1066503734588623,
+          "p75": 0.10765721321105957,
+          "stdev": 0.0008570950492495516
+        },
+        "loss": {
+          "bootstrap_median_ci95_high": 0.00010047999769449234,
+          "bootstrap_median_ci95_low": 0.00010000000149011611,
+          "coefficient_of_variation": 0.0043234994172412,
+          "count": 30,
+          "mean": 0.0001003711998462677,
+          "median": 0.00010044799745082855,
+          "p25": 0.00010000000149011611,
+          "p75": 0.00010053599812090397,
+          "stdev": 4.3395482404313835e-07
+        },
+        "optimizer_step": {
+          "bootstrap_median_ci95_high": 0.0024960960149765015,
+          "bootstrap_median_ci95_low": 0.0024192160367965698,
+          "coefficient_of_variation": 0.10934994611995934,
+          "count": 30,
+          "mean": 0.0025581621487935384,
+          "median": 0.002432784080505371,
+          "p25": 0.002397663950920105,
+          "p75": 0.002509592056274414,
+          "stdev": 0.0002797348931366928
+        },
+        "snn_forward": {
+          "bootstrap_median_ci95_high": 0.07514622116088868,
+          "bootstrap_median_ci95_low": 0.07473289489746093,
+          "coefficient_of_variation": 0.023233877225464626,
+          "count": 30,
+          "mean": 0.0756205057779948,
+          "median": 0.07477617645263672,
+          "p25": 0.07464217758178711,
+          "p75": 0.07571830368041992,
+          "stdev": 0.0017569575469734695
+        }
+      },
+      "physical_batch": 4,
+      "rounds": 3,
+      "time_steps": 4,
+      "wall_seconds": {
+        "block_bootstrap_median_ci95_high": 0.18956363038159907,
+        "block_bootstrap_median_ci95_low": 0.1860229754820466,
+        "bootstrap_median_ci95_high": 0.1876136432401836,
+        "bootstrap_median_ci95_low": 0.1861830281559378,
+        "coefficient_of_variation": 0.013426301171858918,
+        "count": 30,
+        "independent_blocks": 3,
+        "mean": 0.18761393084811667,
+        "median": 0.18641768395900726,
+        "p25": 0.18603491189423949,
+        "p75": 0.18831939005758613,
+        "stdev": 0.002518961139603127
+      }
+    },
+    {
+      "effective_batch": 4,
+      "gradient_accumulation_steps": 1,
+      "images_per_second": {
+        "block_bootstrap_median_ci95_high": 11.165857611992259,
+        "block_bootstrap_median_ci95_low": 11.044848320177913,
+        "bootstrap_median_ci95_high": 11.098261771812766,
+        "bootstrap_median_ci95_low": 11.044848320177913,
+        "coefficient_of_variation": 0.006266996603331327,
+        "count": 30,
+        "independent_blocks": 3,
+        "mean": 11.080062082851837,
+        "median": 11.0765762362768,
+        "p25": 11.040592959894173,
+        "p75": 11.12370928763137,
+        "stdev": 0.06943871143793269
+      },
+      "memory": {
+        "dynamic_peak_bytes": 15069389312,
+        "peak_allocated_bytes": 15115188224,
+        "peak_reserved_bytes": 20786970624,
+        "steady_allocated_bytes": 45798912
+      },
+      "method": "squat",
+      "mode": "timestep_ablation",
+      "phase_seconds": {
+        "bptt_backward": {
+          "bootstrap_median_ci95_high": 0.21397573852539062,
+          "bootstrap_median_ci95_low": 0.21363658905029298,
+          "coefficient_of_variation": 0.0034600638406905916,
+          "count": 30,
+          "mean": 0.21399119974772138,
+          "median": 0.21390609741210936,
+          "p25": 0.2135682601928711,
+          "p75": 0.21401828384399416,
+          "stdev": 0.0007404232124730884
+        },
+        "loss": {
+          "bootstrap_median_ci95_high": 0.00010204800218343735,
+          "bootstrap_median_ci95_low": 0.0001018880009651184,
+          "coefficient_of_variation": 0.006843601226928999,
+          "count": 30,
+          "mean": 0.00010171626831094424,
+          "median": 0.00010198400169610977,
+          "p25": 0.00010127200186252594,
+          "p75": 0.00010204800218343735,
+          "stdev": 6.961055786114173e-07
+        },
+        "optimizer_step": {
+          "bootstrap_median_ci95_high": 0.0025383840799331663,
+          "bootstrap_median_ci95_low": 0.0024555027425289156,
+          "coefficient_of_variation": 0.07924201862336874,
+          "count": 30,
+          "mean": 0.0025557056188583375,
+          "median": 0.0024986240863800048,
+          "p25": 0.0024506720900535585,
+          "p75": 0.0025656320452690125,
+          "stdev": 0.00020251927224542053
+        },
+        "snn_forward": {
+          "bootstrap_median_ci95_high": 0.1428963394165039,
+          "bootstrap_median_ci95_low": 0.14168633270263672,
+          "coefficient_of_variation": 0.012368886009240897,
+          "count": 30,
+          "mean": 0.1419592798868815,
+          "median": 0.1420240478515625,
+          "p25": 0.14037943649291995,
+          "p75": 0.1432840805053711,
+          "stdev": 0.0017558781508747612
+        }
+      },
+      "physical_batch": 4,
+      "rounds": 3,
+      "time_steps": 8,
+      "wall_seconds": {
+        "block_bootstrap_median_ci95_high": 0.3621598049066961,
+        "block_bootstrap_median_ci95_low": 0.358235428808257,
+        "bootstrap_median_ci95_high": 0.3621598049066961,
+        "bootstrap_median_ci95_low": 0.3604168265592307,
+        "coefficient_of_variation": 0.006276915674302715,
+        "count": 30,
+        "independent_blocks": 3,
+        "mean": 0.3610225352924317,
+        "median": 0.3611224186606705,
+        "p25": 0.3595927490387112,
+        "p75": 0.3622993838507682,
+        "stdev": 0.00226610801055357
+      }
+    }
+  ]
+}

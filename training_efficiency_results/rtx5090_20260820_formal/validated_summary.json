@@ -1,0 +1,87 @@
+{
+  "accuracy_context": {
+    "causal_comparison": false,
+    "qad_minus_squat_miou": 0.3040331019721516,
+    "qad_miou": 0.6195473169172718,
+    "single_seed": true,
+    "source_sha256": "33a1b65f17e2909322b7bf1c241c273194a71d29875d46f8398f2aeb996b653e",
+    "squat_miou": 0.3155142149451202
+  },
+  "capacity_batch": {
+    "effective_batch": 64,
+    "epoch_projection_minutes": {
+      "qad": 3.950602971902117,
+      "squat": 39.87973097676877
+    },
+    "memory_comparable": false,
+    "paired_round_speedup": {
+      "block_bootstrap_median_ci95_high": 10.224417661151621,
+      "block_bootstrap_median_ci95_low": 9.700721647286056,
+      "independent_pairs": 5,
+      "median": 10.08799119581369,
+      "round_ratios": [
+        10.224417661151621,
+        10.08799119581369,
+        10.15475576388251,
+        9.700721647286056,
+        9.802804581071895
+      ]
+    },
+    "physical_batch_capacity_ratio": 8.0,
+    "qad_images_per_second": 108.54039335357815,
+    "qad_peak_allocated_gib": 24.00642967224121,
+    "qad_physical_batch": 32,
+    "qad_update_seconds": 0.5896422346122563,
+    "squat_images_per_second": 10.7523305331055,
+    "squat_peak_allocated_gib": 14.082019329071045,
+    "squat_physical_batch": 4,
+    "squat_update_seconds": 5.95219865324907,
+    "throughput_speedup_ratio_of_pooled_medians": 10.094592332275466
+  },
+  "generated_at": "2026-08-20T08:59:57.739879+00:00",
+  "matched_batch": {
+    "effective_batch": 4,
+    "paired_round_speedup": {
+      "block_bootstrap_median_ci95_high": 4.624115484234685,
+      "block_bootstrap_median_ci95_low": 3.551005841736916,
+      "independent_pairs": 5,
+      "median": 4.59938522287418,
+      "round_ratios": [
+        4.624115484234685,
+        4.59938522287418,
+        4.407327057738396,
+        4.610301561612474,
+        3.551005841736916
+      ]
+    },
+    "physical_batch": 4,
+    "qad_images_per_second": 49.0466548767055,
+    "qad_memory_reduction_fraction": 0.7835450160782595,
+    "qad_peak_allocated_gib": 3.0470619201660156,
+    "qad_update_seconds": 0.081555011915043,
+    "squat_images_per_second": 10.792071653020733,
+    "squat_peak_allocated_gib": 14.077116012573242,
+    "squat_to_qad_memory_ratio": 4.619898243422066,
+    "squat_update_seconds": 0.37064248067326844,
+    "throughput_speedup_ratio_of_pooled_medians": 4.544693220506667
+  },
+  "mechanism": {
+    "qad_teacher_kd_memory_overhead_gib": 0.5778989791870117,
+    "qad_to_qif_ste_update_time_ratio": 1.0014678694886459,
+    "squat_t8_to_t1_peak_memory_ratio": 5.853063614963949,
+    "squat_t8_to_t1_update_time_ratio": 4.522102915428357
+  },
+  "validation": {
+    "capacity_probe": {
+      "qad": 32,
+      "squat": 4
+    },
+    "gradient_audit": "passed",
+    "qad_teacher_gradient_audit": "passed",
+    "run_files": 42,
+    "status_counts": {
+      "ok": 37,
+      "oom": 5
+    }
+  }
+}

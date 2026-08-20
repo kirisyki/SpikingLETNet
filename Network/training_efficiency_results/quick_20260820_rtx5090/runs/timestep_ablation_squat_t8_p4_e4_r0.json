@@ -1,0 +1,59 @@
+{
+  "completed_at": "2026-08-20T08:08:58.842378+00:00",
+  "effective_batch": 4,
+  "gradient_audit": {
+    "parameters_with_grad": 231,
+    "teacher_parameters_with_grad": 0
+  },
+  "input_residency": "gpu",
+  "measured_updates": 2,
+  "memory": {
+    "model_and_input_allocated_bytes": 18229760,
+    "model_and_input_reserved_bytes": 27262976,
+    "peak_allocated_bytes": 15115188224,
+    "peak_reserved_bytes": 20786970624,
+    "steady_allocated_bytes": 45798912,
+    "steady_reserved_bytes": 20774387712
+  },
+  "method": "squat",
+  "mode": "timestep_ablation",
+  "model": {
+    "qlayers": 0,
+    "teacher_parameters": 0,
+    "trainable_parameters": 1303060
+  },
+  "physical_batch": 4,
+  "round": 0,
+  "started_at": "2026-08-20T08:08:56.182560+00:00",
+  "status": "ok",
+  "time_steps": 8,
+  "trials": [
+    {
+      "images_per_second": 10.931438191160156,
+      "loss": 2.3201305866241455,
+      "phase_seconds": {
+        "bptt_backward": 0.21500160217285155,
+        "loss": 9.993600100278855e-05,
+        "optimizer_step": 0.0026506240367889402,
+        "snn_forward": 0.1460091552734375
+      },
+      "seconds_per_image": 0.09147927130106837,
+      "trial": 0,
+      "wall_seconds": 0.36591708520427346
+    },
+    {
+      "images_per_second": 11.060716584371454,
+      "loss": 2.2791287899017334,
+      "phase_seconds": {
+        "bptt_backward": 0.21423974609375,
+        "loss": 0.00010204800218343735,
+        "optimizer_step": 0.0025001599788665773,
+        "snn_forward": 0.14256924438476562
+      },
+      "seconds_per_image": 0.09041005547624081,
+      "trial": 1,
+      "wall_seconds": 0.36164022190496325
+    }
+  ],
+  "warmup_updates": 1
+}

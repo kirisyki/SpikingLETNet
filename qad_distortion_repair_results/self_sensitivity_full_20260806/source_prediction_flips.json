@@ -1,0 +1,422 @@
+[
+  {
+    "method": "qad",
+    "source_id": "000061",
+    "flip_count": 8123829,
+    "valid_count": 32000000
+  },
+  {
+    "method": "qad",
+    "source_id": "000161",
+    "flip_count": 7029639,
+    "valid_count": 32000000
+  },
+  {
+    "method": "qad",
+    "source_id": "000261",
+    "flip_count": 8267832,
+    "valid_count": 32000000
+  },
+  {
+    "method": "qad",
+    "source_id": "000361",
+    "flip_count": 8389302,
+    "valid_count": 32000000
+  },
+  {
+    "method": "qad",
+    "source_id": "001261",
+    "flip_count": 9897166,
+    "valid_count": 32000000
+  },
+  {
+    "method": "qad",
+    "source_id": "001361",
+    "flip_count": 7960854,
+    "valid_count": 32000000
+  },
+  {
+    "method": "qad",
+    "source_id": "001461",
+    "flip_count": 12205558,
+    "valid_count": 32000000
+  },
+  {
+    "method": "qad",
+    "source_id": "001561",
+    "flip_count": 10953451,
+    "valid_count": 32000000
+  },
+  {
+    "method": "qad",
+    "source_id": "0119_3img2031",
+    "flip_count": 13153896,
+    "valid_count": 30400000
+  },
+  {
+    "method": "qad",
+    "source_id": "0119_4img1001",
+    "flip_count": 14200587,
+    "valid_count": 30400000
+  },
+  {
+    "method": "qad",
+    "source_id": "0119_4img3041",
+    "flip_count": 16332310,
+    "valid_count": 30400000
+  },
+  {
+    "method": "qad",
+    "source_id": "0119_5img3001",
+    "flip_count": 12120297,
+    "valid_count": 30400000
+  },
+  {
+    "method": "qad",
+    "source_id": "DJI_0031",
+    "flip_count": 9678974,
+    "valid_count": 42560000
+  },
+  {
+    "method": "qad",
+    "source_id": "DJI_00528",
+    "flip_count": 18191725,
+    "valid_count": 42560000
+  },
+  {
+    "method": "qad",
+    "source_id": "DJI_00581",
+    "flip_count": 21197638,
+    "valid_count": 42560000
+  },
+  {
+    "method": "qad",
+    "source_id": "DJI_00591",
+    "flip_count": 18842328,
+    "valid_count": 42560000
+  },
+  {
+    "method": "qad",
+    "source_id": "DJI_0291",
+    "flip_count": 6365214,
+    "valid_count": 42560000
+  },
+  {
+    "method": "qad",
+    "source_id": "DJI_0303",
+    "flip_count": 7899178,
+    "valid_count": 42560000
+  },
+  {
+    "method": "qad",
+    "source_id": "DJI_0316",
+    "flip_count": 4622052,
+    "valid_count": 42560000
+  },
+  {
+    "method": "qad",
+    "source_id": "DJI_0373_heda",
+    "flip_count": 4535611,
+    "valid_count": 42560000
+  },
+  {
+    "method": "qad",
+    "source_id": "DJI_0388",
+    "flip_count": 5534348,
+    "valid_count": 42560000
+  },
+  {
+    "method": "qad",
+    "source_id": "DJI_0397",
+    "flip_count": 6938343,
+    "valid_count": 42560000
+  },
+  {
+    "method": "qad",
+    "source_id": "DJI_0406",
+    "flip_count": 6310887,
+    "valid_count": 42560000
+  },
+  {
+    "method": "qad",
+    "source_id": "DJI_0415",
+    "flip_count": 2609711,
+    "valid_count": 42560000
+  },
+  {
+    "method": "qad",
+    "source_id": "DJI_0431",
+    "flip_count": 3465444,
+    "valid_count": 42560000
+  },
+  {
+    "method": "qad",
+    "source_id": "DJI_0490",
+    "flip_count": 5591596,
+    "valid_count": 42560000
+  },
+  {
+    "method": "qad",
+    "source_id": "DJI_0499_heda",
+    "flip_count": 5888512,
+    "valid_count": 42560000
+  },
+  {
+    "method": "qad",
+    "source_id": "DJI_0511",
+    "flip_count": 5387902,
+    "valid_count": 42560000
+  },
+  {
+    "method": "qad",
+    "source_id": "DJI_0520",
+    "flip_count": 5301119,
+    "valid_count": 42560000
+  },
+  {
+    "method": "qad",
+    "source_id": "DJI_0532",
+    "flip_count": 7447913,
+    "valid_count": 42560000
+  },
+  {
+    "method": "qad",
+    "source_id": "DJI_0539_heda",
+    "flip_count": 3426301,
+    "valid_count": 42560000
+  },
+  {
+    "method": "qad",
+    "source_id": "DJI_0553_heda",
+    "flip_count": 2377361,
+    "valid_count": 42560000
+  },
+  {
+    "method": "qad",
+    "source_id": "DJI_0563_heda",
+    "flip_count": 3389561,
+    "valid_count": 42560000
+  },
+  {
+    "method": "qad",
+    "source_id": "DJI_0627",
+    "flip_count": 11447467,
+    "valid_count": 42560000
+  },
+  {
+    "method": "qad",
+    "source_id": "DJI_0707",
+    "flip_count": 9601096,
+    "valid_count": 42560000
+  },
+  {
+    "method": "ste",
+    "source_id": "000061",
+    "flip_count": 6833877,
+    "valid_count": 32000000
+  },
+  {
+    "method": "ste",
+    "source_id": "000161",
+    "flip_count": 5693762,
+    "valid_count": 32000000
+  },
+  {
+    "method": "ste",
+    "source_id": "000261",
+    "flip_count": 5237651,
+    "valid_count": 32000000
+  },
+  {
+    "method": "ste",
+    "source_id": "000361",
+    "flip_count": 5445011,
+    "valid_count": 32000000
+  },
+  {
+    "method": "ste",
+    "source_id": "001261",
+    "flip_count": 6345297,
+    "valid_count": 32000000
+  },
+  {
+    "method": "ste",
+    "source_id": "001361",
+    "flip_count": 6320493,
+    "valid_count": 32000000
+  },
+  {
+    "method": "ste",
+    "source_id": "001461",
+    "flip_count": 7348730,
+    "valid_count": 32000000
+  },
+  {
+    "method": "ste",
+    "source_id": "001561",
+    "flip_count": 8741126,
+    "valid_count": 32000000
+  },
+  {
+    "method": "ste",
+    "source_id": "0119_3img2031",
+    "flip_count": 9169195,
+    "valid_count": 30400000
+  },
+  {
+    "method": "ste",
+    "source_id": "0119_4img1001",
+    "flip_count": 9026645,
+    "valid_count": 30400000
+  },
+  {
+    "method": "ste",
+    "source_id": "0119_4img3041",
+    "flip_count": 8705400,
+    "valid_count": 30400000
+  },
+  {
+    "method": "ste",
+    "source_id": "0119_5img3001",
+    "flip_count": 9448696,
+    "valid_count": 30400000
+  },
+  {
+    "method": "ste",
+    "source_id": "DJI_0031",
+    "flip_count": 9377806,
+    "valid_count": 42560000
+  },
+  {
+    "method": "ste",
+    "source_id": "DJI_00528",
+    "flip_count": 13660607,
+    "valid_count": 42560000
+  },
+  {
+    "method": "ste",
+    "source_id": "DJI_00581",
+    "flip_count": 10414719,
+    "valid_count": 42560000
+  },
+  {
+    "method": "ste",
+    "source_id": "DJI_00591",
+    "flip_count": 8888910,
+    "valid_count": 42560000
+  },
+  {
+    "method": "ste",
+    "source_id": "DJI_0291",
+    "flip_count": 6028032,
+    "valid_count": 42560000
+  },
+  {
+    "method": "ste",
+    "source_id": "DJI_0303",
+    "flip_count": 5258475,
+    "valid_count": 42560000
+  },
+  {
+    "method": "ste",
+    "source_id": "DJI_0316",
+    "flip_count": 3679896,
+    "valid_count": 42560000
+  },
+  {
+    "method": "ste",
+    "source_id": "DJI_0373_heda",
+    "flip_count": 3456959,
+    "valid_count": 42560000
+  },
+  {
+    "method": "ste",
+    "source_id": "DJI_0388",
+    "flip_count": 4191023,
+    "valid_count": 42560000
+  },
+  {
+    "method": "ste",
+    "source_id": "DJI_0397",
+    "flip_count": 5236415,
+    "valid_count": 42560000
+  },
+  {
+    "method": "ste",
+    "source_id": "DJI_0406",
+    "flip_count": 5200606,
+    "valid_count": 42560000
+  },
+  {
+    "method": "ste",
+    "source_id": "DJI_0415",
+    "flip_count": 3491287,
+    "valid_count": 42560000
+  },
+  {
+    "method": "ste",
+    "source_id": "DJI_0431",
+    "flip_count": 3135237,
+    "valid_count": 42560000
+  },
+  {
+    "method": "ste",
+    "source_id": "DJI_0490",
+    "flip_count": 3760819,
+    "valid_count": 42560000
+  },
+  {
+    "method": "ste",
+    "source_id": "DJI_0499_heda",
+    "flip_count": 4025327,
+    "valid_count": 42560000
+  },
+  {
+    "method": "ste",
+    "source_id": "DJI_0511",
+    "flip_count": 4413010,
+    "valid_count": 42560000
+  },
+  {
+    "method": "ste",
+    "source_id": "DJI_0520",
+    "flip_count": 4521913,
+    "valid_count": 42560000
+  },
+  {
+    "method": "ste",
+    "source_id": "DJI_0532",
+    "flip_count": 5249050,
+    "valid_count": 42560000
+  },
+  {
+    "method": "ste",
+    "source_id": "DJI_0539_heda",
+    "flip_count": 2398648,
+    "valid_count": 42560000
+  },
+  {
+    "method": "ste",
+    "source_id": "DJI_0553_heda",
+    "flip_count": 1611481,
+    "valid_count": 42560000
+  },
+  {
+    "method": "ste",
+    "source_id": "DJI_0563_heda",
+    "flip_count": 5532097,
+    "valid_count": 42560000
+  },
+  {
+    "method": "ste",
+    "source_id": "DJI_0627",
+    "flip_count": 9529226,
+    "valid_count": 42560000
+  },
+  {
+    "method": "ste",
+    "source_id": "DJI_0707",
+    "flip_count": 7475013,
+    "valid_count": 42560000
+  }
+]
