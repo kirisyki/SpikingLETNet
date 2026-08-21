@@ -1,0 +1,2 @@
+epoch,train_loss,miou,model_lr,train_batches,validation_batches,train_seconds,validation_seconds
+1,1.061078429222107,0.33992260694503784,0.001,1,1,9.36044092848897,1.4702742397785187

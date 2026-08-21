@@ -1,13 +1,14 @@
-# W4A4 三随机种子训练：换卡重启交接记录
+# W4A4 三随机种子训练：执行与恢复记录
 
 ## 当前状态
 
 - 记录日期：2026-08-20
 - 项目目录：`/root/autodl-tmp/LETNet`
-- 状态：**等待服务器重启和计算卡配置变更；禁止启动正式训练**
+- 状态：**正式 multi-seed训练进行中**
 - 正式训练进度：**0/8 个新增运行**
-- 当前没有 QAD、STE、LSQ、EWGS 或显存监控进程在运行。
-- 三个 tmux smoke 会话均已结束计算，只剩空闲 shell；tmux 会话不会跨服务器重启保留。
+- 当前执行：QAD seed2345与seed3456分别在两张GPU上并行训练；完成后各自串行执行
+  STE、LSQ、EWGS和全量验证。
+- 正式 tmux 会话：`w4a4_seed2345_gpu0`、`w4a4_seed3456_gpu1`。
 - 所有已生成文档和 smoke 日志位于 `/root/autodl-tmp/LETNet` 数据盘目录，服务器重启后
   应从该目录继续。
 
@@ -90,16 +91,26 @@ smoke 产物：
 - `quantization_multiseed_results/udd/w4a4_v1/smoke/qad_memory_rtx5090_seed1234_expandable_v1/`
 - `quantization_multiseed_results/udd/w4a4_v1/smoke/qad_memory_rtx5090_seed1234_bs32_v1/`
 
+换卡后设备为两张 NVIDIA RTX PRO 6000 Blackwell Server Edition，每张`97,887 MiB`。
+QAD batch64在GPU0完成完整教师/学生前向、KD、反向、optimizer step和验证，峰值
+`57,321 MiB`（约58.6%），退出码0。产物位于：
+
+- `quantization_multiseed_results/udd/w4a4_v1/smoke/qad_memory_pro6000_gpu0_bs64_v1/`
+
 ---
 
-## 4. 计算卡变更建议
+## 4. 当前双卡执行配置
 
-1. 若要保持单卡 batch 64 和历史协议，优先配置一张80GB级显存卡用于 QAD。
-2. 48GB卡可能临界，不能仅凭标称容量直接启动正式训练；必须先完成同参数 smoke test。
-3. 当前 `Network/QAT_snn_STE.py` 是单卡训练：增加多张32GB卡不会自动合并显存。
-4. 多张卡可以在每张卡都满足单进程显存要求时并行不同 seed；不得让两个进程占用同一张卡。
-5. 若改为 DDP、DataParallel、梯度累积、gradient checkpointing 或 batch 32，均属于协议/实现
-   变化，必须先修订方案，并重新判断历史 seed-1234结果是否仍可复用。
+1. GPU0只运行seed2345队列，GPU1只运行seed3456队列；两个进程不共享单卡。
+2. 每个进程仍是单卡batch64，没有使用DDP、DataParallel、梯度累积或AMP。
+3. 两张卡分别设置`CUDA_VISIBLE_DEVICES=0/1`和`PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True`。
+4. QAD运行时单卡实测约54–57 GiB，低于97,887 MiB容量。
+5. 队列日志：
+   - `quantization_multiseed_results/udd/w4a4_v1/run_logs/seed2345/`
+   - `quantization_multiseed_results/udd/w4a4_v1/run_logs/seed3456/`
+6. 正式checkpoint：
+   - `quantization_multiseed_checkpoint/udd/w4a4_v1/seed2345/`
+   - `quantization_multiseed_checkpoint/udd/w4a4_v1/seed3456/`
 
 ---
 
@@ -145,26 +156,29 @@ git status --short
 
 ### 5.3 代码实施状态
 
-多 seed 正式训练入口目前尚未创建。显存 smoke 通过后，仍需按主方案新增并审查：
+多 seed训练、评估和聚合入口已经创建并通过26项相关测试：
 
 - `Network/train_qad_multiseed.py`
 - `Network/train_quantization_baseline_multiseed.py`
+- `Network/evaluate_quantization_multiseed.py`
 - `Network/aggregate_quantization_multiseed.py`
-- 对应测试和独立输出目录
+- `tests/test_multiseed_training_entrypoints.py`
 
-不得直接使用历史 QAD 入口启动 seed 2345/3456，因为其中 `GLOBAL_SEED=1234` 仍是硬编码。
+历史 QAD入口保持只读；正式新 seed 只使用`Network/train_qad_multiseed.py`。
 
 ---
 
-## 6. 重启后的启动顺序
+## 6. 当前正式队列与恢复顺序
 
-1. 完成第5节环境检查。
-2. 在 tmux 中完成新卡 QAD batch-64显存 smoke。
-3. 记录 GPU 型号、显存、PyTorch/CUDA版本、峰值显存和日志路径。
-4. 实现并测试显式 `--seed` 的低耦合训练入口。
-5. 先补 QAD/STE 的 seed 2345、3456，再补 LSQ、EWGS。
-6. 每个正式进程使用独立 tmux 会话、GPU和输出目录。
-7. 12 个 method-seed 单元齐全后统一全量验证并聚合 Markdown/CSV/JSON。
+1. 两个tmux队列均先执行QAD 127 epochs；每轮原子保存`checkpoint_last.pth`和最佳checkpoint。
+2. QAD完成后，同一seed队列依次执行STE、LSQ、EWGS各16 epochs。
+3. 四种方法完成后，队列执行该seed的完整424-batch validation。
+4. 两个seed均验证完成后，运行`Network/aggregate_quantization_multiseed.py`生成最终
+   Markdown/CSV/JSON。
+5. 若SSH断开，tmux继续运行；重新连接后用`tmux attach -t w4a4_seed2345_gpu0`或
+   `tmux attach -t w4a4_seed3456_gpu1`查看。
+6. 若服务器重启导致QAD中断，使用对应输出目录的`checkpoint_last.pth`和同一seed恢复；
+   不得换seed或更改协议。
 
-当前状态允许安全重启服务器：没有正式训练进程或未保存训练状态需要恢复。
+当前有正式训练进程运行，**不要重启或释放服务器**。
 

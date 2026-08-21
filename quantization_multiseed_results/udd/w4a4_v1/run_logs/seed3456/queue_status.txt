@@ -1,0 +1,6 @@
+queue_started=2026-08-20T15:05:58Z
+seed=3456
+physical_gpu=1
+qad_exit=0
+ste_exit=0
+lsq_exit=0

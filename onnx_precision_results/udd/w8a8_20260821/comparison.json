@@ -1,0 +1,192 @@
+{
+  "format": "udd-onnx-w8a8-miou-comparison-v1",
+  "generated_at_utc": "2026-08-21T05:48:45.149516+00:00",
+  "status": "complete",
+  "protocol": {
+    "dataset": "UDD6 validation",
+    "split_file": "/root/autodl-tmp/UDD/UDD6/preprocessed/val_patches.txt",
+    "split_sha256": "e535815642b56f6f4d11c3d0ce0ec35914e0861975157d7a3357aa1495261169",
+    "expected_validation_patches": 8478,
+    "evaluated_patches": 8478,
+    "classes": [
+      "background",
+      "facade",
+      "road",
+      "vegetation",
+      "vehicle",
+      "roof"
+    ],
+    "metric": "six-class mIoU from one global confusion matrix",
+    "input_shape": [
+      1,
+      3,
+      400,
+      400
+    ],
+    "time_steps": 1,
+    "preprocessing": "RGB float32 / 255, ImageNet mean/std normalization",
+    "inference_backend": "ONNX Runtime CPUExecutionProvider",
+    "workers": 8,
+    "threads_per_worker": 8
+  },
+  "models": {
+    "FP32 ONNX": {
+      "path": "/root/autodl-tmp/LETNet/onnx_models/SpikingLETNet_shallow_max_ann_fp32.onnx",
+      "sha256": "7c6249099033b3195e094a435827ec96cf7177cec4488014914c7d8885ac35a5",
+      "precision": "FP32",
+      "source": "FP32 QIF checkpoint exported through the T=1 ANN-equivalent graph"
+    },
+    "W8A8 QDQ ONNX": {
+      "path": "/root/autodl-tmp/LETNet/onnx_models/SpikingLETNet_shallow_max_ann_int8_qdq.onnx",
+      "sha256": "4e16d91770fbc08848ad07821cbd15c3b839fda57f8ea03cbb6b94be3e462e05",
+      "precision": "static S8S8 QDQ mixed precision",
+      "quantized_ops": [
+        "Conv",
+        "ConvTranspose",
+        "MatMul",
+        "Gemm"
+      ],
+      "calibration_split": "UDD6 train",
+      "calibration_samples": 300,
+      "quantization_method": "MinMax, per-channel weights, per-tensor activations"
+    }
+  },
+  "results": {
+    "FP32 ONNX": {
+      "miou": 0.6785041419974572,
+      "per_class_iou": {
+        "background": 0.5443555942212024,
+        "facade": 0.6303821859325275,
+        "road": 0.6392677832511986,
+        "vegetation": 0.8895065953945921,
+        "vehicle": 0.5442900755651096,
+        "roof": 0.8232226176201134
+      },
+      "pixel_accuracy": 0.8421053749410238,
+      "confusion_matrix": [
+        [
+          159454093,
+          21032958,
+          29535583,
+          19022119,
+          1636050,
+          6616334
+        ],
+        [
+          15914433,
+          163110104,
+          2481300,
+          3346301,
+          887204,
+          21250519
+        ],
+        [
+          22041440,
+          5786961,
+          137838906,
+          2814965,
+          1010043,
+          8293851
+        ],
+        [
+          9526083,
+          1622013,
+          1820905,
+          335667162,
+          103363,
+          735902
+        ],
+        [
+          1151483,
+          652067,
+          897399,
+          422595,
+          8721954,
+          271720
+        ],
+        [
+          6992092,
+          22664099,
+          3098626,
+          2281912,
+          270581,
+          337506880
+        ]
+      ],
+      "evaluated_pixels": 1356480000
+    },
+    "W8A8 QDQ ONNX": {
+      "miou": 0.658348816657972,
+      "per_class_iou": {
+        "background": 0.522476736470079,
+        "facade": 0.6005692860203233,
+        "road": 0.6136984738609368,
+        "vegetation": 0.8756857642497136,
+        "vehicle": 0.5268690905239967,
+        "roof": 0.8107935488227823
+      },
+      "pixel_accuracy": 0.8284584925690022,
+      "confusion_matrix": [
+        [
+          164616737,
+          15382522,
+          26575086,
+          21384146,
+          998294,
+          8340352
+        ],
+        [
+          23620012,
+          150659348,
+          2614233,
+          3992579,
+          500660,
+          25603029
+        ],
+        [
+          31083058,
+          4802954,
+          129914281,
+          2981506,
+          657834,
+          8346533
+        ],
+        [
+          12557524,
+          1184601,
+          1377822,
+          333403962,
+          59489,
+          892030
+        ],
+        [
+          1917494,
+          796995,
+          998645,
+          432860,
+          7626850,
+          344374
+        ],
+        [
+          8594759,
+          21703961,
+          2338783,
+          2468187,
+          142302,
+          337566198
+        ]
+      ],
+      "evaluated_pixels": 1356480000
+    }
+  },
+  "comparison": {
+    "w8a8_minus_fp32_miou_points": -2.0155325339485275,
+    "prediction_agreement": 0.8947400750471809,
+    "prediction_agreement_count": 1213697017,
+    "prediction_pixel_count": 1356480000
+  },
+  "runtime": {
+    "elapsed_seconds": 1983.9475930761546,
+    "git_commit": "f75510994a991dd36a8a72ea8c5f72f18171afea"
+  }
+}

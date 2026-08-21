@@ -1,0 +1,12 @@
+{
+  "completed_at": "2026-08-21T00:40:46.662338+00:00",
+  "method": "qad",
+  "seed": 3456,
+  "smoke": false,
+  "epochs_completed": 127,
+  "schedule_epochs": 150,
+  "quantized_layer_count": 71,
+  "best_miou": 0.6169231534004211,
+  "elapsed_seconds": 34480.220737371594,
+  "global_iteration": 50927
+}

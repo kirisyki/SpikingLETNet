@@ -1,0 +1,3 @@
+ste=0
+lsq=0
+ewgs=0

@@ -1,0 +1,69 @@
+{
+  "protocol": {
+    "protocol_version": "w4a4-multiseed-qad-v1",
+    "method": "qad",
+    "model": "SpikingLETNet_shallow_max",
+    "dataset": "udd",
+    "classes": 6,
+    "input_height": 400,
+    "input_width": 400,
+    "train_type": "trainval",
+    "seed": 3456,
+    "time_steps": 1,
+    "workers": 6,
+    "train_batch_size": 64,
+    "validation_batch_size": 20,
+    "run_epochs": 127,
+    "schedule_epochs": 150,
+    "batches_per_epoch": 401,
+    "model_learning_rate": 0.001,
+    "weight_decay": 0.0001,
+    "poly_exponent": 0.9,
+    "weight_bits": 4,
+    "activation_bits": 4,
+    "quantization_granularity": "per_tensor",
+    "expected_quantized_layers": 71,
+    "first_last_layer_exemption": false,
+    "kd_weight": 0.1,
+    "task_loss": "CrossEntropyLoss2d",
+    "feature_distillation": true,
+    "smoke": false
+  },
+  "sources": {
+    "config": {
+      "path": "/root/autodl-tmp/LETNet/Network/configs/SpikingLETNet_shallow/1.3M.yaml",
+      "sha256": "ab1008283b7f2f539d17654ae30861c5a794145ac3aaa1d4b5f02fc1589becb8"
+    },
+    "fp_checkpoint": {
+      "path": "/root/autodl-tmp/LETNet/checkpoint/udd/SpikingLETNet_shallow_maxbs64gpu1_trainval20260611-003821/model_best.pth",
+      "sha256": "2729d27dad82b9ec5124cc6474bcaad5bb3813de30b1875cd39765be1f46c3fb"
+    }
+  },
+  "protected_files": {
+    "Network/QAT_snn_STE.py": "6f568d7195ce7ee7682c2f9db94f1ec7dfbef4acdcacd9b6eca126374ddc6386",
+    "Network/QAT_snn.py": "385b9907dc2460da6b7f56d771c526cffe5b7cd45101426da85477898c434c20",
+    "Network/quantization/int4_selfbuild.py": "58f51d0da0f1088533f34bbe27a82bb46954d9ca2295924a1abd399c1a550e3e",
+    "Network/model/SpikingLETNet_shallow_max.py": "44ec0db9fb8044373bb0073a312af39dfb22a54faee5ad64ade6540936b1a907",
+    "Network/evaluate_precision_comparison.py": "d07c775f36321458246cd66e891c206adc2705dd7e95574cdf6bbb4f23eb6785"
+  },
+  "execution": {
+    "started_at": "2026-08-20T15:06:06.441967+00:00",
+    "smoke": false,
+    "amp": false,
+    "cuda_visible_devices": "1",
+    "device_name": "NVIDIA RTX PRO 6000 Blackwell Server Edition",
+    "device_total_memory": 101974081536,
+    "torch_version": "2.7.0+cu128",
+    "cuda_version": "12.8",
+    "cudnn_benchmark": true,
+    "cudnn_deterministic": true,
+    "command_arguments": {
+      "seed": 3456,
+      "output_dir": "/root/autodl-tmp/LETNet/quantization_multiseed_checkpoint/udd/w4a4_v1/seed3456/qad_qat_w4a4",
+      "resume": null,
+      "smoke": false,
+      "max_train_iters": 1,
+      "max_val_iters": 1
+    }
+  }
+}

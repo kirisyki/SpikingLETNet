@@ -1,0 +1,10 @@
+{
+  "completed_at": "2026-08-21T01:37:29.053777+00:00",
+  "method": "ste",
+  "smoke": false,
+  "epochs_completed": 16,
+  "quantized_layer_count": 71,
+  "best_miou": 0.5736030969144086,
+  "elapsed_seconds": 3395.938597012311,
+  "hessian_records": []
+}
